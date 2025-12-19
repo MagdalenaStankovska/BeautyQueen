@@ -1,0 +1,491 @@
+[
+  {
+    "id": 1756497250048,
+    "userEmail": "filip.pecovski@gmail.com",
+    "date": "2025-08-30",
+    "time": "12:00",
+    "service": "Педикир",
+    "status": "accepted"
+  },
+  {
+    "id": 1756497429209,
+    "userEmail": "filip.pecovski@gmail.com",
+    "date": "2025-08-29",
+    "time": "12:00",
+    "service": "Маникир",
+    "status": "accepted"
+  },
+  {
+    "id": 1756497435643,
+    "userEmail": "filip.pecovski@gmail.com",
+    "date": "2025-08-29",
+    "time": "13:45",
+    "service": "Lash Lift",
+    "status": "accepted"
+  },
+  {
+    "id": 1756497735135,
+    "userEmail": "petar.canoski@gmail.com",
+    "date": "2025-08-29",
+    "time": "14:00",
+    "service": "Педикир",
+    "status": "rejected"
+  },
+  {
+    "id": 1756497747642,
+    "userEmail": "petar.canoski@gmail.com",
+    "date": "2025-08-31",
+    "time": "15:00",
+    "service": "Депилација",
+    "status": "rejected"
+  },
+  {
+    "id": 1756497762553,
+    "userEmail": "magdalena.stankovska@students.finki.ukim.mk",
+    "date": "2025-08-29",
+    "time": "19:00",
+    "service": "Маникир",
+    "status": "rejected"
+  },
+  {
+    "id": 1756497770944,
+    "userEmail": "magdalena.stankovska@students.finki.ukim.mk",
+    "date": "2025-08-31",
+    "time": "14:45",
+    "service": "Lash Lift",
+    "status": "rejected"
+  },
+  {
+    "id": 1756500012155,
+    "userEmail": "magdalena.stankovska@students.finki.ukim.mk",
+    "date": "2025-09-06",
+    "time": "14:15",
+    "service": "Педикир",
+    "status": "accepted"
+  },
+  {
+    "id": 1756837624356,
+    "userEmail": "magdalena.stankovska@students.finki.ukim.mk",
+    "date": "2025-09-10",
+    "time": "17:00",
+    "service": "Lash Lift",
+    "status": "rejected"
+  },
+  {
+    "id": 1756837628388,
+    "userEmail": "magdalena.stankovska@students.finki.ukim.mk",
+    "date": "2025-09-02",
+    "time": "12:00",
+    "service": "Депилација",
+    "status": "accepted"
+  },
+  {
+    "id": 1756837632953,
+    "userEmail": "magdalena.stankovska@students.finki.ukim.mk",
+    "date": "2025-09-02",
+    "time": "13:45",
+    "service": "Педикир",
+    "status": "accepted"
+  },
+  {
+    "id": 1756837643853,
+    "userEmail": "magdalena.stankovska@students.finki.ukim.mk",
+    "date": "2025-09-02",
+    "time": "15:15",
+    "service": "Педикир",
+    "status": "accepted"
+  },
+  {
+    "id": 1758052925057,
+    "userEmail": "ilina.stevanoska@gmail.com",
+    "date": "2025-09-18",
+    "time": "14:15",
+    "service": "Педикир",
+    "status": "accepted"
+  },
+  {
+    "id": 1758280359265,
+    "userEmail": "kalija.ugrinovska@gmail.com",
+    "date": "2025-09-20",
+    "time": "13:00",
+    "service": "Lash Lift",
+    "status": "accepted"
+  },
+  {
+    "id": 1758474549371,
+    "userEmail": "petar.canoski@gmail.com",
+    "date": "2025-09-24",
+    "time": "18:30",
+    "service": "Lash Lift",
+    "status": "rejected"
+  },
+  {
+    "id": 1758474573704,
+    "userEmail": "petar.canoski@gmail.com",
+    "date": "2025-09-24",
+    "time": "13:45",
+    "service": "Lash Lift",
+    "status": "accepted"
+  },
+  {
+    "id": 1758474576320,
+    "userEmail": "petar.canoski@gmail.com",
+    "date": "2025-09-21",
+    "time": "12:00",
+    "service": "Педикир",
+    "status": "accepted"
+  },
+  {
+    "id": 1758474577725,
+    "userEmail": "petar.canoski@gmail.com",
+    "date": "2025-09-21",
+    "time": "12:00",
+    "service": "Депилација",
+    "status": "accepted"
+  },
+  {
+    "id": 1759150428492,
+    "userEmail": "petar.canoski@gmail.com",
+    "date": "2025-09-29",
+    "time": "12:00",
+    "service": "Lash Lift",
+    "status": "accepted"
+  },
+  {
+    "id": 1759150656217,
+    "userEmail": "petar.canoski@gmail.com",
+    "date": "2025-09-29",
+    "time": "12:00",
+    "service": "Маникир",
+    "status": "accepted"
+  },
+  {
+    "id": 1759150659933,
+    "userEmail": "petar.canoski@gmail.com",
+    "date": "2025-09-29",
+    "time": "12:00",
+    "service": "Lash Lift",
+    "status": "accepted"
+  },
+  {
+    "id": 1759150787655,
+    "userEmail": "petar.canoski@gmail.com",
+    "date": "2025-09-29",
+    "time": "12:00",
+    "service": "Маникир",
+    "status": "accepted"
+  },
+  {
+    "id": 1759150789241,
+    "userEmail": "petar.canoski@gmail.com",
+    "date": "2025-09-29",
+    "time": "12:00",
+    "service": "Педикир (целосен)",
+    "status": "accepted"
+  },
+  {
+    "id": 1759150791697,
+    "userEmail": "petar.canoski@gmail.com",
+    "date": "2025-09-29",
+    "time": "12:00",
+    "service": "Депилација (интимна)",
+    "status": "accepted"
+  },
+  {
+    "id": 1759152506622,
+    "userEmail": "petar.canoski@gmail.com",
+    "date": "2025-09-29",
+    "time": "17:30",
+    "service": "Маникир",
+    "status": "accepted"
+  },
+  {
+    "id": 1759152509522,
+    "userEmail": "petar.canoski@gmail.com",
+    "date": "2025-09-29",
+    "time": "12:00",
+    "service": "Педикир (целосен)",
+    "status": "rejected"
+  },
+  {
+    "id": 1760729917864,
+    "userEmail": "angel.buckovski@gmail.com",
+    "date": "2025-11-13",
+    "time": "16:30",
+    "service": "Lash Lift",
+    "status": "accepted"
+  },
+  {
+    "id": 1761664407404,
+    "userEmail": "mihaela.trenche@gmail.com",
+    "date": "2025-10-31",
+    "time": "15:45",
+    "service": "Маникир",
+    "status": "accepted"
+  },
+  {
+    "id": 1763241690400,
+    "userEmail": "oliver.curciev@gmail.com",
+    "date": "2025-11-15",
+    "time": "15:00",
+    "service": "Lash Lift",
+    "status": "accepted"
+  },
+  {
+    "id": 1763242656801,
+    "userEmail": "pavel.buckovski@gmail.com",
+    "date": "2025-11-22",
+    "time": "16:15",
+    "service": "Депилација (целосна)",
+    "status": "accepted"
+  },
+  {
+    "id": 1765475957866,
+    "userEmail": "oliver.curciev@gmail.com",
+    "date": "2025-12-18",
+    "time": "12:00",
+    "service": "Депилација (нозе/раце)",
+    "status": "accepted"
+  },
+  {
+    "id": 1765542351587,
+    "userEmail": "angel.buckovski@gmail.com",
+    "date": "2025-12-12",
+    "time": "12:00",
+    "service": "Чупање веѓи",
+    "status": "accepted"
+  },
+  {
+    "id": 1765542371208,
+    "userEmail": "angel.buckovski@gmail.com",
+    "date": "2025-12-12",
+    "time": "16:00",
+    "service": "Депилација (раце+нозе)",
+    "status": "accepted"
+  },
+  {
+    "id": 1765542376443,
+    "userEmail": "angel.buckovski@gmail.com",
+    "date": "2025-12-13",
+    "time": "12:00",
+    "service": "Депилација (целосна)",
+    "status": "accepted"
+  },
+  {
+    "id": 1765542379150,
+    "userEmail": "angel.buckovski@gmail.com",
+    "date": "2025-12-14",
+    "time": "12:00",
+    "service": "Brow Lam",
+    "status": "accepted"
+  },
+  {
+    "id": 1765542382417,
+    "userEmail": "angel.buckovski@gmail.com",
+    "date": "2025-12-15",
+    "time": "12:00",
+    "service": "Lash Lift",
+    "status": "accepted"
+  },
+  {
+    "id": 1765542386486,
+    "userEmail": "angel.buckovski@gmail.com",
+    "date": "2025-12-16",
+    "time": "12:00",
+    "service": "Педикир (целосен+gel лак)",
+    "status": "accepted"
+  },
+  {
+    "id": 1765542390500,
+    "userEmail": "angel.buckovski@gmail.com",
+    "date": "2025-12-17",
+    "time": "12:00",
+    "service": "Маникир (наливни)",
+    "status": "accepted"
+  },
+  {
+    "id": 1765550449327,
+    "userEmail": "oliver.curciev@gmail.com",
+    "date": "2025-12-25",
+    "time": "16:00",
+    "service": "Педикир (целосен+gel лак)",
+    "status": "accepted"
+  },
+  {
+    "id": 1765550456751,
+    "userEmail": "oliver.curciev@gmail.com",
+    "date": "2025-12-26",
+    "time": "16:00",
+    "service": "Маникир (наливни)",
+    "status": "accepted"
+  },
+  {
+    "id": 1765564573199,
+    "userEmail": "oliver.curciev@gmail.com",
+    "date": "2025-12-28",
+    "time": "16:00",
+    "service": "Чупање веѓи",
+    "status": "rejected"
+  },
+  {
+    "id": 1765564578174,
+    "userEmail": "oliver.curciev@gmail.com",
+    "date": "2025-12-28",
+    "time": "16:30",
+    "service": "Маникир (наливни)",
+    "status": "accepted"
+  },
+  {
+    "id": 1765564583195,
+    "userEmail": "oliver.curciev@gmail.com",
+    "date": "2025-12-28",
+    "time": "12:00",
+    "service": "Депилација (целосна)",
+    "status": "accepted"
+  },
+  {
+    "id": 1765981446847,
+    "userEmail": "oliver.curciev@gmail.com",
+    "date": "2025-12-25",
+    "time": "14:00",
+    "service": "Педикир (целосен+gel лак)",
+    "status": "accepted"
+  },
+  {
+    "id": 1765981454868,
+    "userEmail": "oliver.curciev@gmail.com",
+    "date": "2025-12-17",
+    "time": "16:00",
+    "service": "Маникир (наливни)",
+    "status": "accepted"
+  },
+  {
+    "id": 1766065734686,
+    "userEmail": "oliver.curciev@gmail.com",
+    "date": "2025-12-18",
+    "time": "12:00",
+    "service": "Чупање веѓи",
+    "status": "accepted"
+  },
+  {
+    "id": 1766065737651,
+    "userEmail": "oliver.curciev@gmail.com",
+    "date": "2025-12-26",
+    "time": "12:00",
+    "service": "Депилација (целосна)",
+    "status": "accepted"
+  },
+  {
+    "id": 1766081235486,
+    "userEmail": "oliver.curciev@gmail.com",
+    "date": "2025-12-25",
+    "time": "16:00",
+    "service": "Brow Lam",
+    "status": "accepted"
+  },
+  {
+    "id": 1766157577759,
+    "userEmail": "oliver.curciev@gmail.com",
+    "date": "2025-12-19",
+    "time": "15:00",
+    "service": "Чупање веѓи",
+    "status": "accepted"
+  },
+  {
+    "id": 1766157794852,
+    "userEmail": "oliver.curciev@gmail.com",
+    "date": "2025-12-25",
+    "time": "17:00",
+    "service": "Чупање веѓи",
+    "status": "accepted"
+  },
+  {
+    "id": 1766160617240,
+    "userEmail": "oliver.curciev@gmail.com",
+    "date": "2025-12-24",
+    "time": "12:00",
+    "service": "Депилација (раце+нозе)",
+    "status": "accepted"
+  },
+  {
+    "id": 1766161914176,
+    "userEmail": "oliver.curciev@gmail.com",
+    "date": "2025-12-19",
+    "time": "12:00",
+    "service": "Чупање веѓи",
+    "status": "accepted",
+    "employee": "Ivana"
+  },
+  {
+    "id": 1766161928437,
+    "userEmail": "oliver.curciev@gmail.com",
+    "date": "2025-12-19",
+    "time": "12:00",
+    "service": "Депилација (целосна)",
+    "status": "accepted",
+    "employee": "Ivana"
+  },
+  {
+    "id": 1766162372952,
+    "userEmail": "oliver.curciev@gmail.com",
+    "date": "2025-12-24",
+    "time": "12:00",
+    "service": "Депилација (целосна)",
+    "status": "accepted",
+    "employee": "Marija"
+  },
+  {
+    "id": 1766162380022,
+    "userEmail": "oliver.curciev@gmail.com",
+    "date": "2026-01-22",
+    "time": "12:00",
+    "service": "Педикир (целосен+gel лак)",
+    "status": "accepted",
+    "employee": "Ivana"
+  },
+  {
+    "id": 1766180798755,
+    "userEmail": "oliver.curciev@gmail.com",
+    "date": "2025-12-19",
+    "time": "12:00",
+    "service": "Чупање веѓи",
+    "status": "accepted",
+    "employee": null
+  },
+  {
+    "id": 1766180803722,
+    "userEmail": "oliver.curciev@gmail.com",
+    "date": "2025-12-19",
+    "time": "16:00",
+    "service": "Депилација (целосна)",
+    "status": "accepted",
+    "employee": null
+  },
+  {
+    "id": 1766180896074,
+    "userEmail": "oliver.curciev@gmail.com",
+    "date": "2026-01-01",
+    "time": "12:00",
+    "service": "Педикир (целосен+gel лак)",
+    "status": "accepted",
+    "employee": null
+  },
+  {
+    "id": 1766180906698,
+    "userEmail": "oliver.curciev@gmail.com",
+    "date": "2025-12-31",
+    "time": "16:30",
+    "service": "Маникир (наливни)",
+    "status": "accepted",
+    "employee": null
+  },
+  {
+    "id": 1766181695278,
+    "userEmail": "oliver.curciev@gmail.com",
+    "date": "2025-12-19",
+    "time": "12:00",
+    "service": "Brow Lam",
+    "status": "accepted",
+    "employee": null
+  }
+]

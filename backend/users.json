@@ -1,0 +1,78 @@
+[
+  {
+    "email": "magdalena.stankovska@students.finki.ukim.mk",
+    "password": "$2b$08$cWXU8cgWCS5kIDjNZ2LDKOije3IgLSUO67c21ukQvTpgJykaGtm2O",
+    "role": "user"
+  },
+  {
+    "email": "user12@gmail.com",
+    "password": "$2b$08$FA.wLE9ShuXj4JROH2SrQOnq33hjmhQafDaeIOpXY8LBOjoBkW.uG",
+    "role": "user"
+  },
+  {
+    "email": "petar.stanko@yahoo.com",
+    "password": "$2b$08$Ju/A1Dj8GgXiNcDFVxEAjuADWQsEUsXCkPtiU7d71fYR2rvYXrJCK",
+    "role": "user"
+  },
+  {
+    "email": "user4@gmail.com",
+    "password": "$2b$08$6KIa1IWskdrSzwQgvXmdHO6mqh4lIxJmVPECDd57DqZRLWe6xv.pK",
+    "role": "user"
+  },
+  {
+    "email": "petar.canoski@gmail.com",
+    "password": "$2b$08$hyuU1PhjzbV5lJUOhgWsbORqHQOJzzDPe35rstIOs1Bm8nL/r05UG",
+    "role": "user"
+  },
+  {},
+  {
+    "email": "marija.stankovska@yahoo.com",
+    "password": "$2b$08$b6xMoFFNXO5AjmFR/C8TyOt0aLjzKM6dnDd56TaLVk91e3c.cfTDO",
+    "role": "admin"
+  },
+  {
+    "email": "dragan.stankovski@gmmail.com",
+    "password": "$2b$08$fjkGDc/lOA6UrAhSAKSdeuAs8OHm5H3QEIeq.WfyduazV5sKbIHq2",
+    "role": "user"
+  },
+  {
+    "email": "slavica.stojkoska@gmail.com",
+    "password": "$2b$08$H0qhTU16g9lArv3PEbSK5.8LQepdofPaNBZy1wX6AFm2LEQsIVCoa",
+    "role": "user"
+  },
+  {
+    "email": "filip.pecovski@gmail.com",
+    "password": "$2b$08$4jxf.bYp0z4dpXVAieBTlOBqbMLIJOQ7qWG.rz3Jqwa2kWP01K9Yq",
+    "role": "user"
+  },
+  {
+    "email": "ilina.stevanoska@gmail.com",
+    "password": "$2b$08$bUTuVkqI/.jRCkUR3qI3q..R9I.HWJzeSj06g67YcXiiFCDK60smm",
+    "role": "user"
+  },
+  {
+    "email": "kalija.ugrinovska@gmail.com",
+    "password": "$2b$08$X.Kzm64yzcyp0ynCEyFpLeomyvI5Y8UOs9f8OSnC3wOB/CDtp3zY2",
+    "role": "user"
+  },
+  {
+    "email": "angel.buckovski@gmail.com",
+    "password": "$2b$08$GmLdQLKaKievVaIRHlhNKumFf1m0tpTnvtOdA/4BG9.xX6CUiIAcC",
+    "role": "user"
+  },
+  {
+    "email": "mihaela.trenche@gmail.com",
+    "password": "$2b$08$Mr1yEy73VfjuxSbJNMvGKexZt0anNBM8lc0MjF695eKglim7GZRAq",
+    "role": "user"
+  },
+  {
+    "email": "oliver.curciev@gmail.com",
+    "password": "$2b$08$8V2aJOltWqLsI/Xq./i9.u1AUd5ulfr0l3lklb55r7Gs9YS85z57a",
+    "role": "user"
+  },
+  {
+    "email": "pavel.buckovski@gmail.com",
+    "password": "$2b$08$4fF0Bia.nKNIEzkzCqhQWOVjwQ/opCqtytVRruC2qo/RXGIXNJD0W",
+    "role": "user"
+  }
+]
