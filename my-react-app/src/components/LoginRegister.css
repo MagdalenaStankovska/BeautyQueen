@@ -19,8 +19,8 @@ body::before {
     height: 100%;
     background: url("./biserche.png") no-repeat center center;
     background-size: cover;
-    opacity: 0.3;   /* 70% opacity */
-    z-index: -1;    /* behind all content */
+    opacity: 0.3;
+    z-index: -1;
 }
 
 /* Center container */
@@ -29,7 +29,7 @@ body::before {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    padding: 20px; /* for breathing room on small screens */
+    padding: 20px;
     box-sizing: border-box;
 }
 
@@ -40,8 +40,8 @@ body::before {
     border-radius: 14px;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
     width: 340px;
-    max-height: 90vh;          /* never overflow vertically */
-    overflow-y: auto;          /* scroll if needed */
+    max-height: 90vh;
+    overflow-y: auto;
     text-align: center;
 }
 
@@ -50,21 +50,21 @@ body::before {
     font-size: 24px;
     font-weight: bold;
     margin-bottom: 20px;
+    color: lightcoral;
 }
 
 /* Input fields */
-/* Input fields */
 .login-input {
     width: 100%;
-    height: 44px;                 /* fixed height */
-    padding: 0 40px 0 12px;       /* space for text + eye button */
+    height: 44px;
+    padding: 0 40px 0 12px;
     margin-bottom: 12px;
     border: 1px solid #ddd;
     border-radius: 6px;
     font-size: 14px;
     background-color: #f3f6fc;
     outline: none;
-    box-sizing: border-box;       /* include padding in size */
+    box-sizing: border-box;
 }
 
 .login-input:focus {
@@ -79,29 +79,42 @@ body::before {
     margin-bottom: 12px;
 }
 
-/* Eye button inside password */
+/* ✅ FIXED EYE BUTTON */
 .toggle-password {
     position: absolute;
-    right: 10px;
+    right: 12px;
+
     top: 50%;
     transform: translateY(-50%);
-    background: none;
+
+    background: transparent;
     border: none;
-    cursor: pointer;
-    font-size: 16px;
-    color: #666;
-    height: 100%;          /* aligns perfectly */
+    padding: 0;
+    margin: 0;
+
+    width: 24px;      /* 👉 фиксна големина */
+    height: 24px;
+
     display: flex;
     align-items: center;
+    justify-content: center;
+    margin-top: -5px;
+    cursor: pointer;
+    font-size: 16px;
+    color: #777;
+
+    line-height: 1;   /* 👉 ова е клучно за центар */
 }
 
-
+.toggle-password:hover {
+    color: #ff5fbf;
+}
 
 /* Pink button */
 .login-button {
     width: 90%;
     padding: 10px;
-    background: #ff5fbf;
+    background: lightpink;
     color: white;
     font-size: 15px;
     border: none;
@@ -115,7 +128,7 @@ body::before {
     background: lightcoral;
 }
 
-/* Toggle text (switch between login/register) */
+/* Toggle text */
 .toggle-text {
     margin-top: 14px;
     font-size: 13px;
@@ -131,20 +144,14 @@ body::before {
     color: lightcoral;
     font-weight: bold;
 }
-/*.login-title-wrapper {*/
-/*    display: flex;*/
-/*    align-items: flex-end;    !* vertically center logo & text *!*/
-/*    justify-content: center; !* center horizontally *!*/
-/*    gap: 10px;              !* space between logo and title *!*/
-/*}*/
 
 .login-logo {
-    width: 100px;           /* adjust as needed */
+    width: 100px;
     height: 100px;
     object-fit: contain;
     margin-bottom: -75px;
-    /* maintain aspect ratio */
 }
+
 /* Messages */
 .message {
     margin-top: 10px;
@@ -158,18 +165,11 @@ body::before {
 .error {
     color: red;
 }
-.login-button{
-    background-color: lightpink;
-}
-.login-title{
-    color: lightcoral;
 
-}
-
-/* Extra: mobile responsiveness */
+/* Mobile */
 @media (max-width: 420px) {
     .login-card {
-        width: 100%;       /* full width on small phones */
+        width: 100%;
         padding: 20px;
     }
 

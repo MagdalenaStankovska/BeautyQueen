@@ -7,6 +7,7 @@ import salon1 from "./salon1.png";
 import salon2 from "./salon2.png";
 import sijalichka from "./sijalichka.png";
 import biserche from "./biserche.png";
+import biserche1 from "./biseri1.png"
 // ако сликата е во истата папка како компонентата
 // import vaucher2 from "./2.jpg"; // ако сликата е во истата папка како компонентата
 
@@ -60,7 +61,7 @@ function Home({ role, onNavigate }) {
             {/* Hero banner */}
             <section style={{ position: "relative" }}>
                 <img
-                    src={biserche}
+                    src={biserche1}
                     alt="Beauty Queen Banner"
                     style={{
                         opacity: "40%",

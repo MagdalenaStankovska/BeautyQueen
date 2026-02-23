@@ -42,15 +42,15 @@ const LoginRegister = ({ onLogin }) => {
         <div className="login-container">
             <div className="login-card">
                 <div className="login-title-wrapper">
-                        <img src={logo} alt="BeautyQueen Logo" className="login-logo"/>
+                    <img src={logo} alt="BeautyQueen Logo" className="login-logo" />
                 </div>
-                    <div>
-                        <h2 className="login-title">{isLogin ? "Најава" : "Регистрација"}</h2>
-                    </div>
 
+                <div>
+                    <h2 className="login-title">{isLogin ? "Најава" : "Регистрација"}</h2>
+                </div>
 
                 <form onSubmit={handleSubmit}>
-                <input
+                    <input
                         type="email"
                         placeholder="Е-пошта"
                         value={email}
@@ -59,7 +59,7 @@ const LoginRegister = ({ onLogin }) => {
                         className="login-input"
                     />
 
-                    <div className="password-wrapper">
+                    <div className="password-wrapper" style={{ position: "relative" }}>
                         <input
                             type={showPassword ? "text" : "password"}
                             placeholder="Лозинка"
@@ -68,12 +68,27 @@ const LoginRegister = ({ onLogin }) => {
                             onChange={(e) => setPassword(e.target.value)}
                             className="login-input"
                         />
+
                         <button
                             type="button"
                             onClick={() => setShowPassword((prev) => !prev)}
                             className="toggle-password"
+                            style={{
+                                position: "absolute",
+                                right: "12px",
+                                top: "50%",
+                                transform: "translateY(-50%)",
+                                background: "none",
+                                border: "none",
+                                cursor: "pointer",
+                                fontSize: "18px",
+                                padding: "0",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center"
+                            }}
                         >
-                            {showPassword ? <FaEyeSlash/> : <FaEye/>}
+                            {showPassword ? <FaEyeSlash /> : <FaEye />}
                         </button>
                     </div>
 
@@ -85,8 +100,8 @@ const LoginRegister = ({ onLogin }) => {
                 <p className="toggle-text">
                     {isLogin ? "Немате корисничка сметка?" : "Веќе имате сметка?"}{" "}
                     <span onClick={() => setIsLogin(!isLogin)} className="toggle-link">
-            {isLogin ? "Регистрирај се" : "Најави се"}
-          </span>
+                        {isLogin ? "Регистрирај се" : "Најави се"}
+                    </span>
                 </p>
 
                 {message && (

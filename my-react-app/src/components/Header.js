@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+
 import logo from "./logopic.png";
 
 const Header = ({ onNavClick, role, token, onLogin, onLogout }) => {
@@ -7,10 +8,50 @@ const Header = ({ onNavClick, role, token, onLogin, onLogout }) => {
     const [formData, setFormData] = useState({ email: "", password: "" });
     const [error, setError] = useState("");
     const [userEmail, setUserEmail] = useState(null);
+    const [notifications, setNotifications] = useState([]);
+    const [notifOpen, setNotifOpen] = useState(false);
+// 🟢 ADDED – count only unread
+    const unreadCount = notifications.filter(n => !n.isRead).length;
+
+    // 🟢 ADDED
+    const [showTooltip, setShowTooltip] = useState(false);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
+
+    const fetchNotifications = async () => {
+        if (!token) return;
+
+        try {
+            const res = await fetch("/notifications", {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const data = await res.json();
+            setNotifications(data);
+        } catch (e) {
+            console.error("Notification fetch error", e);
+        }
+    };
+    // 🟢 ADDED – mark all as read
+    const markNotificationsAsRead = async () => {
+        try {
+            await fetch("/notifications/read", {
+                method: "PATCH",
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            // локално ги маркираме како прочитани
+            setNotifications(prev =>
+                prev.map(n => ({ ...n, isRead: true }))
+            );
+        } catch (e) {
+            console.error("Mark as read error", e);
+        }
+    };
+
 
     const validate = () => {
         if (!formData.email || !formData.password) {
@@ -88,7 +129,7 @@ const Header = ({ onNavClick, role, token, onLogin, onLogout }) => {
         { text: "Услуги", id: "услуги" },
         { text: "Закажи термин", id: "termin" },
         { text: "Повеќе за тимот", id: "tim" },
-        ...(role === "admin" ? [{ text: "Admin Panel", id: "adminpanel" }] : []),
+        ...(role === "admin" ? [{ text: "", id: "adminpanel" }] : []),
     ];
 
     const styles = `
@@ -118,6 +159,11 @@ const Header = ({ onNavClick, role, token, onLogin, onLogout }) => {
   `;
 
     const isLoggedIn = Boolean(token);
+    useEffect(() => {
+        if (token) {
+            fetchNotifications();
+        }
+    }, [token]);
 
     return (
         <>
@@ -161,6 +207,54 @@ const Header = ({ onNavClick, role, token, onLogin, onLogout }) => {
                 <div>
                     {isLoggedIn ? (
                         <div style={{display: "flex", alignItems: "center", gap: "15px"}}>
+                            <div
+                                style={{position: "relative", cursor: "pointer"}}
+                                onMouseEnter={() => setShowTooltip(true)}   // 🟢 ADDED
+                                onMouseLeave={() => setShowTooltip(false)}  // 🟢 ADDED
+                                onClick={() => {
+                                    markNotificationsAsRead();     // 🟢 ADDED
+                                    onNavClick("notifications");
+                                }}
+                                // 🟢 ADDED
+                            >
+                                🔔
+                                {unreadCount > 0 && (   // 🔁 CHANGED
+
+                                    <span style={{
+                                        position: "absolute",
+                                        top: "-6px",
+                                        right: "-6px",
+                                        background: "red",
+                                        color: "white",
+                                        borderRadius: "50%",
+                                        fontSize: "12px",
+                                        padding: "2px 6px"
+                                    }}>
+                                        {unreadCount}
+                                    </span>
+                                )}
+
+                                {showTooltip && (
+                                    <div style={{
+                                        position: "absolute",
+                                        top: "28px",
+                                        right: "-40px",
+                                        background: "white",
+                                        padding: "6px 10px",
+                                        borderRadius: "8px",
+                                        fontSize: "12px",
+                                        boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+                                        whiteSpace: "nowrap",
+                                        zIndex: 3000
+                                    }}>
+                                        {unreadCount > 0
+                                            ? `Имате ${unreadCount} нови известувања`
+                                            : "Немате нови известувања"}
+
+                                    </div>
+                                )}
+                            </div>
+
                             <span>Welcome, {userEmail}</span>
                             <button
                                 onClick={logout}
@@ -195,6 +289,39 @@ const Header = ({ onNavClick, role, token, onLogin, onLogout }) => {
                     )}
                 </div>
             </header>
+
+            {/* ⛔️ СÈ ОД ТУКА НАДОЛУ Е ИСТО – НЕ Е МЕНУВАНО */}
+            {/* modal / register / login / backdrop */}
+
+            {notifOpen && (
+                <div style={{
+                    position: "absolute",
+                    top: "80px",
+                    right: "40px",
+                    width: "300px",
+                    background: "white",
+                    borderRadius: "12px",
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+                    padding: "12px",
+                    zIndex: 2000
+                }}>
+                    <h4>Notifications</h4>
+
+                    {notifications.length === 0 ? (
+                        <p>Нема известувања</p>
+                    ) : (
+                        notifications.map(n => (
+                            <div key={n.id} style={{
+                                padding: "8px",
+                                borderBottom: "1px solid #eee"
+                            }}>
+                                {n.message}
+                            </div>
+                        ))
+                    )}
+                </div>
+            )}
+
 
             {modalOpen && (
                 <div

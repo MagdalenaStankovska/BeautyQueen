@@ -74,5 +74,20 @@
     "email": "pavel.buckovski@gmail.com",
     "password": "$2b$08$4fF0Bia.nKNIEzkzCqhQWOVjwQ/opCqtytVRruC2qo/RXGIXNJD0W",
     "role": "user"
+  },
+  {
+    "email": "lara.stankovska@yahoo.com",
+    "password": "$2b$08$wOxEiLV9cGCrTSEk.V3If.1uD9/5.FxjbxEzORnQVudliTNaPdC8W",
+    "role": "user"
+  },
+  {
+    "email": "slavica.stojkoska@yahoo.com",
+    "password": "$2b$08$gfKVznTBaTOesnzV4BPV/uQlfiskZF6RG3ys/1DG3ssYasmiSTdau",
+    "role": "user"
+  },
+  {
+    "email": "magdalenastankovska12@gmail.com",
+    "password": "$2b$08$X7qJgIkBuQ6bL.8fFQJ/bumcGaPDThP5ahxMO/ed4iw5kQsc1LO/K",
+    "role": "user"
   }
 ]

@@ -447,6 +447,63 @@ import "react-calendar/dist/Calendar.css";
 import "./Calendar.css";
 import axios from "axios";
 
+/* ===========================
+   🔔 ADDED FOR NOTIFICATIONS
+=========================== */
+
+const NotificationPanel = ({ notifications, onCancel }) => {
+    if (!notifications.length) return null;
+
+    return (
+        <div style={{
+            background: "#fff0f5",
+            border: "1px solid hotpink",
+            borderRadius: 12,
+            padding: 12,
+            marginBottom: 20
+        }}>
+            <h3>🔔 Мои термини</h3>
+
+            {notifications.map(n => (
+                <div key={n.id} style={{
+                    padding: 10,
+                    marginBottom: 8,
+                    borderRadius: 8,
+                    background: "#ffe6f0"
+                }}>
+                    <strong>{n.date} – {n.time}</strong>
+                    <br />
+                    {n.service}
+                    <br />
+                    <small>Status: {n.status}</small>
+
+                    {n.status === "accepted" && (
+                        <div>
+                            <button
+                                onClick={() => onCancel(n.id)}
+                                style={{
+                                    marginTop: 6,
+                                    background: "red",
+                                    color: "white",
+                                    border: "none",
+                                    borderRadius: 6,
+                                    padding: "4px 10px",
+                                    cursor: "pointer"
+                                }}
+                            >
+                                ❌ Откажи
+                            </button>
+                        </div>
+                    )}
+                </div>
+            ))}
+        </div>
+    );
+};
+/* ===========================
+   🔔 END NOTIFICATIONS
+=========================== */
+
 // ------------------ Услуги ------------------
 const services = {
     "": ["----"],
@@ -475,6 +532,43 @@ const serviceColors = {
     "Чупање веѓи": "#DDA0DD",
     "Brow Lam": "#DAA520"
 };
+const serviceResource = {
+    // MANICURE TABLES (2)
+    "Маникир (само гел лак)": "manicure",
+    "Маникир (наливни)": "manicure",
+
+    // PEDICURE CHAIR (1)
+    "Педикир (гел лак на нозе)": "pedicure",
+    "Педикир (целосен+gel лак)": "pedicure",
+
+    // BED (1)
+    "Депилација (интима)": "bed",
+    "Депилација (целосна)": "bed",
+    "Депилација (раце+нозе)": "bed",
+
+    // SINGLE
+    "Lash Lift": "lash",
+    "Чупање веѓи": "brow",
+    "Brow Lam": "brow"
+};
+
+// 🟢 RESOURCE LIMITS (MAX PARALLEL)
+const serviceLimits = {
+    "Маникир (само гел лак)": 2,
+    "Маникир (наливни)": 2,
+
+    "Педикир (гел лак на нозе)": 1,
+    "Педикир (целосен+gel лак)": 1,
+
+    "Депилација (интима)": 1,
+    "Депилација (целосна)": 1,
+    "Депилација (раце+нозе)": 1,
+
+    "Lash Lift": 1,
+    "Чупање веѓи": 1,
+    "Brow Lam": 1
+};
+
 
 // ------------------ Времетраење на услуги во минути ------------------
 const serviceDurations = {
@@ -522,6 +616,8 @@ const CalendarComponent = ({ token, role }) => {
     const [appointments, setAppointments] = useState([]);
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [filterService, setFilterService] = useState("");
+// 🔔 USER NOTIFICATIONS
+    const [myNotifications, setMyNotifications] = useState([]);
 
     const timeOptions = generateTimeOptions();
 
@@ -538,16 +634,53 @@ const CalendarComponent = ({ token, role }) => {
         setDraggedAppt(appt);
     };
 
-    const handleDrop = (e, toEmployee) => {
-        if (!draggedAppt) return;
-        setEmployeeLists(prev => {
-            const newLists = { ...prev };
-            // add to new employee list (without removing from original)
-            newLists[toEmployee] = [...newLists[toEmployee], draggedAppt];
-            return newLists;
-        });
-        setDraggedAppt(null);
+    const getEmployeeAppointments = (employee) => {
+        const dayStr = formatLocalDate(selectedDate);
+        return appointments.filter(
+            a =>
+                a.employee === employee &&
+                a.status === "accepted" &&
+                a.date === dayStr
+        );
     };
+
+
+    const getEndTime = (appt) => {
+        const [h, m] = appt.time.split(":").map(Number);
+        const start = h * 60 + m;
+
+        // траење - 15 минути
+        const duration = Math.max(
+            (serviceDurations[appt.service] || 0) - 15,
+            0
+        );
+
+        const end = start + duration;
+
+        return `${String(Math.floor(end / 60)).padStart(2, "0")}:${String(end % 60).padStart(2, "0")}`;
+    };
+
+
+
+
+    const handleDrop = async (e, toEmployee) => {
+        e.preventDefault();
+        if (!draggedAppt) return;
+
+        try {
+            await axios.patch(
+                `http://localhost:4000/appointments/${draggedAppt.id}`,
+                { employee: toEmployee },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            setDraggedAppt(null);
+            fetchAppointments(); // 🔥 да се синхронизира
+        } catch (err) {
+            console.error("Employee assign error", err);
+        }
+    };
+
 
     // ------------------ Fetch appointments ------------------
     const fetchAppointments = useCallback(async () => {
@@ -560,10 +693,43 @@ const CalendarComponent = ({ token, role }) => {
             console.error("Error fetching appointments:", err);
         }
     }, [token]);
+    const fetchMyNotifications = async () => {
+        if (role === "admin") return;
+
+        try {
+            const res = await axios.get(
+                "http://localhost:4000/appointments/user",
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            setMyNotifications(res.data);
+        } catch (err) {
+            console.error("Notification fetch error", err);
+        }
+    };
+    // 🔔 Cancel appointment (USER)
+    const cancelAppointment = async (id) => {
+        try {
+            await axios.patch(
+                `http://localhost:4000/appointments/${id}/cancel`,
+                { status: "cancelled" },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            fetchMyNotifications(); // 🔄 refresh notifications
+            fetchAppointments();    // 🔄 refresh calendar
+        } catch (err) {
+            console.error("Cancel error", err);
+        }
+    };
+
 
     useEffect(() => {
-        if (token) fetchAppointments();
+        if (token) {
+            fetchAppointments();
+            fetchMyNotifications(); // 🔔
+        }
     }, [token, fetchAppointments]);
+
 
     // ------------------ Auto refresh every 60s ------------------
     useEffect(() => {
@@ -627,23 +793,67 @@ const CalendarComponent = ({ token, role }) => {
 
     // ------------------ Check time slot availability ------------------
     const isTimeDisabled = (checkTime) => {
+        if (!service) return true;
+
         const selectedDateStr = formatLocalDate(date);
-        const appointmentsForDay = appointments.filter(a => a.date === selectedDateStr);
-        for (let appt of appointmentsForDay) {
-            const startHourMin = appt.time.split(":").map(Number);
-            const apptStart = startHourMin[0]*60 + startHourMin[1];
+        const selectedResource = serviceResource[service];
+        const limit = serviceLimits[service] ?? 1;
+
+        const activeAppointments = appointments.filter(
+            a =>
+                a.date === selectedDateStr &&
+                (a.status === "pending" || a.status === "accepted")
+        );
+
+        let overlapCount = 0;
+
+        for (let appt of activeAppointments) {
+            const apptResource = serviceResource[appt.service];
+
+            if (apptResource !== selectedResource) continue;
+
+            const [h, m] = appt.time.split(":").map(Number);
+            const apptStart = h * 60 + m;
             const apptEnd = apptStart + (serviceDurations[appt.service] || 0);
 
-            const checkHourMin = checkTime.split(":").map(Number);
-            const checkStart = checkHourMin[0]*60 + checkHourMin[1];
+            const [ch, cm] = checkTime.split(":").map(Number);
+            const checkStart = ch * 60 + cm;
             const checkEnd = checkStart + (serviceDurations[service] || 0);
 
-            if (Math.max(apptStart, checkStart) < Math.min(apptEnd, checkEnd)) {
-                return true;
+            const overlaps =
+                Math.max(apptStart, checkStart) <
+                Math.min(apptEnd, checkEnd);
+
+            if (overlaps) {
+                overlapCount++;
             }
         }
-        return false;
+
+        return overlapCount >= limit;
     };
+    const deleteAppointment = async (id) => {
+        const confirmDelete = window.confirm("Дали си сигурна дека сакаш да го избришеш терминот?");
+        if (!confirmDelete) return;
+
+        try {
+            await axios.delete(`http://localhost:4000/appointments/${id}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            // локално бришење
+            setAppointments(prev => prev.filter(a => a.id !== id));
+
+            // освежи од сервер и почекај
+            await fetchAppointments();
+
+        } catch (err) {
+            console.error("Delete error:", err);
+        }
+    };
+
+
+
+
 
     // ------------------ Styles ------------------
     const styles = `
@@ -664,6 +874,7 @@ const CalendarComponent = ({ token, role }) => {
     if (role !== "admin") {
         return (
             <div className="calendar-wrapper" style={{ maxWidth: 400, margin: "auto" }}>
+
                 <style>{styles}</style>
                 <h2 style={{ marginBottom: 20 }}>Закажи термин</h2>
                 <form onSubmit={handleSubmit}>
@@ -726,6 +937,7 @@ const CalendarComponent = ({ token, role }) => {
                                 </optgroup>
                             ))}
                         </select>
+                        {!service && <small>Избери услуга за да видиш слободни термини</small>}
                     </label>
                     <button
                         type="submit"
@@ -889,13 +1101,41 @@ const CalendarComponent = ({ token, role }) => {
                                     {appointmentsThisSlot.length > 0 ? (
                                         <ul style={{ marginLeft: 20, padding: 0 }}>
                                             {appointmentsThisSlot.map((appt) => (
-                                                <li key={appt.id} className="appointment-item" style={{ background: serviceColors[appt.service] || "#ddd" }} title={`Email: ${appt.userEmail}\nУслуга: ${appt.service}`} draggable onDragStart={(e) => handleDragStart(e, appt)}>
-                                                    {appt.userEmail} ({appt.service})
+                                                <li
+                                                    key={appt.id}
+                                                    draggable
+                                                    onDragStart={(e) => handleDragStart(e, appt)}
+                                                    className="appointment-item"
+                                                    style={{
+                                                        background: serviceColors[appt.service] || "#ddd",
+                                                        display: "flex",
+                                                        justifyContent: "space-between",
+                                                        alignItems: "center"
+                                                    }}
+                                                >
+    <span>
+        {appt.userEmail} ({appt.service})
+    </span>
+
+                                                    <button
+                                                        onMouseDown={(e) => e.stopPropagation()}
+                                                        onClick={() => deleteAppointment(appt.id)}
+                                                        style={{
+                                                            marginLeft: 10,
+                                                            background: "transparent",
+                                                            border: "none",
+                                                            cursor: "pointer",
+                                                            fontSize: "16px"
+                                                        }}
+                                                        title="Избриши термин"
+                                                    >
+                                                        🗑️
+                                                    </button>
                                                 </li>
                                             ))}
                                         </ul>
                                     ) : (
-                                        <div style={{ marginLeft: 20, color: "#aaa" }}>—</div>
+                                        <div style={{marginLeft: 20, color: "#aaa"}}>—</div>
                                     )}
                                 </div>
                             );
@@ -904,9 +1144,9 @@ const CalendarComponent = ({ token, role }) => {
                 </div>
 
                 {/* Drag & Drop Employee Lists */}
-                <h3 style={{ marginTop: 20 }}>Пренеси термини на вработени</h3>
-                <div style={{ display: "flex", gap: 10 }}>
-                    {employees.map(emp => (
+                <h3 style={{marginTop: 20}}>Пренеси термини на вработени</h3>
+                <div style={{display: "flex", gap: 10}}>
+                {employees.map(emp => (
                         <div
                             key={emp}
                             onDragOver={(e) => e.preventDefault()}
@@ -914,16 +1154,24 @@ const CalendarComponent = ({ token, role }) => {
                             style={{ flex: 1, minHeight: 150, padding: 10, border: "1px solid #ccc", borderRadius: 8 }}
                         >
                             <h3>{emp}</h3>
-                            {employeeLists[emp]?.map(appt => (
+                            {getEmployeeAppointments(emp).map(appt => (
                                 <div
-                                    key={appt.id + Math.random()}
+                                    key={appt.id}
                                     draggable
                                     onDragStart={(e) => handleDragStart(e, appt)}
-                                    style={{ padding: 8, margin: "4px 0", background: "#ffe6f0", borderRadius: 6, cursor: "grab" }}
+                                    className="appointment-item"
+                                    style={{ background: serviceColors[appt.service] || "#ddd" }}
                                 >
-                                    {appt.userEmail} ({appt.service})
+                                    <strong>
+                                        {appt.time} – {getEndTime(appt)}
+                                    </strong>
+                                    <br />
+                                    {appt.userEmail}
+                                    <br />
+                                    <small>{appt.service}</small>
                                 </div>
                             ))}
+
                         </div>
                     ))}
                 </div>

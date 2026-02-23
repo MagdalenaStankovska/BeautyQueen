@@ -101,7 +101,8 @@
     "date": "2025-09-18",
     "time": "14:15",
     "service": "Педикир",
-    "status": "accepted"
+    "status": "cancelled",
+    "cancelReason": "macika bolna sum"
   },
   {
     "id": 1758280359265,
@@ -285,7 +286,8 @@
     "date": "2025-12-15",
     "time": "12:00",
     "service": "Lash Lift",
-    "status": "accepted"
+    "status": "accepted",
+    "employee": "Martina"
   },
   {
     "id": 1765542386486,
@@ -293,7 +295,8 @@
     "date": "2025-12-16",
     "time": "12:00",
     "service": "Педикир (целосен+gel лак)",
-    "status": "accepted"
+    "status": "accepted",
+    "employee": "Marija"
   },
   {
     "id": 1765542390500,
@@ -309,7 +312,8 @@
     "date": "2025-12-25",
     "time": "16:00",
     "service": "Педикир (целосен+gel лак)",
-    "status": "accepted"
+    "status": "accepted",
+    "employee": "Martina"
   },
   {
     "id": 1765550456751,
@@ -317,7 +321,8 @@
     "date": "2025-12-26",
     "time": "16:00",
     "service": "Маникир (наливни)",
-    "status": "accepted"
+    "status": "accepted",
+    "employee": "Martina"
   },
   {
     "id": 1765564573199,
@@ -349,7 +354,8 @@
     "date": "2025-12-25",
     "time": "14:00",
     "service": "Педикир (целосен+gel лак)",
-    "status": "accepted"
+    "status": "accepted",
+    "employee": "Martina"
   },
   {
     "id": 1765981454868,
@@ -373,7 +379,8 @@
     "date": "2025-12-26",
     "time": "12:00",
     "service": "Депилација (целосна)",
-    "status": "accepted"
+    "status": "accepted",
+    "employee": "Martina"
   },
   {
     "id": 1766081235486,
@@ -381,7 +388,8 @@
     "date": "2025-12-25",
     "time": "16:00",
     "service": "Brow Lam",
-    "status": "accepted"
+    "status": "accepted",
+    "employee": "Marija"
   },
   {
     "id": 1766157577759,
@@ -397,7 +405,8 @@
     "date": "2025-12-25",
     "time": "17:00",
     "service": "Чупање веѓи",
-    "status": "accepted"
+    "status": "accepted",
+    "employee": "Sara"
   },
   {
     "id": 1766160617240,
@@ -405,7 +414,8 @@
     "date": "2025-12-24",
     "time": "12:00",
     "service": "Депилација (раце+нозе)",
-    "status": "accepted"
+    "status": "accepted",
+    "employee": "Sara"
   },
   {
     "id": 1766161914176,
@@ -432,7 +442,7 @@
     "time": "12:00",
     "service": "Депилација (целосна)",
     "status": "accepted",
-    "employee": "Marija"
+    "employee": "Martina"
   },
   {
     "id": 1766162380022,
@@ -441,7 +451,7 @@
     "time": "12:00",
     "service": "Педикир (целосен+gel лак)",
     "status": "accepted",
-    "employee": "Ivana"
+    "employee": "Martina"
   },
   {
     "id": 1766180798755,
@@ -468,7 +478,7 @@
     "time": "12:00",
     "service": "Педикир (целосен+gel лак)",
     "status": "accepted",
-    "employee": null
+    "employee": "Martina"
   },
   {
     "id": 1766180906698,
@@ -477,7 +487,7 @@
     "time": "16:30",
     "service": "Маникир (наливни)",
     "status": "accepted",
-    "employee": null
+    "employee": "Marija"
   },
   {
     "id": 1766181695278,
@@ -487,5 +497,545 @@
     "service": "Brow Lam",
     "status": "accepted",
     "employee": null
+  },
+  {
+    "id": 1766344360218,
+    "userEmail": "oliver.curciev@gmail.com",
+    "date": "2025-12-21",
+    "time": "12:00",
+    "service": "Депилација (раце+нозе)",
+    "status": "accepted",
+    "employee": "Martina"
+  },
+  {
+    "id": 1766344365971,
+    "userEmail": "oliver.curciev@gmail.com",
+    "date": "2025-12-29",
+    "time": "12:00",
+    "service": "Чупање веѓи",
+    "status": "accepted",
+    "employee": "Marija"
+  },
+  {
+    "id": 1766344368378,
+    "userEmail": "oliver.curciev@gmail.com",
+    "date": "2025-12-21",
+    "time": "12:00",
+    "service": "Педикир (целосен+gel лак)",
+    "status": "accepted",
+    "employee": "Marija"
+  },
+  {
+    "id": 1766344376882,
+    "userEmail": "angel.buckovski@gmail.com",
+    "date": "2025-12-29",
+    "time": "12:00",
+    "service": "Депилација (раце+нозе)",
+    "status": "accepted",
+    "employee": "Sara"
+  },
+  {
+    "id": 1766344380806,
+    "userEmail": "angel.buckovski@gmail.com",
+    "date": "2025-12-21",
+    "time": "12:00",
+    "service": "Маникир (само гел лак)",
+    "status": "accepted",
+    "employee": "Sara"
+  },
+  {
+    "id": 1766344382491,
+    "userEmail": "angel.buckovski@gmail.com",
+    "date": "2025-12-21",
+    "time": "12:00",
+    "service": "Маникир (наливни)",
+    "status": "accepted",
+    "employee": "Martina"
+  },
+  {
+    "id": 1766344384866,
+    "userEmail": "angel.buckovski@gmail.com",
+    "date": "2025-12-21",
+    "time": "12:00",
+    "service": "Brow Lam",
+    "status": "accepted",
+    "employee": "Sara"
+  },
+  {
+    "id": 1766344385669,
+    "userEmail": "angel.buckovski@gmail.com",
+    "date": "2025-12-21",
+    "time": "12:00",
+    "service": "Чупање веѓи",
+    "status": "accepted",
+    "employee": null
+  },
+  {
+    "id": 1766354553338,
+    "userEmail": "lara.stankovska@yahoo.com",
+    "date": "2025-12-24",
+    "time": "12:00",
+    "service": "Депилација (целосна)",
+    "status": "accepted",
+    "employee": "Marija"
+  },
+  {
+    "id": 1766354558294,
+    "userEmail": "lara.stankovska@yahoo.com",
+    "date": "2025-12-21",
+    "time": "15:45",
+    "service": "Педикир (целосен+gel лак)",
+    "status": "accepted",
+    "employee": null
+  },
+  {
+    "id": 1766354561275,
+    "userEmail": "lara.stankovska@yahoo.com",
+    "date": "2025-12-21",
+    "time": "12:00",
+    "service": "Маникир (наливни)",
+    "status": "rejected",
+    "employee": null
+  },
+  {
+    "id": 1766447910778,
+    "userEmail": "angel.buckovski@gmail.com",
+    "date": "2025-12-23",
+    "time": "12:00",
+    "service": "Чупање веѓи",
+    "status": "accepted",
+    "employee": "Marija"
+  },
+  {
+    "id": 1766508536236,
+    "userEmail": "angel.buckovski@gmail.com",
+    "date": "2025-12-23",
+    "time": "12:00",
+    "service": "Депилација (раце+нозе)",
+    "status": "accepted",
+    "employee": "Sara"
+  },
+  {
+    "id": 1766521213075,
+    "userEmail": "angel.buckovski@gmail.com",
+    "date": "2025-12-25",
+    "time": "14:00",
+    "service": "Депилација (целосна)",
+    "status": "rejected",
+    "employee": null
+  },
+  {
+    "id": 1766521217703,
+    "userEmail": "angel.buckovski@gmail.com",
+    "date": "2025-12-25",
+    "time": "16:00",
+    "service": "Педикир (гел лак на нозе)",
+    "status": "rejected",
+    "employee": null
+  },
+  {
+    "id": 1766521259466,
+    "userEmail": "angel.buckovski@gmail.com",
+    "date": "2025-12-25",
+    "time": "16:00",
+    "service": "Депилација (раце+нозе)",
+    "status": "accepted",
+    "employee": "Marija"
+  },
+  {
+    "id": 1767022127214,
+    "userEmail": "angel.buckovski@gmail.com",
+    "date": "2025-12-30",
+    "time": "12:00",
+    "service": "Депилација (раце+нозе)",
+    "status": "accepted",
+    "employee": "Martina"
+  },
+  {
+    "id": 1767022131036,
+    "userEmail": "angel.buckovski@gmail.com",
+    "date": "2025-12-29",
+    "time": "12:00",
+    "service": "Депилација (раце+нозе)",
+    "status": "accepted",
+    "employee": null
+  },
+  {
+    "id": 1767022136172,
+    "userEmail": "angel.buckovski@gmail.com",
+    "date": "2025-12-29",
+    "time": "15:00",
+    "service": "Депилација (целосна)",
+    "status": "accepted",
+    "employee": null
+  },
+  {
+    "id": 1767022138116,
+    "userEmail": "angel.buckovski@gmail.com",
+    "date": "2025-12-29",
+    "time": "12:00",
+    "service": "Чупање веѓи",
+    "status": "rejected",
+    "employee": null
+  },
+  {
+    "id": 1767022140554,
+    "userEmail": "angel.buckovski@gmail.com",
+    "date": "2025-12-29",
+    "time": "12:00",
+    "service": "Brow Lam",
+    "status": "rejected",
+    "employee": null
+  },
+  {
+    "id": 1767022142168,
+    "userEmail": "angel.buckovski@gmail.com",
+    "date": "2025-12-29",
+    "time": "12:00",
+    "service": "Lash Lift",
+    "status": "rejected",
+    "employee": null
+  },
+  {
+    "id": 1767022143701,
+    "userEmail": "angel.buckovski@gmail.com",
+    "date": "2025-12-29",
+    "time": "12:00",
+    "service": "Педикир (целосен+gel лак)",
+    "status": "accepted",
+    "employee": null
+  },
+  {
+    "id": 1767022147991,
+    "userEmail": "angel.buckovski@gmail.com",
+    "date": "2025-12-29",
+    "time": "12:00",
+    "service": "Депилација (раце+нозе)",
+    "status": "rejected",
+    "employee": null
+  },
+  {
+    "id": 1767022149517,
+    "userEmail": "angel.buckovski@gmail.com",
+    "date": "2025-12-29",
+    "time": "12:00",
+    "service": "Маникир (наливни)",
+    "status": "rejected",
+    "employee": null
+  },
+  {
+    "id": 1767022151596,
+    "userEmail": "angel.buckovski@gmail.com",
+    "date": "2025-12-29",
+    "time": "12:00",
+    "service": "Маникир (само гел лак)",
+    "status": "accepted",
+    "employee": "Martina"
+  },
+  {
+    "id": 1767022153807,
+    "userEmail": "angel.buckovski@gmail.com",
+    "date": "2025-12-29",
+    "time": "12:00",
+    "service": "Brow Lam",
+    "status": "accepted",
+    "employee": "Martina"
+  },
+  {
+    "id": 1767022157689,
+    "userEmail": "angel.buckovski@gmail.com",
+    "date": "2025-12-29",
+    "time": "12:00",
+    "service": "Депилација (интима)",
+    "status": "accepted",
+    "employee": "Sara"
+  },
+  {
+    "id": 1768941048198,
+    "userEmail": "slavica.stojkoska@gmail.com",
+    "date": "2026-01-22",
+    "time": "16:00",
+    "service": "Чупање веѓи",
+    "status": "cancelled",
+    "employee": "Sara",
+    "cancelReason": "Bolna summd fsojfoer"
+  },
+  {
+    "id": 1768941051675,
+    "userEmail": "slavica.stojkoska@gmail.com",
+    "date": "2026-01-30",
+    "time": "12:00",
+    "service": "Депилација (целосна)",
+    "status": "cancelled",
+    "employee": "Sara",
+    "cancelReason": "se razbolev izvini macika"
+  },
+  {
+    "id": 1768941062635,
+    "userEmail": "slavica.stojkoska@gmail.com",
+    "date": "2026-02-01",
+    "time": "12:30",
+    "service": "Маникир (наливни)",
+    "status": "cancelled",
+    "employee": null,
+    "cancelReason": "mi izleze rabotaa"
+  },
+  {
+    "id": 1768994699604,
+    "userEmail": "slavica.stojkoska@gmail.com",
+    "date": "2026-01-21",
+    "time": "12:00",
+    "service": "Чупање веѓи",
+    "status": "rejected",
+    "employee": null
+  },
+  {
+    "id": 1768996470812,
+    "userEmail": "slavica.stojkoska@gmail.com",
+    "date": "2026-01-21",
+    "time": "16:30",
+    "service": "Педикир (целосен+gel лак)",
+    "status": "cancelled",
+    "employee": null,
+    "cancelReason": "macika cucika se razbolev"
+  },
+  {
+    "id": 1768997519608,
+    "userEmail": "slavica.stojkoska@gmail.com",
+    "date": "2026-01-22",
+    "time": "16:30",
+    "service": "Чупање веѓи",
+    "status": "cancelled",
+    "employee": null,
+    "cancelReason": "alkdskld"
+  },
+  {
+    "id": 1768998734320,
+    "userEmail": "angel.buckovski@gmail.com",
+    "date": "2026-01-21",
+    "time": "12:00",
+    "service": "Чупање веѓи",
+    "status": "accepted",
+    "employee": "Marija"
+  },
+  {
+    "id": 1768998739433,
+    "userEmail": "angel.buckovski@gmail.com",
+    "date": "2026-01-30",
+    "time": "16:30",
+    "service": "Депилација (целосна)",
+    "status": "rejected",
+    "employee": null
+  },
+  {
+    "id": 1769004546578,
+    "userEmail": "ilina.stevanoska@gmail.com",
+    "date": "2026-01-31",
+    "time": "16:15",
+    "service": "Депилација (целосна)",
+    "status": "cancelled",
+    "employee": null,
+    "cancelReason": "ima zakazhano na zabar"
+  },
+  {
+    "id": 1769004552185,
+    "userEmail": "ilina.stevanoska@gmail.com",
+    "date": "2026-02-01",
+    "time": "15:00",
+    "service": "Педикир (целосен+gel лак)",
+    "status": "rejected",
+    "employee": null
+  },
+  {
+    "id": 1769004557767,
+    "userEmail": "ilina.stevanoska@gmail.com",
+    "date": "2026-02-24",
+    "time": "13:00",
+    "service": "Маникир (наливни)",
+    "status": "rejected",
+    "employee": null
+  },
+  {
+    "id": 1769005409055,
+    "userEmail": "ilina.stevanoska@gmail.com",
+    "date": "2026-01-21",
+    "time": "12:00",
+    "service": "Lash Lift",
+    "status": "cancelled",
+    "employee": null,
+    "cancelReason": "Imam privatni problemi"
+  },
+  {
+    "id": 1769005411670,
+    "userEmail": "ilina.stevanoska@gmail.com",
+    "date": "2026-01-21",
+    "time": "12:00",
+    "service": "Brow Lam",
+    "status": "accepted",
+    "employee": "Sara"
+  },
+  {
+    "id": 1769005584275,
+    "userEmail": "ilina.stevanoska@gmail.com",
+    "date": "2026-01-21",
+    "time": "12:00",
+    "service": "Чупање веѓи",
+    "status": "accepted",
+    "employee": "Sara"
+  },
+  {
+    "id": 1769005638401,
+    "userEmail": "ilina.stevanoska@gmail.com",
+    "date": "2026-01-21",
+    "time": "12:00",
+    "service": "Чупање веѓи",
+    "status": "accepted",
+    "employee": "Martina"
+  },
+  {
+    "id": 1769005679454,
+    "userEmail": "ilina.stevanoska@gmail.com",
+    "date": "2026-01-21",
+    "time": "12:00",
+    "service": "Чупање веѓи",
+    "status": "accepted",
+    "employee": null
+  },
+  {
+    "id": 1769005916693,
+    "userEmail": "ilina.stevanoska@gmail.com",
+    "date": "2026-01-21",
+    "time": "12:00",
+    "service": "Чупање веѓи",
+    "status": "accepted",
+    "employee": null
+  },
+  {
+    "id": 1769006014453,
+    "userEmail": "ilina.stevanoska@gmail.com",
+    "date": "2026-01-21",
+    "time": "12:00",
+    "service": "Чупање веѓи",
+    "status": "rejected",
+    "employee": null
+  },
+  {
+    "id": 1769006023522,
+    "userEmail": "ilina.stevanoska@gmail.com",
+    "date": "2026-01-21",
+    "time": "12:00",
+    "service": "Чупање веѓи",
+    "status": "rejected",
+    "employee": null
+  },
+  {
+    "id": 1769101563354,
+    "userEmail": "slavica.stojkoska@gmail.com",
+    "date": "2026-01-24",
+    "time": "12:00",
+    "service": "Депилација (целосна)",
+    "status": "cancelled",
+    "employee": null,
+    "cancelReason": "fsdf"
+  },
+  {
+    "id": 1769114620039,
+    "userEmail": "slavica.stojkoska@gmail.com",
+    "date": "2026-01-30",
+    "time": "16:00",
+    "service": "Маникир (само гел лак)",
+    "status": "rejected",
+    "employee": null,
+    "cancelReason": null
+  },
+  {
+    "id": 1769114623190,
+    "userEmail": "slavica.stojkoska@gmail.com",
+    "date": "2026-01-22",
+    "time": "16:30",
+    "service": "Педикир (гел лак на нозе)",
+    "status": "accepted",
+    "employee": "Sara",
+    "cancelReason": null
+  },
+  {
+    "id": 1769114656213,
+    "userEmail": "slavica.stojkoska@gmail.com",
+    "date": "2026-01-30",
+    "time": "12:00",
+    "service": "Brow Lam",
+    "status": "rejected",
+    "employee": null,
+    "cancelReason": null
+  },
+  {
+    "id": 1769198508205,
+    "userEmail": "slavica.stojkoska@gmail.com",
+    "date": "2026-01-23",
+    "time": "12:00",
+    "service": "Депилација (целосна)",
+    "status": "rejected",
+    "employee": null,
+    "cancelReason": null
+  },
+  {
+    "id": 1769198509373,
+    "userEmail": "slavica.stojkoska@gmail.com",
+    "date": "2026-01-23",
+    "time": "12:00",
+    "service": "Маникир (наливни)",
+    "status": "rejected",
+    "employee": null,
+    "cancelReason": null
+  },
+  {
+    "id": 1770914677226,
+    "userEmail": "slavica.stojkoska@gmail.com",
+    "date": "2026-02-28",
+    "time": "12:00",
+    "service": "Педикир (целосен+gel лак)",
+    "status": "pending",
+    "employee": null,
+    "cancelReason": null
+  },
+  {
+    "id": 1771540337701,
+    "userEmail": "slavica.stojkoska@gmail.com",
+    "date": "2026-02-19",
+    "time": "20:00",
+    "service": "Чупање веѓи",
+    "status": "cancelled",
+    "employee": null,
+    "cancelReason": "Sakam da otkazham mi zakazhaa zabar izviniii"
+  },
+  {
+    "id": 1771543197997,
+    "userEmail": "ilina.stevanoska@gmail.com",
+    "date": "2026-02-20",
+    "time": "15:00",
+    "service": "Маникир (наливни)",
+    "status": "accepted",
+    "employee": null,
+    "cancelReason": null
+  },
+  {
+    "id": 1771544430236,
+    "userEmail": "ilina.stevanoska@gmail.com",
+    "date": "2026-02-21",
+    "time": "12:00",
+    "service": "Brow Lam",
+    "status": "accepted",
+    "employee": "Sara",
+    "cancelReason": null
+  },
+  {
+    "id": 1771588142339,
+    "userEmail": "magdalenastankovska12@gmail.com",
+    "date": "2026-02-21",
+    "time": "16:00",
+    "service": "Педикир (целосен+gel лак)",
+    "status": "accepted",
+    "employee": "Martina",
+    "cancelReason": null
   }
 ]

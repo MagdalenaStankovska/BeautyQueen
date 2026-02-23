@@ -3,19 +3,21 @@ import Header from "./components/Header";
 import Services from "./components/Services";
 import LoginRegister from "./components/LoginRegister";
 import Calendar from "./components/Calendar";
-import Home from "./components/Home"; // homepage
+import Home from "./components/Home";
+import AboutUs from "./components/AboutUs";
+import Notifications from "./components/Notifications";
 
 function App() {
     const [token, setToken] = useState(localStorage.getItem("token"));
     const [role, setRole] = useState(localStorage.getItem("role"));
-    const [activeSection, setActiveSection] = useState(null); // nothing shown by default
+    const [activeSection, setActiveSection] = useState(null);
 
     const handleLogin = (token, user) => {
         setToken(token);
         setRole(user.role);
         localStorage.setItem("token", token);
         localStorage.setItem("role", user.role);
-        setActiveSection("home"); // show homepage after login
+        setActiveSection("home");
     };
 
     const handleLogout = () => {
@@ -39,6 +41,7 @@ function App() {
                 onLogout={handleLogout}
                 token={token}
             />
+
             <main
                 style={{
                     backgroundColor: "#FFF9FA",
@@ -49,8 +52,18 @@ function App() {
                 {activeSection === "home" && (
                     <Home role={role} onNavigate={setActiveSection} />
                 )}
-                {activeSection === "termin" && <Calendar token={token} role={role} />}
+
+                {activeSection === "termin" && (
+                    <Calendar token={token} role={role} />
+                )}
+
                 {activeSection === "услуги" && <Services />}
+
+                {activeSection === "tim" && <AboutUs />}
+
+                {activeSection === "notifications" && (
+                    <Notifications token={token} role={role} />
+                )}
             </main>
         </div>
     );
