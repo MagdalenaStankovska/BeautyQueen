@@ -1,30 +1,31 @@
 import React, { useEffect, useState } from "react";
-import teamPhoto from "./tim.png";
 import saraImg from "./sara.jpg";
-import martinaImg from "./martina.png";
 import marijaImg from "./marija.png";
 
 const AboutUs = () => {
     const titleStyle = {
         fontFamily: "'Poiret One', cursive",
-        color: "palevioletred",
+        color: "#bf4f87",
         textAlign: "center",
         marginBottom: "20px",
+        textShadow: "0 8px 16px rgba(182, 70, 128, 0.16)",
     };
 
     const [visible, setVisible] = useState(false);
 
     useEffect(() => {
-        setTimeout(() => setVisible(true), 200);
+        const id = setTimeout(() => setVisible(true), 200);
+        return () => clearTimeout(id);
     }, []);
 
     const cardStyleBase = {
-        width: "220px",
-        borderRadius: "15px",
-        backgroundColor: "#ffe6f0",
-        padding: "15px",
+        width: "230px",
+        borderRadius: "18px",
+        background: "linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,240,248,0.92))",
+        padding: "16px",
         textAlign: "center",
-        boxShadow: "0 4px 15px rgba(0,0,0,0.1)",
+        border: "1px solid rgba(255,255,255,0.84)",
+        boxShadow: "0 14px 28px rgba(149, 53, 102, 0.18)",
         transition: "transform 0.3s, box-shadow 0.3s, opacity 0.6s, transform 0.6s",
         cursor: "pointer",
         opacity: 0,
@@ -33,22 +34,30 @@ const AboutUs = () => {
 
     const cardHover = (e) => {
         e.currentTarget.style.transform = "scale(1.05)";
-        e.currentTarget.style.boxShadow = "0 10px 30px rgba(0,0,0,0.2)";
+        e.currentTarget.style.boxShadow = "0 18px 34px rgba(0,0,0,0.2)";
     };
 
     const cardLeave = (e) => {
         e.currentTarget.style.transform = "scale(1)";
-        e.currentTarget.style.boxShadow = "0 4px 15px rgba(0,0,0,0.1)";
+        e.currentTarget.style.boxShadow = "0 14px 28px rgba(149, 53, 102, 0.18)";
     };
 
     const members = [
         { name: "Сара", role: "Стилист за коса", desc: "Секогаш создава уникатни фризури со страст и креативност.", img: saraImg, instagram: "https://www.instagram.com/smiiilkovskaa?igsh=MW0xM3h5MjcxbmZ2aA==" },
-        { name: "Мартина", role: "Мајстор за шминка", desc: "Нежно ги истакнува убавините на секоја Beauty Queen.", img: martinaImg, instagram: "https://www.instagram.com/temelkova222?igsh=ZnJrM2t4NGI1b3B1" },
+        // TODO: add Izabela's photo, role, description and Instagram once received
+        { name: "Изабела", role: "Член на тимот", desc: "Најновиот член на нашиот тим – ве очекува со насмевка.", img: null, instagram: null },
         { name: "Марија", role: "Сопственик / Координатор", desc: "Го води тимот со посветеност и љубов кон клиентите.", img: marijaImg, instagram: "https://www.instagram.com/stankovskaa?igsh=ejVpMWNzOXlmdW9h" },
     ];
 
     return (
-        <div style={{ padding: "50px 20px", maxWidth: "1000px", margin: "0 auto", textAlign: "center" }}>
+        <div style={{
+            padding: "50px 20px",
+            maxWidth: "1000px",
+            margin: "0 auto",
+            textAlign: "center",
+            background: "linear-gradient(180deg, #fff7fb, #ffedf7)",
+            borderRadius: "18px"
+        }}>
             {/* Голема слика на целиот тим */}
             {/* Голема слика на целиот тим */}
             <div
@@ -92,20 +101,41 @@ const AboutUs = () => {
                         }}
                         onMouseEnter={cardHover}
                         onMouseLeave={cardLeave}
-                        onClick={() => window.open(member.instagram, "_blank")}
+                        onClick={() => member.instagram && window.open(member.instagram, "_blank", "noopener,noreferrer")}
                     >
-                        <img
-                            src={member.img}
-                            alt={member.name}
-                            style={{
-                                width: "100%",
-                                height: "180px",
-                                objectFit: "cover",
-                                borderRadius: "12px",
-                                marginBottom: "10px",
-                            }}
-                        />
-                        <h3 style={{ color: "palevioletred", marginBottom: "5px" }}>{member.name}</h3>
+                        {member.img ? (
+                            <img
+                                src={member.img}
+                                alt={member.name}
+                                style={{
+                                    width: "100%",
+                                    height: "180px",
+                                    objectFit: "cover",
+                                    borderRadius: "12px",
+                                    marginBottom: "10px",
+                                }}
+                            />
+                        ) : (
+                            <div
+                                aria-label={member.name}
+                                style={{
+                                    width: "100%",
+                                    height: "180px",
+                                    borderRadius: "12px",
+                                    marginBottom: "10px",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    background: "linear-gradient(135deg, #ffd6e7, #f3a6c8)",
+                                    color: "white",
+                                    fontSize: "72px",
+                                    fontFamily: "'Poiret One', cursive",
+                                }}
+                            >
+                                {member.name.charAt(0)}
+                            </div>
+                        )}
+                        <h3 style={{ color: "#bf4f87", marginBottom: "5px", fontSize: "24px" }}>{member.name}</h3>
                         <p style={{ fontSize: "14px", fontWeight: "bold", marginBottom: "5px" }}>{member.role}</p>
                         <p style={{ fontSize: "13px", color: "#333" }}>{member.desc}</p>
                     </div>

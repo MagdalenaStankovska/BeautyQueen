@@ -1,0 +1,241 @@
+@import url('https://fonts.googleapis.com/css2?family=Poiret+One&display=swap');
+
+.bq-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: pink;
+    color: palevioletred;
+    padding: 10px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 80px;
+    box-sizing: border-box;
+    font-family: 'Poiret One', sans-serif;
+    box-shadow: 0 6px 18px rgba(150, 55, 106, 0.12);
+}
+
+.bq-header-left {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+.bq-logo {
+    height: 160px;
+    width: auto;
+    cursor: pointer;
+    margin-top: 90px;
+}
+
+.bq-nav {
+    display: flex;
+    gap: 22px;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.bq-nav a {
+    color: palevioletred;
+    text-decoration: none;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.bq-nav a:hover,
+.bq-nav a.active {
+    background-color: palevioletred;
+    color: white;
+}
+
+.bq-header-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.bq-header-right button {
+    font-family: 'Poiret One', sans-serif;
+    font-weight: bold;
+}
+
+.bq-bell {
+    position: relative;
+    background: rgba(255, 255, 255, 0.55);
+    border: none;
+    border-radius: 50%;
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 19px;
+    color: palevioletred;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.bq-bell:hover,
+.bq-bell.active {
+    background: white;
+}
+
+.bq-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    box-sizing: border-box;
+    background: #e0245e;
+    color: white;
+    border-radius: 9px;
+    font-size: 11px;
+    font-family: Arial, sans-serif;
+    font-weight: 700;
+    line-height: 18px;
+    text-align: center;
+    animation: badgePop 0.3s ease;
+}
+
+@keyframes badgePop {
+    from { transform: scale(0.4); }
+    to { transform: scale(1); }
+}
+
+.bq-user {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    color: palevioletred;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: 8px;
+}
+
+.bq-user svg {
+    font-size: 24px;
+}
+
+.bq-user:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.bq-user-name {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.bq-role {
+    font-size: 11px;
+    opacity: 0.8;
+}
+
+.bq-logout {
+    background-color: palevioletred;
+    color: white;
+    font-size: 16px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.bq-logout:hover {
+    background-color: #c0507a;
+}
+
+/* Bottom tab bar — mobile only */
+.bq-tabbar {
+    display: none;
+}
+
+@media (max-width: 1100px) {
+    .bq-nav { font-size: 18px; gap: 10px; }
+    .bq-header { padding: 10px 20px; }
+    .bq-header-left { gap: 20px; }
+}
+
+@media (max-width: 900px) {
+    .bq-header {
+        height: 60px;
+        padding: 8px 14px;
+    }
+
+    .bq-logo {
+        height: 56px;
+        margin-top: 0;
+    }
+
+    .bq-nav,
+    .bq-user,
+    .bq-logout {
+        display: none;
+    }
+
+    .bq-tabbar {
+        display: flex;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1000;
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-top: 1px solid #f3c6dc;
+        box-shadow: 0 -6px 18px rgba(150, 55, 106, 0.12);
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .bq-tabbar button {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        padding: 8px 2px 6px;
+        background: none;
+        border: none;
+        border-radius: 0;
+        color: #b77b98;
+        font-size: 11px;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: none;
+        transform: none;
+    }
+
+    .bq-tabbar button:hover {
+        background: none;
+        color: palevioletred;
+        transform: none;
+        box-shadow: none;
+    }
+
+    .bq-tabbar button.active {
+        color: #c0407a;
+    }
+
+    .bq-tab-icon {
+        position: relative;
+        font-size: 20px;
+        line-height: 1;
+    }
+
+    .bq-tab-label {
+        white-space: nowrap;
+    }
+}

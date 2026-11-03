@@ -1,0 +1,535 @@
+@import url('https://fonts.googleapis.com/css2?family=Poiret+One&family=Open+Sans:wght@400;600;700&display=swap');
+
+.home {
+    font-family: 'Open Sans', sans-serif;
+    color: #3d2433;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(28px, 5vw, 56px);
+}
+
+.home h2 {
+    font-family: 'Poiret One', sans-serif;
+    font-size: clamp(30px, 5vw, 42px);
+    color: #b0427b;
+    margin: 6px 0 10px;
+    line-height: 1.15;
+}
+
+.home-kicker {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #ffe3f0;
+}
+
+.home-kicker.dark {
+    color: #c0558e;
+}
+
+/* ---------- buttons ---------- */
+.home-btn {
+    padding: 14px 26px;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.home-btn:hover {
+    transform: translateY(-2px);
+}
+
+.home-btn-primary {
+    background: linear-gradient(120deg, #e0679f, #c24c86);
+    color: white;
+    box-shadow: 0 12px 26px rgba(176, 62, 120, 0.35);
+}
+
+.home-btn-light {
+    background: rgba(255, 255, 255, 0.92);
+    color: #b0427b;
+}
+
+.home-btn-outline {
+    background: transparent;
+    border-color: #c94c8a;
+    color: #b0427b;
+}
+
+/* ---------- hero ---------- */
+.home-hero {
+    position: relative;
+    min-height: clamp(420px, 60vh, 560px);
+    border-radius: 26px;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 24px 50px rgba(140, 46, 95, 0.22);
+}
+
+.home-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(100deg, rgba(120, 28, 74, 0.82) 0%, rgba(176, 66, 123, 0.62) 45%, rgba(255, 192, 220, 0.15) 100%);
+}
+
+.home-hero-content {
+    position: relative;
+    max-width: 620px;
+    padding: clamp(28px, 6vw, 64px);
+    color: white;
+}
+
+.home-hero-content h1 {
+    font-family: 'Poiret One', sans-serif;
+    font-size: clamp(34px, 6.5vw, 58px);
+    line-height: 1.08;
+    margin: 12px 0 14px;
+    text-shadow: 0 4px 18px rgba(80, 10, 45, 0.35);
+}
+
+.home-hero-content p {
+    font-size: clamp(16px, 2.2vw, 19px);
+    line-height: 1.55;
+    margin: 0 0 26px;
+    color: rgba(255, 255, 255, 0.93);
+}
+
+.home-hero-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.home-hero-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 24px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.92);
+}
+
+.home-hero-meta a {
+    color: white;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.home-open-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+}
+
+.home-open-dot.open { background: #6ee7a8; box-shadow: 0 0 0 4px rgba(110, 231, 168, 0.25); }
+.home-open-dot.closed { background: #ffb3b3; }
+
+.home-meta-sep {
+    opacity: 0.6;
+}
+
+/* ---------- personal card ---------- */
+.home-personal {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: calc(-1 * clamp(14px, 3vw, 40px));
+    padding: 18px 22px;
+    border-radius: 20px;
+    background: white;
+    border-left: 6px solid #c94c8a;
+    box-shadow: 0 14px 32px rgba(140, 46, 95, 0.14);
+    cursor: pointer;
+}
+
+.home-personal > div {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.home-personal-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #a0718a;
+}
+
+.home-personal strong {
+    font-size: 17px;
+    color: #4e2140;
+}
+
+.home-personal-arrow {
+    font-size: 24px;
+    color: #c94c8a;
+}
+
+.home-personal-status {
+    flex-shrink: 0;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.home-personal-status.status-pending { background: #fff1c7; color: #8a6200; }
+.home-personal-status.status-accepted { background: #d5f5e6; color: #1d7a4f; }
+
+/* ---------- sections ---------- */
+.home-section-head {
+    text-align: center;
+    max-width: 620px;
+    margin: 0 auto 26px;
+}
+
+.home-section-head p {
+    color: #6b4a5c;
+    margin: 0;
+}
+
+/* service menu */
+.home-menu {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+@media (max-width: 700px) {
+    .home-menu {
+        grid-template-columns: 1fr;
+    }
+}
+
+.home-menu-card {
+    display: flex;
+    flex-direction: column;
+    border-radius: 22px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 12px 30px rgba(145, 53, 100, 0.12);
+}
+
+.home-menu-img {
+    height: 150px;
+    background-size: cover;
+    background-position: center;
+}
+
+.home-menu-body {
+    padding: 16px 20px 18px;
+}
+
+.home-menu-body h3 {
+    font-family: 'Poiret One', sans-serif;
+    font-size: 26px;
+    color: #b0427b;
+    margin: 0 0 6px;
+}
+
+.home-menu-body ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.home-menu-body li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px dashed #f0d6e3;
+    font-size: 14px;
+}
+
+.home-menu-body li:last-child {
+    border-bottom: none;
+}
+
+.home-menu-name {
+    flex: 1;
+    font-weight: 600;
+}
+
+.home-menu-dur {
+    color: #a0718a;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.home-menu-book {
+    border: 1.5px solid #e2a3c3;
+    background: #fff5fa;
+    color: #b0427b;
+    font-weight: 700;
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.home-menu-book:hover {
+    background: #c94c8a;
+    border-color: #c94c8a;
+    color: white;
+}
+
+/* highlights */
+.home-highlights {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+    gap: 16px;
+    padding: clamp(22px, 4vw, 36px);
+    border-radius: 24px;
+    background: linear-gradient(135deg, #fff0f6, #ffe3ef);
+}
+
+.home-highlight {
+    text-align: center;
+    padding: 10px;
+}
+
+.home-highlight-icon {
+    font-size: 30px;
+}
+
+.home-highlight h4 {
+    margin: 8px 0 4px;
+    color: #8a2f5f;
+    font-size: 17px;
+}
+
+.home-highlight p {
+    margin: 0;
+    font-size: 14px;
+    color: #6b4a5c;
+}
+
+/* offers */
+.home-offers {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+    gap: 22px;
+}
+
+.home-offer {
+    background: white;
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow: 0 12px 30px rgba(145, 53, 100, 0.12);
+    padding-bottom: 18px;
+}
+
+.home-offer-img {
+    position: relative;
+    height: 200px;
+}
+
+.home-offer-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.home-offer-tag {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    padding: 4px 12px;
+    border-radius: 12px;
+    background: white;
+    color: #b0427b;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.home-offer h3 {
+    margin: 16px 20px 6px;
+    color: #4e2140;
+    font-size: 18px;
+}
+
+.home-offer p {
+    margin: 0 20px;
+    font-size: 14px;
+    color: #6b4a5c;
+}
+
+/* about */
+.home-about {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: clamp(20px, 4vw, 48px);
+    align-items: center;
+}
+
+.home-about-images {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.home-about-images img {
+    width: 100%;
+    height: clamp(200px, 28vw, 320px);
+    object-fit: cover;
+    border-radius: 20px;
+    box-shadow: 0 14px 30px rgba(145, 53, 100, 0.16);
+}
+
+.home-about-images img:last-child {
+    margin-top: 36px;
+}
+
+.home-about-text p {
+    color: #5f4352;
+    line-height: 1.65;
+    font-size: 16px;
+    margin: 0 0 20px;
+}
+
+/* visit */
+.home-visit {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 24px;
+    padding: clamp(18px, 3vw, 30px);
+    border-radius: 24px;
+    background: white;
+    box-shadow: 0 14px 34px rgba(145, 53, 100, 0.12);
+}
+
+.home-info-block {
+    margin-top: 18px;
+}
+
+.home-info-block h4 {
+    margin: 0 0 6px;
+    color: #4e2140;
+    font-size: 15px;
+}
+
+.home-info-block p {
+    margin: 0 0 4px;
+    color: #5f4352;
+}
+
+.home-info-block a {
+    color: #b73870;
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.home-hours {
+    border-collapse: collapse;
+    font-size: 14px;
+    width: 100%;
+    max-width: 340px;
+}
+
+.home-hours td {
+    padding: 6px 0;
+    border-bottom: 1px solid #f5e3ec;
+    color: #4e2140;
+}
+
+.home-hours td:last-child {
+    text-align: right;
+    font-weight: 600;
+}
+
+.home-hours td.closed {
+    color: #b04a6a;
+}
+
+.home-contact-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.home-contact-chip {
+    padding: 8px 16px;
+    border-radius: 12px;
+    background: #fff0f6;
+    border: 1px solid #f3cde0;
+}
+
+.home-map {
+    width: 100%;
+    min-height: 340px;
+    height: 100%;
+    border: 0;
+    border-radius: 18px;
+}
+
+/* final cta */
+.home-final-cta {
+    text-align: center;
+    padding: clamp(30px, 6vw, 56px) 20px;
+    border-radius: 26px;
+    background: linear-gradient(120deg, #c24c86, #e0679f);
+    color: white;
+    box-shadow: 0 20px 44px rgba(176, 62, 120, 0.3);
+}
+
+.home-final-cta h2 {
+    color: white;
+}
+
+.home-final-cta p {
+    margin: 0 auto 22px;
+    max-width: 520px;
+    color: rgba(255, 255, 255, 0.92);
+}
+
+.home-final-cta .home-btn-primary {
+    background: white;
+    color: #b0427b;
+}
+
+.home-footer {
+    text-align: center;
+    font-size: 13px;
+    color: #a0718a;
+    padding-bottom: 6px;
+}
+
+@media (max-width: 800px) {
+    .home-about,
+    .home-visit {
+        grid-template-columns: 1fr;
+    }
+
+    .home-hero-overlay {
+        background: linear-gradient(180deg, rgba(120, 28, 74, 0.55) 0%, rgba(150, 40, 96, 0.82) 100%);
+    }
+
+    .home-hero {
+        align-items: flex-end;
+    }
+
+    .home-hero-actions .home-btn {
+        flex: 1;
+        min-width: 150px;
+    }
+
+    .home-map {
+        min-height: 280px;
+    }
+}

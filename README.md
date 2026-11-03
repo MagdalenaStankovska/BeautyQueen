@@ -1,48 +1,56 @@
 
 # BeautyQueen
 
-A React-based appointment scheduling system for beauty salons, designed for both clients and salon admins.
+Appointment booking app for the Beauty Queen Studio salon: clients request appointments, the admin accepts or rejects them, and everyone is notified in real time. It installs on phones as a PWA (Progressive Web App).
 
 ---
 
 ## Features
 
-### Client View
-- Book appointments by selecting a **date**, **time**, and **service**.
-- Time slots are automatically disabled if already booked.
-- Intuitive, user-friendly interface with clear visual feedback.
+### Clients
+- Book in three steps: **service → date → free time slot**. Busy, full or past slots are disabled and update live when someone else books.
+- Optional note with the request (colour, design, special requests).
+- "My appointments" with status, assigned staff member, history, and cancel-with-reason.
+- Real-time notifications when an appointment is **accepted / rejected / cancelled by the salon**.
+- **Reminders 1 day and 1 hour before** each confirmed appointment, as an in-app notification and as a push notification even when the app is closed.
+- Profile: name, phone, password change, notifications toggle, "install app" button.
 
-### Admin View
-- Manage incoming appointment requests: **accept** or **reject**.
-- View all accepted appointments on a calendar.
-- Filter appointments by service.
-- Assign appointments to employees with a **functional drag-and-drop interface**.
-- Employee lists update dynamically without removing original appointments.
+### Admin
+- Dashboard: new requests, appointments today, next 7 days.
+- Accept (optionally assigning a staff member) or reject with a reason the client sees. A conflict warning appears if the slot is already full.
+- Real-time notification and sound for every new request or cancellation, plus quick accept/reject straight from the notification.
+- Day schedule with staff assignment (dropdown, or drag & drop on desktop), cancel and delete.
+- **Manual booking** for phone or walk-in clients.
+- Gallery management: upload or delete photos for each service category from the Services page.
 
-### Services
-- Services are categorized (Manicure, Pedicure, Lash Lift, Waxing, Brow).
-- Each service has a **duration** and **color-coded badge**.
-- Prevents overlapping appointments based on service duration.
-
-### UI & UX
-- Clean, modern design.
-- Highlight today’s date.
-- Animations and hover effects for better interaction.
-- Responsive layout for desktop and mobile.
-
----
-
-## Technologies Used
-- **React** – Frontend framework
-- **React Calendar** – Calendar component
-- **Axios** – API requests
-- **CSS** – Custom styles, hover, and animation effects
-- **JavaScript (ES6+)** – Logic for appointments and drag-and-drop
+### Platform
+- Socket.IO websockets for live updates; reconnects and catches up automatically.
+- Web Push (VAPID) via a service worker for notifications when the app is closed.
+- All business rules live in **`backend/salon-config.js`**: opening hours, services and durations, staff, stations, minimum notice. The app loads them from `GET /config`, so that one file is the only place to edit them.
+- Server-side validation: a service must fit inside opening hours, at least 30 min notice, at most 90 days ahead. Per-station capacity (2 manicure tables, 1 pedicure chair, 1 bed, 1 lash station, 1 brow station) and staff capacity (no more parallel clients than staff) make double bookings impossible.
+- Mobile-first layout with a bottom tab bar, and back-button friendly navigation.
 
 ---
 
-## Installation
-
-1. Clone the repository:
+## Running locally
 
 ```bash
+# backend (http://localhost:4000)
+cd backend
+npm install
+npm start
+
+# frontend (http://localhost:3000)
+cd my-react-app
+npm install --legacy-peer-deps
+npm start
+```
+
+Admin accounts are the emails listed in `ADMIN_EMAILS` (default `marija.stankovska@yahoo.com`).
+
+### Configuration
+- `backend/.env`: see `backend/.env.example` (JWT secret, admin emails, CORS origin, time zone). VAPID keys for push are generated into `backend/vapid.json` on first start. Keep that file, because regenerating it invalidates existing push subscriptions.
+- `my-react-app/.env`: `REACT_APP_API_URL` if the backend is not on `<same host>:4000`.
+
+### Testing from a phone
+Push notifications and installing the app need **HTTPS** (or `localhost`). For a real device, deploy behind HTTPS or use a tunnel (e.g. `ngrok http 3000` plus one for port 4000, then set `REACT_APP_API_URL`). On iPhone, push works only after **Share → Add to Home Screen** (iOS 16.4+).

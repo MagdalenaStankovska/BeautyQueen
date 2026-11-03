@@ -1,0 +1,5 @@
+node_modules/
+.env
+vapid.json
+push-subscriptions.json
+*.tmp

@@ -1,314 +1,270 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import "./Notifications.css"
+import React, { useCallback, useEffect, useState } from "react";
+import api, { errorMessage } from "../api";
+import Modal from "./Modal";
+import { appointmentDate, employeeLabel, formatDisplayDate, formatFriendlyDate, statusLabels, timeAgo } from "../salon";
+import "./Notifications.css";
 
-/* ===============================
-   ⏰ REMINDER HELPERS
-=============================== */
-const isWithinMinutes = (appt, minutes) => {
-    const now = new Date();
-    const apptDate = new Date(`${appt.date}T${appt.time}:00`);
-    const diff = (apptDate - now) / 60000;
-
-    return diff > 0 && diff <= minutes;
+const typeIcons = {
+    request: "📅",
+    accepted: "✅",
+    rejected: "❌",
+    cancelled: "⚠️",
+    reminder: "⏰"
 };
 
-const Notifications = ({ token, role }) => {
-    const [notifications, setNotifications] = useState([]);
-    const [appointments, setAppointments] = useState([]);
-    const [loading, setLoading] = useState(true);
+// messages carry an emoji for push notifications; the card already shows the type icon
+const stripLeadingEmoji = (text = "") => text.replace(/^\p{Extended_Pictographic}️?\s*/u, "");
 
-    // 🪟 USER cancel modal
+const minutesUntil = (appt) => (appointmentDate(appt) - new Date()) / 60000;
+
+const Notifications = ({ role, notifications, syncTick, onMarkRead, onMarkAllRead, onClear, onNavigate, showToast }) => {
+    const [appointments, setAppointments] = useState([]);
     const [cancelModal, setCancelModal] = useState(null);
     const [cancelReason, setCancelReason] = useState("");
+    const [infoModal, setInfoModal] = useState(null);
+    const [rejectModal, setRejectModal] = useState(null);
+    const [rejectReason, setRejectReason] = useState("");
+    const [, setNowTick] = useState(0);
 
-    // 🪟 ADMIN cancel info modal
-    const [cancelInfoModal, setCancelInfoModal] = useState(null);
+    const isAdmin = role === "admin";
 
-    /* ===============================
-       FETCH NOTIFICATIONS
-    =============================== */
-    const fetchNotifications = async () => {
+    const fetchAppointments = useCallback(async () => {
         try {
-            const res = await axios.get(
-                "http://localhost:4000/notifications",
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-            setNotifications(res.data);
-        } catch (err) {
-            console.error("Failed to fetch notifications", err);
-        }
-    };
-
-    /* ===============================
-       FETCH APPOINTMENTS
-    =============================== */
-    const fetchAppointments = async () => {
-        try {
-            const url =
-                role === "admin"
-                    ? "http://localhost:4000/appointments"
-                    : "http://localhost:4000/appointments/user";
-
-            const res = await axios.get(url, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-
-            setAppointments(res.data);
+            const { data } = await api.get(isAdmin ? "/appointments" : "/appointments/user");
+            setAppointments(data);
         } catch (err) {
             console.error("Appointments fetch error", err);
         }
-    };
+    }, [isAdmin]);
 
-    /* ===============================
-       MARK NOTIFICATION AS READ
-    =============================== */
-    const markAsRead = async (id) => {
-        try {
-            await axios.patch(
-                `http://localhost:4000/notifications/${id}/read`,
-                {},
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-
-            setNotifications(prev =>
-                prev.map(n =>
-                    n.id === id ? { ...n, isRead: true } : n
-                )
-            );
-        } catch (err) {
-            console.error("Read error", err);
-        }
-    };
-
-    /* ===============================
-       CANCEL APPOINTMENT (USER)
-    =============================== */
-    const confirmCancel = async () => {
-        try {
-            await axios.patch(
-                `http://localhost:4000/appointments/${cancelModal.id}/cancel`,
-                { reason: cancelReason },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-
-            setCancelModal(null);
-            setCancelReason("");
-            fetchNotifications();
-            fetchAppointments();
-        } catch (err) {
-            console.error("Cancel error", err);
-        }
-    };
-
-    /* ===============================
-       INITIAL LOAD
-    =============================== */
     useEffect(() => {
-        const loadAll = async () => {
-            await fetchNotifications();
-            await fetchAppointments();
-            setLoading(false);
-        };
-        loadAll();
+        fetchAppointments();
+    }, [fetchAppointments, syncTick]);
+
+    // re-render every minute so "in 1 hour" banners stay current
+    useEffect(() => {
+        const id = setInterval(() => setNowTick(t => t + 1), 60000);
+        return () => clearInterval(id);
     }, []);
 
-    /* ===============================
-       FILTERS
-    =============================== */
-    const pendingAppointments = appointments.filter(
-        a => a.status === "pending"
-    );
+    const findAppt = (id) => appointments.find(a => a.id === id);
 
-    const rejectedAppointments = appointments.filter(
-        a => a.status === "rejected"
-    );
+    const decide = async (appt, status, reason) => {
+        try {
+            await api.patch(`/appointments/${appt.id}`, { status, reason });
+            showToast({ type: status, title: status === "accepted" ? "Терминот е прифатен" : "Барањето е одбиено", message: `${appt.clientName || appt.userEmail} · ${appt.service}` });
+            fetchAppointments();
+        } catch (err) {
+            showToast({ type: "error", title: "Грешка", message: errorMessage(err) });
+        }
+    };
 
-    const acceptedAppointments = appointments.filter(
-        a => a.status === "accepted"
-    );
+    const confirmCancel = async () => {
+        try {
+            await api.patch(`/appointments/${cancelModal.id}/cancel`, { reason: cancelReason });
+            setCancelModal(null);
+            setCancelReason("");
+            fetchAppointments();
+        } catch (err) {
+            showToast({ type: "error", title: "Грешка", message: errorMessage(err) });
+        }
+    };
 
-    if (loading) {
-        return (
-            <p style={{ textAlign: "center" }}>
-                Се вчитуваат известувања...
-            </p>
-        );
-    }
+    const upcomingAccepted = appointments
+        .filter(a => a.status === "accepted" && minutesUntil(a) > 0)
+        .sort((a, b) => appointmentDate(a) - appointmentDate(b));
+    const pendingCount = appointments.filter(a => a.status === "pending").length;
+    const unread = notifications.filter(n => !n.isRead).length;
 
     return (
-        <div
-            style={{
-                maxWidth: 600,
-                margin: "40px auto",
-                padding: 20,
-                background: "#fff0f5",
-                borderRadius: 16
-            }}
-        >
-            <h2 style={{ textAlign: "center", marginBottom: 20 }}>
-                🔔 Известувања
-            </h2>
-
-            {/* ===============================
-                SYSTEM NOTIFICATIONS
-            =============================== */}
-            {notifications.map(n => (
-                <div
-                    key={n.id}
-                    onClick={() => !n.isRead && markAsRead(n.id)}
-                    style={{
-                        padding: 14,
-                        marginBottom: 12,
-                        borderRadius: 12,
-                        background: n.isRead ? "#ffe6f0" : "#ffb6c1",
-                        cursor: "pointer",
-                        opacity: n.isRead ? 0.7 : 1
-                    }}
-                >
-                    <p>{n.message}</p>
-
-                    {role === "admin" && n.type === "cancelled" && (
-                        <button
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                const appt = appointments.find(
-                                    a => a.id === n.appointmentId
-                                );
-                                if (appt) setCancelInfoModal(appt);
-                            }}
-                        >
-                            👁 Види причина
-                        </button>
-                    )}
-                </div>
-            ))}
-
-            {/* ===============================
-                ACCEPTED APPOINTMENTS (USER)
-            =============================== */}
-            {role !== "admin" && acceptedAppointments.length > 0 && (
-                <>
-                    <h3 style={{ marginTop: 30 }}>
-                        ✅ Прифатени термини
-                    </h3>
-
-                    {acceptedAppointments.map(a => (
-                        <div
-                            key={a.id}
-                            style={{
-                                padding: 14,
-                                marginBottom: 12,
-                                borderRadius: 12,
-                                background: "#e6fffa"
-                            }}
-                        >
-                            <p>
-                                {a.date} • {a.time} • {a.service}
-                            </p>
-
-                            {isWithinMinutes(a, 1440) && (
-                                <p style={{ color: "orange" }}>
-                                    ⏰ Потсетник: утре имате термин
-                                </p>
-                            )}
-
-                            {isWithinMinutes(a, 60) && (
-                                <p style={{ color: "red", fontWeight: "bold" }}>
-                                    ⏰ Потсетник: за 1 час
-                                </p>
-                            )}
-
+        <div className="notifications-page">
+            <div className="notifications-shell">
+                <div className="notifications-header">
+                    <h2 className="notifications-title">🔔 Известувања</h2>
+                    <div className="notifications-tools">
+                        {unread > 0 && (
+                            <button className="link-btn" onClick={onMarkAllRead}>Означи ги сите како прочитани</button>
+                        )}
+                        {notifications.length > 0 && (
                             <button
-                                onClick={() => setCancelModal(a)}
-                                style={{
-                                    background: "red",
-                                    color: "white"
+                                className="link-btn"
+                                onClick={() => window.confirm("Да се избришат сите известувања?") && onClear()}
+                            >
+                                Избриши ги сите
+                            </button>
+                        )}
+                    </div>
+                </div>
+
+                {isAdmin && pendingCount > 0 && (
+                    <div className="admin-pending-banner" onClick={() => onNavigate("termin")}>
+                        Имате <strong>{pendingCount}</strong> {pendingCount === 1 ? "барање кое чека" : "барања кои чекаат"} одговор → Отвори распоред
+                    </div>
+                )}
+
+                {/* Upcoming confirmed appointments with reminder banners (clients) */}
+                {!isAdmin && upcomingAccepted.length > 0 && (
+                    <>
+                        <h3 className="section-title">✅ Претстојни термини</h3>
+                        <div className="accepted-list">
+                            {upcomingAccepted.map((a) => {
+                                const mins = minutesUntil(a);
+                                const isUrgent = mins <= 60;
+                                const isSoon = mins <= 1440 && !isUrgent;
+                                return (
+                                    <div key={a.id} className={`accepted-card ${isUrgent ? "urgent" : ""}`}>
+                                        <p className="accepted-main">
+                                            {formatDisplayDate(a.date)} • {a.time} • {a.service}
+                                        </p>
+                                        {a.employee && <p className="accepted-sub">Вработена: {employeeLabel(a.employee)}</p>}
+                                        {isSoon && (
+                                            <p className="reminder reminder-soft">⏰ Потсетник: терминот е во следните 24 часа</p>
+                                        )}
+                                        {isUrgent && (
+                                            <p className="reminder reminder-urgent">
+                                                🚨 Терминот е за помалку од 1 час. Ве молиме дојдете на време.
+                                            </p>
+                                        )}
+                                        <button className="cancel-button" onClick={() => setCancelModal(a)}>Откажи</button>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                        <h3 className="section-title">Сите известувања</h3>
+                    </>
+                )}
+
+                {notifications.length === 0 ? (
+                    <div className="empty-state">
+                        <div className="empty-icon">🔕</div>
+                        <p>Немате известувања.</p>
+                        {!isAdmin && (
+                            <button className="bq-btn bq-btn-primary" onClick={() => onNavigate("termin")}>Закажи термин</button>
+                        )}
+                    </div>
+                ) : (
+                    notifications.map((n) => {
+                        const appt = n.appointmentId ? findAppt(n.appointmentId) : null;
+                        return (
+                            <div
+                                key={n.id}
+                                onClick={() => !n.isRead && onMarkRead(n.id)}
+                                className={`notification-card type-${n.type} ${n.isRead ? "is-read" : "is-unread"}`}
+                            >
+                                <div className="notification-icon">{typeIcons[n.type] || "🔔"}</div>
+                                <div className="notification-content">
+                                    {n.title && <p className="notification-title">{n.title}</p>}
+                                    <p className="notification-message">{stripLeadingEmoji(n.message)}</p>
+                                    <div className="notification-meta">
+                                        <span>{timeAgo(n.createdAt)}</span>
+                                        {appt && <span className={`mini-status status-${appt.status}`}>{statusLabels[appt.status]}</span>}
+                                    </div>
+
+                                    {isAdmin && n.type === "request" && appt?.status === "pending" && (
+                                        <div className="notification-actions">
+                                            <button
+                                                className="bq-btn bq-btn-success"
+                                                onClick={(e) => { e.stopPropagation(); onMarkRead(n.id); decide(appt, "accepted"); }}
+                                            >
+                                                Прифати
+                                            </button>
+                                            <button
+                                                className="bq-btn bq-btn-danger"
+                                                onClick={(e) => { e.stopPropagation(); onMarkRead(n.id); setRejectModal(appt); }}
+                                            >
+                                                Одбиј
+                                            </button>
+                                        </div>
+                                    )}
+
+                                    {isAdmin && n.type === "cancelled" && appt && (
+                                        <button
+                                            className="notification-button"
+                                            onClick={(e) => { e.stopPropagation(); setInfoModal(appt); }}
+                                        >
+                                            👁 Види причина
+                                        </button>
+                                    )}
+                                </div>
+                                {!n.isRead && <span className="unread-dot" aria-label="Непрочитано" />}
+                            </div>
+                        );
+                    })
+                )}
+            </div>
+
+            {cancelModal && (
+                <Modal
+                    title="Откажи термин"
+                    onClose={() => setCancelModal(null)}
+                    actions={
+                        <>
+                            <button className="bq-btn bq-btn-ghost" onClick={() => setCancelModal(null)}>Назад</button>
+                            <button className="bq-btn bq-btn-danger" onClick={confirmCancel}>Откажи термин</button>
+                        </>
+                    }
+                >
+                    <div className="bq-info-row"><span className="bq-info-label">Услуга</span>{cancelModal.service}</div>
+                    <div className="bq-info-row"><span className="bq-info-label">Термин</span>{formatFriendlyDate(cancelModal.date)} во {cancelModal.time}</div>
+                    <label style={{ marginTop: 12 }}>Причина (опционално)</label>
+                    <textarea
+                        placeholder="Причина за откажување (опционално)"
+                        value={cancelReason}
+                        onChange={e => setCancelReason(e.target.value)}
+                    />
+                </Modal>
+            )}
+
+            {rejectModal && (
+                <Modal
+                    title="Одбиј барање"
+                    onClose={() => setRejectModal(null)}
+                    actions={
+                        <>
+                            <button className="bq-btn bq-btn-ghost" onClick={() => setRejectModal(null)}>Назад</button>
+                            <button
+                                className="bq-btn bq-btn-danger"
+                                onClick={async () => {
+                                    await decide(rejectModal, "rejected", rejectReason);
+                                    setRejectModal(null);
+                                    setRejectReason("");
                                 }}
                             >
-                                ❌ Откажи
+                                Одбиј
                             </button>
+                        </>
+                    }
+                >
+                    <div className="bq-info-row"><span className="bq-info-label">Клиент</span>{rejectModal.clientName || rejectModal.userEmail}</div>
+                    <div className="bq-info-row"><span className="bq-info-label">Услуга</span>{rejectModal.service}</div>
+                    <div className="bq-info-row"><span className="bq-info-label">Термин</span>{formatFriendlyDate(rejectModal.date)} во {rejectModal.time}</div>
+                    <label style={{ marginTop: 12 }}>Причина (клиентот ќе ја види)</label>
+                    <textarea
+                        placeholder="Причина (клиентот ќе ја види)"
+                        value={rejectReason}
+                        onChange={e => setRejectReason(e.target.value)}
+                    />
+                </Modal>
+            )}
+
+            {infoModal && (
+                <Modal
+                    title="Откажан термин"
+                    onClose={() => setInfoModal(null)}
+                    actions={<button className="bq-btn bq-btn-ghost" onClick={() => setInfoModal(null)}>Затвори</button>}
+                >
+                    <div className="bq-info-row"><span className="bq-info-label">Клиент</span>{infoModal.clientName || infoModal.userEmail}</div>
+                    {infoModal.clientPhone && (
+                        <div className="bq-info-row">
+                            <span className="bq-info-label">Телефон</span>
+                            <a href={`tel:${infoModal.clientPhone}`}>{infoModal.clientPhone}</a>
                         </div>
-                    ))}
-                </>
-            )}
-
-            {/* ===============================
-                PENDING APPOINTMENTS
-            =============================== */}
-            {pendingAppointments.length > 0 && (
-                <>
-                    <h3>⏳ Термини во чекање</h3>
-                    {pendingAppointments.map(a => (
-                        <div key={a.id}>
-                            {a.date} • {a.time} • {a.service}
-                        </div>
-                    ))}
-                </>
-            )}
-
-            {/* ===============================
-                REJECTED APPOINTMENTS
-            =============================== */}
-            {rejectedAppointments.length > 0 && (
-                <>
-                    <h3>❌ Одбиени термини</h3>
-                    {rejectedAppointments.map(a => (
-                        <div key={a.id}>
-                            {a.date} • {a.time} • {a.service}
-                        </div>
-                    ))}
-                </>
-            )}
-
-            {/* ===============================
-                CANCEL MODAL (USER)
-            =============================== */}
-            {cancelModal && (
-                <div className="modal-overlay">
-                    <div
-                        className="modal"
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        <h3>Откажи термин</h3>
-                        <textarea
-                            placeholder="Причина за откажување"
-                            value={cancelReason}
-                            onChange={e => setCancelReason(e.target.value)}
-                        />
-                        <button onClick={confirmCancel}>
-                            Откажи
-                        </button>
-                        <button onClick={() => setCancelModal(null)}>
-                            Затвори
-                        </button>
-                    </div>
-                </div>
-            )}
-
-            {/* ===============================
-                CANCEL INFO MODAL (ADMIN)
-            =============================== */}
-            {cancelInfoModal && (
-                <div className="modal-overlay">
-                    <div
-                        className="modal"
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        <h3>Откажан термин</h3>
-                        <p>
-                            <strong>Клиент:</strong>{" "}
-                            {cancelInfoModal.userEmail}
-                        </p>
-                        <p><strong>Причина:</strong></p>
-                        <p>{cancelInfoModal.cancelReason}</p>
-                        <button
-                            onClick={() => setCancelInfoModal(null)}
-                        >
-                            Затвори
-                        </button>
-                    </div>
-                </div>
+                    )}
+                    <div className="bq-info-row"><span className="bq-info-label">Услуга</span>{infoModal.service}</div>
+                    <div className="bq-info-row"><span className="bq-info-label">Термин</span>{formatFriendlyDate(infoModal.date)} во {infoModal.time}</div>
+                    <label style={{ marginTop: 14 }}>Причина</label>
+                    <p className="bq-info-quote">{infoModal.cancelReason || "Не е наведена причина."}</p>
+                </Modal>
             )}
         </div>
     );

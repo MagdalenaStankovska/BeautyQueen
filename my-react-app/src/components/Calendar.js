@@ -1,1181 +1,774 @@
-// import React, { useEffect, useState, useCallback } from "react";
-// import Calendar from "react-calendar";
-// import "react-calendar/dist/Calendar.css";
-// import "./Calendar.css";
-// import axios from "axios";
-//
-// // ------------------ Услуги ------------------
-// const services = {
-//     "": ["----"],
-//     "Маникир": ["Маникир (само гел лак)", "Маникир (наливни)"],
-//     "Педикир": ["Педикир (гел лак на нозе)", "Педикир (целосен+gel лак)"],
-//     "Lash Lift": ["Lash Lift"],
-//     "Депилација": [
-//         "Депилација (интима)",
-//         "Депилација (целосна)",
-//         "Депилација (раце+нозе)"
-//     ],
-//     "Чупање веѓи": ["Чупање веѓи"],
-//     "Brow": ["Brow Lam"]
-// };
-//
-// // ------------------ Бои ------------------
-// const serviceColors = {
-//     "Маникир (само гел лак)": "#FFB6C1",
-//     "Маникир (наливни)": "#FF69B4",
-//     "Педикир (гел лак на нозе)": "#87CEFA",
-//     "Педикир (целосен+gel лак)": "#4682B4",
-//     "Lash Lift": "#FFDEAD",
-//     "Депилација (интима)": "#98FB98",
-//     "Депилација (целосна)": "#3CB371",
-//     "Депилација (раце+нозе)": "#2E8B57",
-//     "Чупање веѓи": "#DDA0DD",
-//     "Brow Lam": "#DAA520"
-// };
-//
-// // ------------------ Времетраење на услуги во минути ------------------
-// const serviceDurations = {
-//     "Маникир (само гел лак)": 75,
-//     "Маникир (наливни)": 105,
-//     "Педикир (гел лак на нозе)": 45,
-//     "Педикир (целосен+gel лак)": 75,
-//     "Lash Lift": 60,
-//     "Депилација (интима)": 35,
-//     "Депилација (целосна)": 75,
-//     "Депилација (раце+нозе)": 45,
-//     "Чупање веѓи": 30,
-//     "Brow Lam": 60
-// };
-//
-// // ------------------ Форматирање на датум ------------------
-// const formatLocalDate = (date) => {
-//     const y = date.getFullYear();
-//     const m = String(date.getMonth() + 1).padStart(2, "0");
-//     const d = String(date.getDate()).padStart(2, "0");
-//     return `${y}-${m}-${d}`;
-// };
-//
-// // ------------------ Генерирање опции за време ------------------
-// const generateTimeOptions = () => {
-//     const times = [];
-//     for (let hour = 12; hour <= 20; hour++) {
-//         for (let min = 0; min < 60; min += 15) {
-//             if (hour === 20 && min > 45) continue;
-//             const h = String(hour).padStart(2, "0");
-//             const m = String(min).padStart(2, "0");
-//             times.push(`${h}:${m}`);
-//         }
-//     }
-//     return times;
-// };
-//
-// const CalendarComponent = ({ token, role }) => {
-//     const firstService = Object.values(services).flat()[0];
-//     const [date, setDate] = useState(new Date());
-//     const [time, setTime] = useState("12:00");
-//     const [service, setService] = useState(firstService);
-//     const [message, setMessage] = useState(null);
-//     const [loading, setLoading] = useState(false);
-//     const [appointments, setAppointments] = useState([]);
-//     const [selectedDate, setSelectedDate] = useState(new Date());
-//     const [filterService, setFilterService] = useState("");
-//
-//     const timeOptions = generateTimeOptions();
-//
-//     // ------------------ Fetch appointments ------------------
-//     const fetchAppointments = useCallback(async () => {
-//         try {
-//             const res = await axios.get("http://localhost:4000/appointments", {
-//                 headers: { Authorization: `Bearer ${token}` },
-//             });
-//             setAppointments(res.data);
-//         } catch (err) {
-//             console.error("Error fetching appointments:", err);
-//         }
-//     }, [token]);
-//
-//     useEffect(() => {
-//         if (token) fetchAppointments();
-//     }, [token, fetchAppointments]);
-//
-//     // ------------------ Auto refresh every 60s ------------------
-//     useEffect(() => {
-//         const interval = setInterval(() => {
-//             fetchAppointments();
-//         }, 60000);
-//         return () => clearInterval(interval);
-//     }, [fetchAppointments]);
-//
-//     // ------------------ Decision handler (accept/reject) ------------------
-//     const handleDecision = async (id, decision) => {
-//         try {
-//             await axios.patch(
-//                 `http://localhost:4000/appointments/${id}`,
-//                 { status: decision },
-//                 { headers: { Authorization: `Bearer ${token}` } }
-//             );
-//             await fetchAppointments();
-//             setSelectedDate(new Date(selectedDate));
-//         } catch (error) {
-//             console.error("Failed to update appointment:", error);
-//         }
-//     };
-//
-//     // ------------------ Submit appointment ------------------
-//     const handleSubmit = async (e) => {
-//         e.preventDefault();
-//         if (!date || !time || !service) {
-//             setMessage({ type: "error", text: "Пополнете ги сите полиња." });
-//             return;
-//         }
-//         setLoading(true);
-//         setMessage(null);
-//         try {
-//             await axios.post(
-//                 "http://localhost:4000/appointments",
-//                 { date: formatLocalDate(date), time, service },
-//                 {
-//                     headers: {
-//                         "Content-Type": "application/json",
-//                         Authorization: `Bearer ${token}`,
-//                     },
-//                 }
-//             );
-//             setMessage({ type: "success", text: "Успешно закажан термин!" });
-//             setDate(new Date());
-//             setTime("12:00");
-//             setService(firstService);
-//             fetchAppointments();
-//         } catch (err) {
-//             setMessage({
-//                 type: "error",
-//                 text:
-//                     err.response?.data?.message ||
-//                     "Настана грешка при закажување.",
-//             });
-//         } finally {
-//             setLoading(false);
-//         }
-//     };
-//
-//     // ------------------ Check time slot availability ------------------
-//     const isTimeDisabled = (checkTime) => {
-//         const selectedDateStr = formatLocalDate(date);
-//         const appointmentsForDay = appointments.filter(a => a.date === selectedDateStr);
-//         for (let appt of appointmentsForDay) {
-//             const startHourMin = appt.time.split(":").map(Number);
-//             const apptStart = startHourMin[0]*60 + startHourMin[1];
-//             const apptEnd = apptStart + (serviceDurations[appt.service] || 0);
-//
-//             const checkHourMin = checkTime.split(":").map(Number);
-//             const checkStart = checkHourMin[0]*60 + checkHourMin[1];
-//             const checkEnd = checkStart + (serviceDurations[service] || 0);
-//
-//             if (Math.max(apptStart, checkStart) < Math.min(apptEnd, checkEnd)) {
-//                 return true;
-//             }
-//         }
-//         return false;
-//     };
-//
-//     // ------------------ Styles ------------------
-//     const styles = `
-//       @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap');
-//       .calendar-wrapper * { font-family: 'Open Sans', sans-serif; }
-//       .today-highlight { background: #ffe6f0; border-radius: 50%; color: hotpink !important; }
-//       .appointment-item { padding: 10px 14px; margin-bottom: 10px; border-radius: 12px; background: linear-gradient(120deg, #ffe6f0, #ffb6c1); transition: all 0.3s ease; font-weight: 500; }
-//       .appointment-item:hover { transform: scale(1.03); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-//       .service-badge { padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; color: white; margin-left: 6px; }
-//       button { transition: all 0.3s ease; }
-//       button:hover { transform: scale(1.05); }
-//       select, input[type="date"] { border-radius: 8px; border: 1px solid #ccc; }
-//       .pending-appointment { transition: all 0.3s ease, transform 0.2s ease, background 0.3s ease; cursor: pointer; background: #fff0f5; }
-//       .pending-appointment:hover { transform: translateY(-4px); box-shadow: 0 6px 16px rgba(0,0,0,0.15); background: linear-gradient(120deg, #ffe6f0, #ffd1e0); }
-//     `;
-//
-//     // ------------------ Client view ------------------
-//     if (role !== "admin") {
-//         return (
-//             <div className="calendar-wrapper" style={{ maxWidth: 400, margin: "auto" }}>
-//                 <style>{styles}</style>
-//                 <h2 style={{ marginBottom: 20 }}>Закажи термин</h2>
-//                 <form onSubmit={handleSubmit}>
-//                     <label>
-//                         Датум:
-//                         <Calendar
-//                             value={date}
-//                             onChange={setDate}
-//                             minDate={new Date()}
-//                             tileClassName={({ date: d, view }) => {
-//                                 const today = new Date();
-//                                 if (
-//                                     d.getDate() === today.getDate() &&
-//                                     d.getMonth() === today.getMonth() &&
-//                                     d.getFullYear() === today.getFullYear()
-//                                 ) {
-//                                     return "today-highlight";
-//                                 }
-//                                 return null;
-//                             }}
-//                             style={{ margin: "8px 0" }}
-//                         />
-//                     </label>
-//                     <label>
-//                         Време:
-//                         <select
-//                             value={time}
-//                             onChange={(e) => setTime(e.target.value)}
-//                             required
-//                             style={{ width: "100%", padding: "8px", margin: "8px 0" }}
-//                         >
-//                             {timeOptions.map((t) => (
-//                                 <option
-//                                     key={t}
-//                                     value={t}
-//                                     disabled={isTimeDisabled(t)}
-//                                     style={{
-//                                         backgroundColor: appointments.some(a => a.date === formatLocalDate(date) && a.time === t)
-//                                             ? "#ffe6f0"
-//                                             : "white"
-//                                     }}
-//                                 >
-//                                     {t}
-//                                 </option>
-//                             ))}
-//                         </select>
-//                     </label>
-//                     <label>
-//                         Услуга:
-//                         <select
-//                             value={service}
-//                             onChange={(e) => setService(e.target.value)}
-//                             style={{ width: "100%", padding: "8px", margin: "8px 0" }}
-//                         >
-//                             {Object.entries(services).map(([category, subservices]) => (
-//                                 <optgroup key={category} label={category}>
-//                                     {subservices.map((srv) => (
-//                                         <option key={srv} value={srv}>{srv}</option>
-//                                     ))}
-//                                 </optgroup>
-//                             ))}
-//                         </select>
-//                     </label>
-//                     <button
-//                         type="submit"
-//                         disabled={loading}
-//                         style={{
-//                             width: "100%",
-//                             padding: 12,
-//                             backgroundColor: "hotpink",
-//                             color: "white",
-//                             border: "none",
-//                             borderRadius: 8,
-//                             cursor: "pointer",
-//                             fontWeight: "bold",
-//                             marginTop: 10
-//                         }}
-//                     >
-//                         {loading ? "Испраќање..." : "Испрати барање"}
-//                     </button>
-//                 </form>
-//                 {message && (
-//                     <p style={{ color: message.type === "error" ? "red" : "green", marginTop: 10 }}>
-//                         {message.text}
-//                     </p>
-//                 )}
-//             </div>
-//         );
-//     }
-//
-//     // ------------------ Admin view ------------------
-//     const pendingAppointments = [...appointments.filter((a) => a.status === "pending")].reverse();
-//     const acceptedAppointments = appointments.filter((a) => a.status === "accepted");
-//     const selectedDateStr = formatLocalDate(selectedDate);
-//     const appointmentsForDay = acceptedAppointments
-//         .filter((a) => a.date === selectedDateStr)
-//         .sort((a, b) => a.time.localeCompare(b.time));
-//
-//     const filteredAppointmentsForDay = filterService
-//         ? appointmentsForDay.filter(a => a.service === filterService)
-//         : appointmentsForDay;
-//
-//     const getAppointmentsByTime = (timeStr) => {
-//         return filteredAppointmentsForDay.filter(a => {
-//             const start = a.time.split(":").map(Number);
-//             const end = start[0]*60 + start[1] + (serviceDurations[a.service] || 0);
-//             const [h, m] = timeStr.split(":").map(Number);
-//             const check = h*60 + m;
-//             return check >= start[0]*60+start[1] && check < end;
-//         });
-//     };
-//
-//     return (
-//         <div className="calendar-wrapper" style={{ display: "flex", justifyContent: "space-between", padding: 20 }}>
-//             <style>{styles}</style>
-//
-//             {/* LEFT SIDE – Pending Requests */}
-//             <div style={{ flex: 1, marginRight: 40 }}>
-//                 <h2>🔔 Нови барања за термини</h2>
-//                 {pendingAppointments.length === 0 ? (
-//                     <p>Нема барања во моментов.</p>
-//                 ) : (
-//                     <ul style={{ listStyle: "none", padding: 0 }}>
-//                         {pendingAppointments.map((appt) => (
-//                             <li
-//                                 key={appt.id}
-//                                 className="pending-appointment"
-//                                 style={{
-//                                     borderRadius: 12,
-//                                     padding: "14px",
-//                                     marginBottom: 12,
-//                                     background: "#fff0f5",
-//                                     boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-//                                 }}
-//                             >
-//                                 <p><strong>Клиент:</strong> {appt.userEmail}</p>
-//                                 <p><strong>Услуга:</strong>
-//                                     <span
-//                                         className="service-badge"
-//                                         style={{ background: serviceColors[appt.service] || "gray" }}
-//                                     >
-//                                         {appt.service}
-//                                     </span>
-//                                 </p>
-//                                 <p><strong>Датум:</strong> {appt.date}</p>
-//                                 <p><strong>Време:</strong> {appt.time}</p>
-//                                 <div style={{ marginTop: 10 }}>
-//                                     <button
-//                                         onClick={() => handleDecision(appt.id, "accepted")}
-//                                         style={{ background: "green", color: "white", marginRight: 8, borderRadius: "20px", padding: "6px 14px", border: "none", cursor: "pointer" }}
-//                                     >
-//                                         ✅ Прифати
-//                                     </button>
-//                                     <button
-//                                         onClick={() => handleDecision(appt.id, "rejected")}
-//                                         style={{ background: "red", color: "white", borderRadius: "20px", padding: "6px 14px", border: "none", cursor: "pointer" }}
-//                                     >
-//                                         ❌ Одбиј
-//                                     </button>
-//                                 </div>
-//                             </li>
-//                         ))}
-//                     </ul>
-//                 )}
-//             </div>
-//
-//             {/* RIGHT SIDE – Calendar */}
-//             <div style={{ flex: 1 }}>
-//                 <h2>📅 Прифатени термини</h2>
-//
-//                 {/* Filter by service */}
-//                 <label>
-//                     Филтрирај по услуга:
-//                     <select
-//                         value={filterService}
-//                         onChange={(e) => setFilterService(e.target.value)}
-//                         style={{ marginBottom: 10, padding: 6 }}
-//                     >
-//                         <option value="">Сите</option>
-//                         {Object.values(services).flat().map(srv => (
-//                             <option key={srv} value={srv}>{srv}</option>
-//                         ))}
-//                     </select>
-//                 </label>
-//
-//                 <Calendar
-//                     value={selectedDate}
-//                     onChange={setSelectedDate}
-//                     tileContent={({ date, view }) => {
-//                         if (view === "month") {
-//                             const dayStr = formatLocalDate(date);
-//                             const count = acceptedAppointments.filter((a) => a.date === dayStr).length;
-//                             return count > 0 ? <span style={{ color: "green" }}>●</span> : null;
-//                         }
-//                     }}
-//                     tileClassName={({ date, view }) => {
-//                         if (view === "month") {
-//                             const today = new Date();
-//                             if (
-//                                 date.getDate() === today.getDate() &&
-//                                 date.getMonth() === today.getMonth() &&
-//                                 date.getFullYear() === today.getFullYear()
-//                             ) {
-//                                 return "today-highlight";
-//                             }
-//                         }
-//                         return null;
-//                     }}
-//                 />
-//
-//                 <h3 style={{ marginTop: 20 }}>Термини на {selectedDateStr}</h3>
-//                 <div className="appointments-list" style={{ maxHeight: 500, overflowY: "auto", borderRadius: 10, padding: 10, background: "#fff0f5", border: "1px solid #f5c6e0" }}>
-//                     {Array.from({ length: 9 }, (_, i) => {
-//                         const hour = 12 + i;
-//                         return [0, 15, 30, 45].map((min) => {
-//                             const hourStr = String(hour).padStart(2, "0");
-//                             const minStr = String(min).padStart(2, "0");
-//                             const timeStr = `${hourStr}:${minStr}`;
-//                             const appointmentsThisSlot = getAppointmentsByTime(timeStr);
-//                             return (
-//                                 <div key={`${hour}-${min}`} style={{ padding: "6px 0", borderBottom: "1px solid #f5c6e0" }}>
-//                                     <strong>{timeStr}</strong>
-//                                     {appointmentsThisSlot.length > 0 ? (
-//                                         <ul style={{ marginLeft: 20, padding: 0 }}>
-//                                             {appointmentsThisSlot.map((appt) => (
-//                                                 <li key={appt.id} className="appointment-item" style={{ background: serviceColors[appt.service] || "#ddd" }} title={`Email: ${appt.userEmail}\nУслуга: ${appt.service}`}>
-//                                                     {appt.userEmail} ({appt.service})
-//                                                 </li>
-//                                             ))}
-//                                         </ul>
-//                                     ) : (
-//                                         <div style={{ marginLeft: 20, color: "#aaa" }}>—</div>
-//                                     )}
-//                                 </div>
-//                             );
-//                         });
-//                     })}
-//                 </div>
-//             </div>
-//         </div>
-//     );
-// };
-//
-// export default CalendarComponent;
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "./Calendar.css";
-import axios from "axios";
+import api, { errorMessage } from "../api";
+import Modal from "./Modal";
+import {
+    allDayTimes,
+    appointmentDate,
+    dayHours,
+    durationOf,
+    employeeLabel,
+    endTimeOf,
+    formatDisplayDate,
+    formatFriendlyDate,
+    formatLocalDate,
+    freeTimes,
+    getEmployees,
+    getServices,
+    isActive,
+    minutesToTime,
+    salon,
+    serviceColor,
+    serviceGroups,
+    slotProblem,
+    statusLabels,
+    toMinutes
+} from "../salon";
 
-/* ===========================
-   🔔 ADDED FOR NOTIFICATIONS
-=========================== */
+const sameDay = (a, b) =>
+    a.getDate() === b.getDate() && a.getMonth() === b.getMonth() && a.getFullYear() === b.getFullYear();
 
-const NotificationPanel = ({ notifications, onCancel }) => {
-    if (!notifications.length) return null;
-
-    return (
-        <div style={{
-            background: "#fff0f5",
-            border: "1px solid hotpink",
-            borderRadius: 12,
-            padding: 12,
-            marginBottom: 20
-        }}>
-            <h3>🔔 Мои термини</h3>
-
-            {notifications.map(n => (
-                <div key={n.id} style={{
-                    padding: 10,
-                    marginBottom: 8,
-                    borderRadius: 8,
-                    background: "#ffe6f0"
-                }}>
-                    <strong>{n.date} – {n.time}</strong>
-                    <br />
-                    {n.service}
-                    <br />
-                    <small>Status: {n.status}</small>
-
-                    {n.status === "accepted" && (
-                        <div>
-                            <button
-                                onClick={() => onCancel(n.id)}
-                                style={{
-                                    marginTop: 6,
-                                    background: "red",
-                                    color: "white",
-                                    border: "none",
-                                    borderRadius: 6,
-                                    padding: "4px 10px",
-                                    cursor: "pointer"
-                                }}
-                            >
-                                ❌ Откажи
-                            </button>
-                        </div>
-                    )}
-                </div>
-            ))}
-        </div>
-    );
-};
-/* ===========================
-   🔔 END NOTIFICATIONS
-=========================== */
-
-// ------------------ Услуги ------------------
-const services = {
-    "": ["----"],
-    "Маникир": ["Маникир (само гел лак)", "Маникир (наливни)"],
-    "Педикир": ["Педикир (гел лак на нозе)", "Педикир (целосен+gel лак)"],
-    "Lash Lift": ["Lash Lift"],
-    "Депилација": [
-        "Депилација (интима)",
-        "Депилација (целосна)",
-        "Депилација (раце+нозе)"
-    ],
-    "Чупање веѓи": ["Чупање веѓи"],
-    "Brow": ["Brow Lam"]
+const addDays = (date, n) => {
+    const d = new Date(date);
+    d.setDate(d.getDate() + n);
+    return d;
 };
 
-// ------------------ Бои ------------------
-const serviceColors = {
-    "Маникир (само гел лак)": "#FFB6C1",
-    "Маникир (наливни)": "#FF69B4",
-    "Педикир (гел лак на нозе)": "#87CEFA",
-    "Педикир (целосен+gel лак)": "#4682B4",
-    "Lash Lift": "#FFDEAD",
-    "Депилација (интима)": "#98FB98",
-    "Депилација (целосна)": "#3CB371",
-    "Депилација (раце+нозе)": "#2E8B57",
-    "Чупање веѓи": "#DDA0DD",
-    "Brow Lam": "#DAA520"
-};
-const serviceResource = {
-    // MANICURE TABLES (2)
-    "Маникир (само гел лак)": "manicure",
-    "Маникир (наливни)": "manicure",
+const StatusChip = ({ status }) => (
+    <span className={`status-chip status-${status}`}>{statusLabels[status] || status}</span>
+);
 
-    // PEDICURE CHAIR (1)
-    "Педикир (гел лак на нозе)": "pedicure",
-    "Педикир (целосен+gel лак)": "pedicure",
-
-    // BED (1)
-    "Депилација (интима)": "bed",
-    "Депилација (целосна)": "bed",
-    "Депилација (раце+нозе)": "bed",
-
-    // SINGLE
-    "Lash Lift": "lash",
-    "Чупање веѓи": "brow",
-    "Brow Lam": "brow"
-};
-
-// 🟢 RESOURCE LIMITS (MAX PARALLEL)
-const serviceLimits = {
-    "Маникир (само гел лак)": 2,
-    "Маникир (наливни)": 2,
-
-    "Педикир (гел лак на нозе)": 1,
-    "Педикир (целосен+gel лак)": 1,
-
-    "Депилација (интима)": 1,
-    "Депилација (целосна)": 1,
-    "Депилација (раце+нозе)": 1,
-
-    "Lash Lift": 1,
-    "Чупање веѓи": 1,
-    "Brow Lam": 1
-};
-
-
-// ------------------ Времетраење на услуги во минути ------------------
-const serviceDurations = {
-    "Маникир (само гел лак)": 75,
-    "Маникир (наливни)": 105,
-    "Педикир (гел лак на нозе)": 45,
-    "Педикир (целосен+gel лак)": 75,
-    "Lash Lift": 60,
-    "Депилација (интима)": 35,
-    "Депилација (целосна)": 75,
-    "Депилација (раце+нозе)": 45,
-    "Чупање веѓи": 30,
-    "Brow Lam": 60
-};
-
-// ------------------ Форматирање на датум ------------------
-const formatLocalDate = (date) => {
-    const y = date.getFullYear();
-    const m = String(date.getMonth() + 1).padStart(2, "0");
-    const d = String(date.getDate()).padStart(2, "0");
-    return `${y}-${m}-${d}`;
-};
-
-// ------------------ Генерирање опции за време ------------------
-const generateTimeOptions = () => {
-    const times = [];
-    for (let hour = 12; hour <= 20; hour++) {
-        for (let min = 0; min < 60; min += 15) {
-            if (hour === 20 && min > 45) continue;
-            const h = String(hour).padStart(2, "0");
-            const m = String(min).padStart(2, "0");
-            times.push(`${h}:${m}`);
-        }
-    }
-    return times;
-};
-
-const CalendarComponent = ({ token, role }) => {
-    const firstService = Object.values(services).flat()[0];
-    const [date, setDate] = useState(new Date());
-    const [time, setTime] = useState("12:00");
-    const [service, setService] = useState(firstService);
-    const [message, setMessage] = useState(null);
-    const [loading, setLoading] = useState(false);
+const CalendarComponent = ({ role, syncTick, showToast }) => {
     const [appointments, setAppointments] = useState([]);
-    const [selectedDate, setSelectedDate] = useState(new Date());
-    const [filterService, setFilterService] = useState("");
-// 🔔 USER NOTIFICATIONS
-    const [myNotifications, setMyNotifications] = useState([]);
+    const [myAppointments, setMyAppointments] = useState([]);
+    const [loaded, setLoaded] = useState(false);
 
-    const timeOptions = generateTimeOptions();
-
-    // ------------------ Employee lists for drag & drop ------------------
-    const employees = ["Sara", "Martina", "Marija"];
-    const [employeeLists, setEmployeeLists] = useState({
-        Sara: [],
-        Martina: [],
-        Marija: []
-    });
-    const [draggedAppt, setDraggedAppt] = useState(null);
-
-    const handleDragStart = (e, appt) => {
-        setDraggedAppt(appt);
-    };
-
-    const getEmployeeAppointments = (employee) => {
-        const dayStr = formatLocalDate(selectedDate);
-        return appointments.filter(
-            a =>
-                a.employee === employee &&
-                a.status === "accepted" &&
-                a.date === dayStr
-        );
-    };
-
-
-    const getEndTime = (appt) => {
-        const [h, m] = appt.time.split(":").map(Number);
-        const start = h * 60 + m;
-
-        // траење - 15 минути
-        const duration = Math.max(
-            (serviceDurations[appt.service] || 0) - 15,
-            0
-        );
-
-        const end = start + duration;
-
-        return `${String(Math.floor(end / 60)).padStart(2, "0")}:${String(end % 60).padStart(2, "0")}`;
-    };
-
-
-
-
-    const handleDrop = async (e, toEmployee) => {
-        e.preventDefault();
-        if (!draggedAppt) return;
-
-        try {
-            await axios.patch(
-                `http://localhost:4000/appointments/${draggedAppt.id}`,
-                { employee: toEmployee },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-
-            setDraggedAppt(null);
-            fetchAppointments(); // 🔥 да се синхронизира
-        } catch (err) {
-            console.error("Employee assign error", err);
-        }
-    };
-
-
-    // ------------------ Fetch appointments ------------------
     const fetchAppointments = useCallback(async () => {
         try {
-            const res = await axios.get("http://localhost:4000/appointments", {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            setAppointments(res.data);
+            if (role === "admin") {
+                const { data } = await api.get("/appointments");
+                setAppointments(data);
+            } else {
+                const [availability, mine] = await Promise.all([
+                    api.get("/appointments/availability"),
+                    api.get("/appointments/user")
+                ]);
+                setAppointments(availability.data);
+                setMyAppointments(mine.data);
+            }
         } catch (err) {
             console.error("Error fetching appointments:", err);
+        } finally {
+            setLoaded(true);
         }
-    }, [token]);
-    const fetchMyNotifications = async () => {
-        if (role === "admin") return;
+    }, [role]);
 
-        try {
-            const res = await axios.get(
-                "http://localhost:4000/appointments/user",
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-            setMyNotifications(res.data);
-        } catch (err) {
-            console.error("Notification fetch error", err);
-        }
-    };
-    // 🔔 Cancel appointment (USER)
-    const cancelAppointment = async (id) => {
-        try {
-            await axios.patch(
-                `http://localhost:4000/appointments/${id}/cancel`,
-                { status: "cancelled" },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-
-            fetchMyNotifications(); // 🔄 refresh notifications
-            fetchAppointments();    // 🔄 refresh calendar
-        } catch (err) {
-            console.error("Cancel error", err);
-        }
-    };
-
-
+    // syncTick changes whenever the server pushes an appointment change over the socket
     useEffect(() => {
-        if (token) {
-            fetchAppointments();
-            fetchMyNotifications(); // 🔔
+        fetchAppointments();
+    }, [fetchAppointments, syncTick]);
+
+    if (!loaded) return <p className="calendar-loading">Се вчитува…</p>;
+
+    return role === "admin" ? (
+        <AdminView appointments={appointments} refresh={fetchAppointments} showToast={showToast} />
+    ) : (
+        <ClientView
+            appointments={appointments}
+            myAppointments={myAppointments}
+            refresh={fetchAppointments}
+            showToast={showToast}
+        />
+    );
+};
+
+/* =====================================================
+   CLIENT
+===================================================== */
+
+const dayParts = [
+    { label: "Претпладне", test: (m) => m < 12 * 60 },
+    { label: "Попладне", test: (m) => m >= 12 * 60 && m < 17 * 60 },
+    { label: "Вечер", test: (m) => m >= 17 * 60 }
+];
+
+const firstOpenDay = () => {
+    let d = new Date();
+    for (let i = 0; i < 14 && !dayHours(formatLocalDate(d)); i++) d = addDays(d, 1);
+    return d;
+};
+
+const ClientView = ({ appointments, myAppointments, refresh, showToast }) => {
+    const [service, setService] = useState(() => {
+        const pre = sessionStorage.getItem("bq:preselectService");
+        sessionStorage.removeItem("bq:preselectService");
+        return getServices().some(s => s.name === pre) ? pre : "";
+    });
+    const [date, setDate] = useState(firstOpenDay);
+    const [time, setTime] = useState("");
+    const [note, setNote] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState(null);
+    const [cancelTarget, setCancelTarget] = useState(null);
+    const [cancelReason, setCancelReason] = useState("");
+    const [showHistory, setShowHistory] = useState(false);
+
+    const cfg = salon();
+    const dateStr = formatLocalDate(date);
+    const hours = dayHours(dateStr);
+    const duration = durationOf(service);
+    const maxDate = addDays(new Date(), cfg.maxDaysAhead);
+
+    const times = useMemo(
+        () => (service ? freeTimes(appointments, dateStr, service) : []),
+        [appointments, dateStr, service]
+    );
+
+    // per-day "has any free time" cache for the calendar tiles
+    const dayHasFree = useMemo(() => {
+        const cache = {};
+        return (dStr) => {
+            if (!service) return true;
+            if (!(dStr in cache)) cache[dStr] = freeTimes(appointments, dStr, service).length > 0;
+            return cache[dStr];
+        };
+    }, [appointments, service]);
+
+    const nextFreeDay = useMemo(() => {
+        if (!service || times.length) return null;
+        for (let i = 1; i <= 60; i++) {
+            const d = addDays(date, i);
+            if (d > maxDate) break;
+            if (dayHasFree(formatLocalDate(d))) return d;
         }
-    }, [token, fetchAppointments]);
+        return null;
+    }, [service, times.length, date, dayHasFree, maxDate]);
 
-
-    // ------------------ Auto refresh every 60s ------------------
+    // If someone else just took the selected slot (realtime update), clear the selection.
     useEffect(() => {
-        const interval = setInterval(() => {
-            fetchAppointments();
-        }, 60000);
-        return () => clearInterval(interval);
-    }, [fetchAppointments]);
+        if (time && !times.includes(time)) setTime("");
+    }, [times, time]);
 
-    // ------------------ Decision handler (accept/reject) ------------------
-    const handleDecision = async (id, decision) => {
-        try {
-            await axios.patch(
-                `http://localhost:4000/appointments/${id}`,
-                { status: decision },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-            await fetchAppointments();
-            setSelectedDate(new Date(selectedDate));
-        } catch (error) {
-            console.error("Failed to update appointment:", error);
-        }
-    };
-
-    // ------------------ Submit appointment ------------------
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!date || !time || !service) {
-            setMessage({ type: "error", text: "Пополнете ги сите полиња." });
-            return;
-        }
+        if (!service) return setMessage({ type: "error", text: "Изберете услуга." });
+        if (!time) return setMessage({ type: "error", text: "Изберете време." });
+
         setLoading(true);
         setMessage(null);
         try {
-            await axios.post(
-                "http://localhost:4000/appointments",
-                { date: formatLocalDate(date), time, service },
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
-            setMessage({ type: "success", text: "Успешно закажан термин!" });
-            setDate(new Date());
-            setTime("12:00");
-            setService(firstService);
-            fetchAppointments();
-        } catch (err) {
+            await api.post("/appointments", { date: dateStr, time, service, note });
             setMessage({
-                type: "error",
-                text:
-                    err.response?.data?.message ||
-                    "Настана грешка при закажување.",
+                type: "success",
+                text: `Барањето е испратено за ${formatFriendlyDate(dateStr)} во ${time}. Ќе добиете известување штом салонот го потврди.`
             });
+            setTime("");
+            setNote("");
+            refresh();
+        } catch (err) {
+            setMessage({ type: "error", text: errorMessage(err, "Настана грешка при закажување.") });
+            refresh();
         } finally {
             setLoading(false);
         }
     };
 
-    // ------------------ Check time slot availability ------------------
-    const isTimeDisabled = (checkTime) => {
-        if (!service) return true;
-
-        const selectedDateStr = formatLocalDate(date);
-        const selectedResource = serviceResource[service];
-        const limit = serviceLimits[service] ?? 1;
-
-        const activeAppointments = appointments.filter(
-            a =>
-                a.date === selectedDateStr &&
-                (a.status === "pending" || a.status === "accepted")
-        );
-
-        let overlapCount = 0;
-
-        for (let appt of activeAppointments) {
-            const apptResource = serviceResource[appt.service];
-
-            if (apptResource !== selectedResource) continue;
-
-            const [h, m] = appt.time.split(":").map(Number);
-            const apptStart = h * 60 + m;
-            const apptEnd = apptStart + (serviceDurations[appt.service] || 0);
-
-            const [ch, cm] = checkTime.split(":").map(Number);
-            const checkStart = ch * 60 + cm;
-            const checkEnd = checkStart + (serviceDurations[service] || 0);
-
-            const overlaps =
-                Math.max(apptStart, checkStart) <
-                Math.min(apptEnd, checkEnd);
-
-            if (overlaps) {
-                overlapCount++;
-            }
-        }
-
-        return overlapCount >= limit;
-    };
-    const deleteAppointment = async (id) => {
-        const confirmDelete = window.confirm("Дали си сигурна дека сакаш да го избришеш терминот?");
-        if (!confirmDelete) return;
-
+    const confirmCancel = async () => {
         try {
-            await axios.delete(`http://localhost:4000/appointments/${id}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-
-            // локално бришење
-            setAppointments(prev => prev.filter(a => a.id !== id));
-
-            // освежи од сервер и почекај
-            await fetchAppointments();
-
+            await api.patch(`/appointments/${cancelTarget.id}/cancel`, { reason: cancelReason });
+            showToast({ type: "cancelled", title: "Терминот е откажан", message: `${cancelTarget.service}, ${formatDisplayDate(cancelTarget.date)} во ${cancelTarget.time}` });
+            setCancelTarget(null);
+            setCancelReason("");
+            refresh();
         } catch (err) {
-            console.error("Delete error:", err);
+            showToast({ type: "error", title: "Грешка", message: errorMessage(err) });
         }
     };
 
-
-
-
-
-    // ------------------ Styles ------------------
-    const styles = `
-      @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap');
-      .calendar-wrapper * { font-family: 'Open Sans', sans-serif; }
-      .today-highlight { background: #ffe6f0; border-radius: 50%; color: hotpink !important; }
-      .appointment-item { padding: 10px 14px; margin-bottom: 10px; border-radius: 12px; background: linear-gradient(120deg, #ffe6f0, #ffb6c1); transition: all 0.3s ease; font-weight: 500; }
-      .appointment-item:hover { transform: scale(1.03); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-      .service-badge { padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; color: white; margin-left: 6px; }
-      button { transition: all 0.3s ease; }
-      button:hover { transform: scale(1.05); }
-      select, input[type="date"] { border-radius: 8px; border: 1px solid #ccc; }
-      .pending-appointment { transition: all 0.3s ease, transform 0.2s ease, background 0.3s ease; cursor: pointer; background: #fff0f5; }
-      .pending-appointment:hover { transform: translateY(-4px); box-shadow: 0 6px 16px rgba(0,0,0,0.15); background: linear-gradient(120deg, #ffe6f0, #ffd1e0); }
-    `;
-
-    // ------------------ Client view ------------------
-    if (role !== "admin") {
-        return (
-            <div className="calendar-wrapper" style={{ maxWidth: 400, margin: "auto" }}>
-
-                <style>{styles}</style>
-                <h2 style={{ marginBottom: 20 }}>Закажи термин</h2>
-                <form onSubmit={handleSubmit}>
-                    <label>
-                        Датум:
-                        <Calendar
-                            value={date}
-                            onChange={setDate}
-                            minDate={new Date()}
-                            tileClassName={({ date: d, view }) => {
-                                const today = new Date();
-                                if (
-                                    d.getDate() === today.getDate() &&
-                                    d.getMonth() === today.getMonth() &&
-                                    d.getFullYear() === today.getFullYear()
-                                ) {
-                                    return "today-highlight";
-                                }
-                                return null;
-                            }}
-                            style={{ margin: "8px 0" }}
-                        />
-                    </label>
-                    <label>
-                        Време:
-                        <select
-                            value={time}
-                            onChange={(e) => setTime(e.target.value)}
-                            required
-                            style={{ width: "100%", padding: "8px", margin: "8px 0" }}
-                        >
-                            {timeOptions.map((t) => (
-                                <option
-                                    key={t}
-                                    value={t}
-                                    disabled={isTimeDisabled(t)}
-                                    style={{
-                                        backgroundColor: appointments.some(a => a.date === formatLocalDate(date) && a.time === t)
-                                            ? "#ffe6f0"
-                                            : "white"
-                                    }}
-                                >
-                                    {t}
-                                </option>
-                            ))}
-                        </select>
-                    </label>
-                    <label>
-                        Услуга:
-                        <select
-                            value={service}
-                            onChange={(e) => setService(e.target.value)}
-                            style={{ width: "100%", padding: "8px", margin: "8px 0" }}
-                        >
-                            {Object.entries(services).map(([category, subservices]) => (
-                                <optgroup key={category} label={category}>
-                                    {subservices.map((srv) => (
-                                        <option key={srv} value={srv}>{srv}</option>
-                                    ))}
-                                </optgroup>
-                            ))}
-                        </select>
-                        {!service && <small>Избери услуга за да видиш слободни термини</small>}
-                    </label>
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        style={{
-                            width: "100%",
-                            padding: 12,
-                            backgroundColor: "hotpink",
-                            color: "white",
-                            border: "none",
-                            borderRadius: 8,
-                            cursor: "pointer",
-                            fontWeight: "bold",
-                            marginTop: 10
-                        }}
-                    >
-                        {loading ? "Испраќање..." : "Испрати барање"}
-                    </button>
-                </form>
-                {message && (
-                    <p style={{ color: message.type === "error" ? "red" : "green", marginTop: 10 }}>
-                        {message.text}
-                    </p>
-                )}
-            </div>
-        );
-    }
-
-    // ------------------ Admin view ------------------
-    const pendingAppointments = [...appointments.filter((a) => a.status === "pending")].reverse();
-    const acceptedAppointments = appointments.filter((a) => a.status === "accepted");
-    const selectedDateStr = formatLocalDate(selectedDate);
-    const appointmentsForDay = acceptedAppointments
-        .filter((a) => a.date === selectedDateStr)
-        .sort((a, b) => a.time.localeCompare(b.time));
-
-    const filteredAppointmentsForDay = filterService
-        ? appointmentsForDay.filter(a => a.service === filterService)
-        : appointmentsForDay;
-
-    const getAppointmentsByTime = (timeStr) => {
-        return filteredAppointmentsForDay.filter(a => {
-            const start = a.time.split(":").map(Number);
-            const end = start[0]*60 + start[1] + (serviceDurations[a.service] || 0);
-            const [h, m] = timeStr.split(":").map(Number);
-            const check = h*60 + m;
-            return check >= start[0]*60+start[1] && check < end;
-        });
-    };
+    const now = new Date();
+    const sortByDate = (a, b) => appointmentDate(a) - appointmentDate(b);
+    const upcoming = myAppointments.filter(a => isActive(a) && appointmentDate(a) > now).sort(sortByDate);
+    const history = myAppointments.filter(a => !upcoming.includes(a)).sort((a, b) => sortByDate(b, a));
 
     return (
-        <div className="calendar-wrapper" style={{ display: "flex", justifyContent: "space-between", padding: 20 }}>
-            <style>{styles}</style>
+        <div className="calendar-wrapper calendar-client-view">
+            <div className="calendar-client-layout">
+                <div className="calendar-client-left">
+                    <div className="calendar-client-header">
+                        <p className="calendar-client-kicker">Онлајн закажување</p>
+                        <h2>Закажи термин</h2>
+                        <p className="calendar-client-subtitle">
+                            Изберете услуга, датум и време. Терминот е потврден штом салонот го прифати.
+                        </p>
+                    </div>
 
-            {/* LEFT SIDE – Pending Requests */}
-            <div style={{ flex: 1, marginRight: 40 }}>
-                <h2>🔔 Нови барања за термини</h2>
-                {pendingAppointments.length === 0 ? (
-                    <p>Нема барања во моментов.</p>
-                ) : (
-                    <ul style={{ listStyle: "none", padding: 0 }}>
-                        {pendingAppointments.map((appt) => (
-                            <li
-                                key={appt.id}
-                                className="pending-appointment"
-                                style={{
-                                    borderRadius: 12,
-                                    padding: "14px",
-                                    marginBottom: 12,
-                                    background: "#fff0f5",
-                                    boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-                                }}
-                            >
-                                <p><strong>Клиент:</strong> {appt.userEmail}</p>
-                                <p><strong>Услуга:</strong>
-                                    <span
-                                        className="service-badge"
-                                        style={{ background: serviceColors[appt.service] || "gray" }}
-                                    >
-                                        {appt.service}
-                                    </span>
-                                </p>
-                                <p><strong>Датум:</strong> {appt.date}</p>
-                                <p><strong>Време:</strong> {appt.time}</p>
-                                <div style={{ marginTop: 10 }}>
-                                    <button
-                                        onClick={() => handleDecision(appt.id, "accepted")}
-                                        style={{ background: "green", color: "white", marginRight: 8, borderRadius: "20px", padding: "6px 14px", border: "none", cursor: "pointer" }}
-                                    >
-                                        ✅ Прифати
-                                    </button>
-                                    <button
-                                        onClick={() => handleDecision(appt.id, "rejected")}
-                                        style={{ background: "red", color: "white", borderRadius: "20px", padding: "6px 14px", border: "none", cursor: "pointer" }}
-                                    >
-                                        ❌ Одбиј
-                                    </button>
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
-                )}
-            </div>
-
-            {/* RIGHT SIDE – Calendar + Drag & Drop Lists */}
-            <div style={{ flex: 1 }}>
-                <h2>📅 Прифатени термини</h2>
-
-                {/* Filter by service */}
-                <label>
-                    Филтрирај по услуга:
-                    <select
-                        value={filterService}
-                        onChange={(e) => setFilterService(e.target.value)}
-                        style={{ marginBottom: 10, padding: 6 }}
-                    >
-                        <option value="">Сите</option>
-                        {Object.values(services).flat().map(srv => (
-                            <option key={srv} value={srv}>{srv}</option>
-                        ))}
-                    </select>
-                </label>
-
-                <Calendar
-                    value={selectedDate}
-                    onChange={setSelectedDate}
-                    tileContent={({ date, view }) => {
-                        if (view === "month") {
-                            const dayStr = formatLocalDate(date);
-                            const count = acceptedAppointments.filter((a) => a.date === dayStr).length;
-                            return count > 0 ? <span style={{ color: "green" }}>●</span> : null;
-                        }
-                    }}
-                    tileClassName={({ date, view }) => {
-                        if (view === "month") {
-                            const today = new Date();
-                            if (
-                                date.getDate() === today.getDate() &&
-                                date.getMonth() === today.getMonth() &&
-                                date.getFullYear() === today.getFullYear()
-                            ) {
-                                return "today-highlight";
-                            }
-                        }
-                        return null;
-                    }}
-                />
-
-                <h3 style={{ marginTop: 20 }}>Термини на {selectedDateStr}</h3>
-                <div className="appointments-list" style={{ maxHeight: 500, overflowY: "auto", borderRadius: 10, padding: 10, background: "#fff0f5", border: "1px solid #f5c6e0" }}>
-                    {Array.from({ length: 9 }, (_, i) => {
-                        const hour = 12 + i;
-                        return [0, 15, 30, 45].map((min) => {
-                            const hourStr = String(hour).padStart(2, "0");
-                            const minStr = String(min).padStart(2, "0");
-                            const timeStr = `${hourStr}:${minStr}`;
-                            const appointmentsThisSlot = getAppointmentsByTime(timeStr);
-                            return (
-                                <div key={`${hour}-${min}`} style={{ padding: "6px 0", borderBottom: "1px solid #f5c6e0" }}>
-                                    <strong>{timeStr}</strong>
-                                    {appointmentsThisSlot.length > 0 ? (
-                                        <ul style={{ marginLeft: 20, padding: 0 }}>
-                                            {appointmentsThisSlot.map((appt) => (
-                                                <li
-                                                    key={appt.id}
-                                                    draggable
-                                                    onDragStart={(e) => handleDragStart(e, appt)}
-                                                    className="appointment-item"
-                                                    style={{
-                                                        background: serviceColors[appt.service] || "#ddd",
-                                                        display: "flex",
-                                                        justifyContent: "space-between",
-                                                        alignItems: "center"
-                                                    }}
+                    <form onSubmit={handleSubmit} className="calendar-client-form">
+                        {/* STEP 1 */}
+                        <div className="calendar-field">
+                            <span className="calendar-field-title"><span className="step-num">1</span> Услуга</span>
+                            <div className="service-picker">
+                                {Object.entries(serviceGroups()).map(([category, names]) => (
+                                    <div key={category} className="service-group">
+                                        <div className="service-group-title">{category}</div>
+                                        <div className="service-options">
+                                            {names.map(name => (
+                                                <button
+                                                    type="button"
+                                                    key={name}
+                                                    className={`service-option ${service === name ? "selected" : ""}`}
+                                                    onClick={() => { setService(name); setTime(""); setMessage(null); }}
                                                 >
-    <span>
-        {appt.userEmail} ({appt.service})
-    </span>
-
-                                                    <button
-                                                        onMouseDown={(e) => e.stopPropagation()}
-                                                        onClick={() => deleteAppointment(appt.id)}
-                                                        style={{
-                                                            marginLeft: 10,
-                                                            background: "transparent",
-                                                            border: "none",
-                                                            cursor: "pointer",
-                                                            fontSize: "16px"
-                                                        }}
-                                                        title="Избриши термин"
-                                                    >
-                                                        🗑️
-                                                    </button>
-                                                </li>
+                                                    <span className="service-option-name">{name}</span>
+                                                    <span className="service-option-meta">{durationOf(name)} мин</span>
+                                                </button>
                                             ))}
-                                        </ul>
-                                    ) : (
-                                        <div style={{marginLeft: 20, color: "#aaa"}}>—</div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* STEP 2 */}
+                        <div className="calendar-field">
+                            <span className="calendar-field-title"><span className="step-num">2</span> Датум</span>
+                            <Calendar
+                                value={date}
+                                onChange={(d) => { setDate(d); setTime(""); setMessage(null); }}
+                                minDate={new Date()}
+                                maxDate={maxDate}
+                                minDetail="month"
+                                tileDisabled={({ date: d, view }) => view === "month" && !dayHours(formatLocalDate(d))}
+                                tileClassName={({ date: d, view }) => {
+                                    if (view !== "month") return null;
+                                    const classes = [];
+                                    if (sameDay(d, new Date())) classes.push("today-highlight");
+                                    const dStr = formatLocalDate(d);
+                                    if (service && d >= addDays(new Date(), -1) && d <= maxDate && dayHours(dStr) && !dayHasFree(dStr))
+                                        classes.push("day-full");
+                                    return classes.join(" ") || null;
+                                }}
+                                locale="mk-MK"
+                            />
+                            <div className="calendar-legend">
+                                <span><i className="legend-swatch swatch-selected" /> Избран</span>
+                                {service && <span><i className="legend-swatch swatch-full" /> Нема слободни</span>}
+                                <span><i className="legend-swatch swatch-closed" /> Не работиме</span>
+                            </div>
+                        </div>
+
+                        {/* STEP 3 */}
+                        <div className="calendar-field">
+                            <span className="calendar-field-title">
+                                <span className="step-num">3</span> Време · {formatFriendlyDate(dateStr)}
+                                {hours && <small> (работно време {hours.open}–{hours.close})</small>}
+                            </span>
+
+                            {!service ? (
+                                <p className="calendar-hint">Прво изберете услуга за да ги видите слободните термини.</p>
+                            ) : times.length === 0 ? (
+                                <div className="no-slots">
+                                    <p>Нема слободни термини за <strong>{service}</strong> на овој ден.</p>
+                                    {nextFreeDay && (
+                                        <button type="button" className="bq-btn bq-btn-primary" onClick={() => setDate(nextFreeDay)}>
+                                            Прв слободен ден: {formatFriendlyDate(formatLocalDate(nextFreeDay))}
+                                        </button>
                                     )}
                                 </div>
-                            );
-                        });
-                    })}
+                            ) : (
+                                <>
+                                    <p className="calendar-hint">
+                                        Услугата трае <strong>{duration} мин</strong>. Прикажани се само почетните времиња во кои
+                                        целата услуга може да заврши пред следниот зафатен термин и пред затворање.
+                                    </p>
+                                    {dayParts.map(part => {
+                                        const partTimes = times.filter(t => part.test(toMinutes(t)));
+                                        if (!partTimes.length) return null;
+                                        return (
+                                            <div key={part.label} className="slot-section">
+                                                <div className="slot-section-title">{part.label}</div>
+                                                <div className="slot-grid">
+                                                    {partTimes.map(t => (
+                                                        <button
+                                                            type="button"
+                                                            key={t}
+                                                            className={`slot ${time === t ? "slot-selected" : ""}`}
+                                                            onClick={() => setTime(t)}
+                                                        >
+                                                            {t}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </>
+                            )}
+                        </div>
+
+                        {/* STEP 4 */}
+                        <div className="calendar-field">
+                            <span className="calendar-field-title"><span className="step-num">4</span> Забелешка <small>(опционално)</small></span>
+                            <textarea
+                                className="calendar-input"
+                                rows={2}
+                                maxLength={300}
+                                value={note}
+                                onChange={(e) => setNote(e.target.value)}
+                                placeholder="На пр. боја, дизајн, посебни барања…"
+                            />
+                        </div>
+
+                        {service && time && (
+                            <div className="booking-summary">
+                                <span className="booking-summary-label">Вашиот термин</span>
+                                <strong>{service}</strong>
+                                <span>{formatFriendlyDate(dateStr)} · {time} – {minutesToTime(toMinutes(time) + duration)}</span>
+                            </div>
+                        )}
+
+                        <button type="submit" disabled={loading || !service || !time} className="calendar-submit-button">
+                            {loading ? "Испраќање..." : "Испрати барање"}
+                        </button>
+
+                        {message && (
+                            <p className={`calendar-message ${message.type === "error" ? "calendar-message-error" : "calendar-message-success"}`}>
+                                {message.text}
+                            </p>
+                        )}
+                    </form>
                 </div>
 
-                {/* Drag & Drop Employee Lists */}
-                <h3 style={{marginTop: 20}}>Пренеси термини на вработени</h3>
-                <div style={{display: "flex", gap: 10}}>
-                {employees.map(emp => (
-                        <div
-                            key={emp}
-                            onDragOver={(e) => e.preventDefault()}
-                            onDrop={(e) => handleDrop(e, emp)}
-                            style={{ flex: 1, minHeight: 150, padding: 10, border: "1px solid #ccc", borderRadius: 8 }}
-                        >
-                            <h3>{emp}</h3>
-                            {getEmployeeAppointments(emp).map(appt => (
-                                <div
-                                    key={appt.id}
-                                    draggable
-                                    onDragStart={(e) => handleDragStart(e, appt)}
-                                    className="appointment-item"
-                                    style={{ background: serviceColors[appt.service] || "#ddd" }}
-                                >
-                                    <strong>
-                                        {appt.time} – {getEndTime(appt)}
-                                    </strong>
-                                    <br />
-                                    {appt.userEmail}
-                                    <br />
-                                    <small>{appt.service}</small>
-                                </div>
-                            ))}
+                <div className="calendar-client-right">
+                    <div className="client-notification-panel">
+                        <h3>Мои термини</h3>
+                        {upcoming.length === 0 ? (
+                            <p className="calendar-hint">Немате претстојни термини.</p>
+                        ) : (
+                            <div className="client-notification-list">
+                                {upcoming.map(a => (
+                                    <div key={a.id} className={`client-notification-item item-${a.status}`}>
+                                        <div className="item-top">
+                                            <strong>{formatFriendlyDate(a.date)} · {a.time}</strong>
+                                            <StatusChip status={a.status} />
+                                        </div>
+                                        <div>{a.service}</div>
+                                        {a.employee && <small>Вработена: {employeeLabel(a.employee)}</small>}
+                                        {a.status === "pending" && <small className="muted">Чека потврда од салонот</small>}
+                                        <button className="bq-btn bq-btn-ghost small-btn" onClick={() => setCancelTarget(a)}>
+                                            Откажи
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
 
-                        </div>
-                    ))}
+                        {history.length > 0 && (
+                            <>
+                                <button className="history-toggle" onClick={() => setShowHistory(s => !s)}>
+                                    {showHistory ? "Сокриј историја" : `Историја (${history.length})`}
+                                </button>
+                                {showHistory && (
+                                    <div className="client-notification-list">
+                                        {history.map(a => (
+                                            <div key={a.id} className="client-notification-item item-history">
+                                                <div className="item-top">
+                                                    <strong>{formatDisplayDate(a.date)} · {a.time}</strong>
+                                                    <StatusChip status={a.status} />
+                                                </div>
+                                                <div>{a.service}</div>
+                                                {a.rejectReason && <small>Причина: {a.rejectReason}</small>}
+                                                {a.status === "cancelled" && a.cancelReason && <small>Причина: {a.cancelReason}</small>}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </>
+                        )}
+                    </div>
                 </div>
             </div>
+
+            {cancelTarget && (
+                <Modal
+                    title="Откажи термин"
+                    onClose={() => setCancelTarget(null)}
+                    actions={
+                        <>
+                            <button className="bq-btn bq-btn-ghost" onClick={() => setCancelTarget(null)}>Назад</button>
+                            <button className="bq-btn bq-btn-danger" onClick={confirmCancel}>Откажи термин</button>
+                        </>
+                    }
+                >
+                    <div className="bq-info-row"><span className="bq-info-label">Услуга</span>{cancelTarget.service}</div>
+                    <div className="bq-info-row"><span className="bq-info-label">Термин</span>{formatFriendlyDate(cancelTarget.date)} во {cancelTarget.time}</div>
+                    <label style={{ marginTop: 12 }}>Причина (опционално)</label>
+                    <textarea
+                        placeholder="На пр. спреченост, болест…"
+                        value={cancelReason}
+                        onChange={e => setCancelReason(e.target.value)}
+                    />
+                </Modal>
+            )}
+        </div>
+    );
+};
+
+/* =====================================================
+   ADMIN
+===================================================== */
+
+const emptyManual = { clientName: "", clientPhone: "", clientEmail: "", service: "", time: "", employee: "", note: "" };
+
+// For admins, "past"/"lead" are shown separately, everything else is a capacity warning.
+const adminWarning = (appointments, appt) => {
+    const p = slotProblem(appointments, appt, { ignoreId: appt.id, admin: true });
+    return p && p.code !== "past" ? p.message : null;
+};
+
+const AdminView = ({ appointments, refresh, showToast }) => {
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [filterService, setFilterService] = useState("");
+    const [draggedAppt, setDraggedAppt] = useState(null);
+    const [acceptEmployee, setAcceptEmployee] = useState({});
+    const [reasonModal, setReasonModal] = useState(null); // { appt, action: "rejected" | "cancelled" }
+    const [reason, setReason] = useState("");
+    const [manualOpen, setManualOpen] = useState(false);
+    const [manual, setManual] = useState(emptyManual);
+    const [busyId, setBusyId] = useState(null);
+
+    const employees = getEmployees();
+    const selectedDateStr = formatLocalDate(selectedDate);
+    const todayStr = formatLocalDate(new Date());
+
+    const pending = appointments
+        .filter(a => a.status === "pending")
+        .sort((a, b) => appointmentDate(a) - appointmentDate(b));
+    const accepted = appointments.filter(a => a.status === "accepted");
+
+    const dayAppointments = accepted
+        .filter(a => a.date === selectedDateStr)
+        .filter(a => !filterService || a.service === filterService)
+        .sort((a, b) => a.time.localeCompare(b.time));
+
+    const weekEnd = addDays(new Date(), 7);
+    const stats = {
+        pending: pending.length,
+        today: accepted.filter(a => a.date === todayStr).length,
+        week: accepted.filter(a => appointmentDate(a) >= new Date() && appointmentDate(a) <= weekEnd).length
+    };
+
+    const update = async (appt, body, successMsg) => {
+        setBusyId(appt.id);
+        try {
+            await api.patch(`/appointments/${appt.id}`, body);
+            if (successMsg) showToast({ type: body.status || "accepted", title: successMsg, message: `${appt.clientName || appt.userEmail} · ${appt.service}` });
+            await refresh();
+        } catch (err) {
+            showToast({ type: "error", title: "Грешка", message: errorMessage(err) });
+        } finally {
+            setBusyId(null);
+        }
+    };
+
+    const accept = (appt) => {
+        const employee = acceptEmployee[appt.id];
+        update(appt, { status: "accepted", ...(employee ? { employee } : {}) }, "Терминот е прифатен");
+    };
+
+    const confirmReason = async () => {
+        const { appt, action } = reasonModal;
+        await update(appt, { status: action, reason }, action === "rejected" ? "Барањето е одбиено" : "Терминот е откажан");
+        setReasonModal(null);
+        setReason("");
+    };
+
+    const deleteAppointment = async (appt) => {
+        if (!window.confirm("Дали сте сигурни дека сакате трајно да го избришете терминот?")) return;
+        try {
+            await api.delete(`/appointments/${appt.id}`);
+            await refresh();
+        } catch (err) {
+            showToast({ type: "error", title: "Грешка", message: errorMessage(err) });
+        }
+    };
+
+    const handleDrop = (e, employeeId) => {
+        e.preventDefault();
+        if (draggedAppt && draggedAppt.employee !== employeeId) update(draggedAppt, { employee: employeeId });
+        setDraggedAppt(null);
+    };
+
+    const submitManual = async (e) => {
+        e.preventDefault();
+        try {
+            await api.post("/appointments/manual", {
+                ...manual,
+                date: selectedDateStr,
+                employee: manual.employee || null
+            });
+            showToast({ type: "accepted", title: "Терминот е додаден", message: `${manual.clientName} · ${manual.service} · ${manual.time}` });
+            setManual(emptyManual);
+            setManualOpen(false);
+            refresh();
+        } catch (err) {
+            showToast({ type: "error", title: "Грешка", message: errorMessage(err) });
+        }
+    };
+
+    const clientLabel = (a) => a.clientName || a.userEmail || "Клиент";
+
+    const employeeOptions = (current) => (
+        <>
+            <option value="">— Без вработена —</option>
+            {employees.map(e => <option key={e.id} value={e.id}>{e.label}</option>)}
+            {current && !employees.some(e => e.id === current) && (
+                <option value={current}>{current} (поранешна)</option>
+            )}
+        </>
+    );
+
+    const manualWarning = manual.service && manual.time
+        ? slotProblem(appointments, { date: selectedDateStr, time: manual.time, service: manual.service }, { admin: true })
+        : null;
+
+    return (
+        <div className="calendar-wrapper admin-view">
+            <div className="admin-stats">
+                <div className="stat-card"><span>{stats.pending}</span>Нови барања</div>
+                <div className="stat-card"><span>{stats.today}</span>Термини денес</div>
+                <div className="stat-card"><span>{stats.week}</span>Следни 7 дена</div>
+                <button className="bq-btn bq-btn-primary add-btn" onClick={() => setManualOpen(true)}>+ Нов термин</button>
+            </div>
+
+            <div className="admin-layout">
+                {/* LEFT – pending requests */}
+                <section className="admin-pending">
+                    <h2>Нови барања</h2>
+                    {pending.length === 0 ? (
+                        <p className="calendar-hint">Нема нови барања во моментов.</p>
+                    ) : (
+                        <ul className="pending-list">
+                            {pending.map(appt => {
+                                const warning = adminWarning(appointments, appt);
+                                return (
+                                    <li key={appt.id} className="pending-appointment">
+                                        <div className="item-top">
+                                            <strong>{clientLabel(appt)}</strong>
+                                            <span className="service-badge" style={{ background: serviceColor(appt.service) }}>
+                                                {appt.service}
+                                            </span>
+                                        </div>
+                                        <p>📅 {formatFriendlyDate(appt.date)} · {appt.time} – {endTimeOf(appt)}</p>
+                                        {appt.clientPhone && <p>📞 <a href={`tel:${appt.clientPhone}`}>{appt.clientPhone}</a></p>}
+                                        {appt.userEmail && <p className="muted">✉️ {appt.userEmail}</p>}
+                                        {appt.note && <p className="appt-note">💬 {appt.note}</p>}
+                                        {appointmentDate(appt) < new Date() && <p className="warn">⚠️ Времето на терминот помина</p>}
+                                        {warning && <p className="warn">⚠️ {warning}</p>}
+                                        <div className="pending-actions">
+                                            <select
+                                                value={acceptEmployee[appt.id] || ""}
+                                                onChange={(e) => setAcceptEmployee(prev => ({ ...prev, [appt.id]: e.target.value }))}
+                                                aria-label="Вработена"
+                                            >
+                                                {employeeOptions()}
+                                            </select>
+                                            <button className="bq-btn bq-btn-success" disabled={busyId === appt.id} onClick={() => accept(appt)}>
+                                                Прифати
+                                            </button>
+                                            <button
+                                                className="bq-btn bq-btn-danger"
+                                                disabled={busyId === appt.id}
+                                                onClick={() => setReasonModal({ appt, action: "rejected" })}
+                                            >
+                                                Одбиј
+                                            </button>
+                                        </div>
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    )}
+                </section>
+
+                {/* RIGHT – calendar + day schedule */}
+                <section className="admin-schedule">
+                    <h2>Распоред</h2>
+
+                    <Calendar
+                        value={selectedDate}
+                        onChange={setSelectedDate}
+                        locale="mk-MK"
+                        tileContent={({ date, view }) => {
+                            if (view !== "month") return null;
+                            const dayStr = formatLocalDate(date);
+                            const count = accepted.filter(a => a.date === dayStr).length;
+                            const hasPending = pending.some(a => a.date === dayStr);
+                            return (count > 0 || hasPending) ? (
+                                <span className="tile-dots">
+                                    {count > 0 && <span className="tile-count">{count}</span>}
+                                    {hasPending && <span className="tile-pending">●</span>}
+                                </span>
+                            ) : null;
+                        }}
+                        tileClassName={({ date, view }) => {
+                            if (view !== "month") return null;
+                            if (sameDay(date, new Date())) return "today-highlight";
+                            return dayHours(formatLocalDate(date)) ? null : "day-closed";
+                        }}
+                    />
+
+                    <div className="day-header">
+                        <h3>{formatFriendlyDate(selectedDateStr)} ({dayAppointments.length})</h3>
+                        <select value={filterService} onChange={(e) => setFilterService(e.target.value)} aria-label="Филтрирај по услуга">
+                            <option value="">Сите услуги</option>
+                            {getServices().map(s => <option key={s.name} value={s.name}>{s.name}</option>)}
+                        </select>
+                    </div>
+
+                    <div className="appointments-list">
+                        {dayAppointments.length === 0 ? (
+                            <p className="calendar-hint">Нема потврдени термини за овој ден.</p>
+                        ) : dayAppointments.map(appt => (
+                            <div
+                                key={appt.id}
+                                draggable
+                                onDragStart={() => setDraggedAppt(appt)}
+                                className="appointment-item"
+                                style={{ borderLeft: `6px solid ${serviceColor(appt.service)}` }}
+                            >
+                                <div className="item-top">
+                                    <strong>{appt.time} – {endTimeOf(appt)}</strong>
+                                    <span className="service-badge" style={{ background: serviceColor(appt.service) }}>
+                                        {appt.service}
+                                    </span>
+                                </div>
+                                <div>
+                                    {clientLabel(appt)}
+                                    {appt.clientPhone && <> · <a href={`tel:${appt.clientPhone}`}>{appt.clientPhone}</a></>}
+                                    {appt.createdByAdmin && <small className="muted"> (додаден од салон)</small>}
+                                </div>
+                                {appt.note && <div className="appt-note">💬 {appt.note}</div>}
+                                <div className="appt-actions">
+                                    <select
+                                        value={appt.employee || ""}
+                                        onChange={(e) => update(appt, { employee: e.target.value || null })}
+                                        aria-label="Вработена"
+                                    >
+                                        {employeeOptions(appt.employee)}
+                                    </select>
+                                    <button className="bq-btn bq-btn-ghost small-btn" onClick={() => setReasonModal({ appt, action: "cancelled" })}>
+                                        Откажи
+                                    </button>
+                                    <button className="icon-btn" onClick={() => deleteAppointment(appt)} title="Избриши термин">🗑️</button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    <h3 className="employees-title">Вработени</h3>
+                    <p className="calendar-hint desktop-only">Повлечете термин врз вработена за да го доделите.</p>
+                    <div className="employee-columns">
+                        {employees.map(emp => {
+                            const list = accepted
+                                .filter(a => a.date === selectedDateStr && a.employee === emp.id)
+                                .sort((a, b) => a.time.localeCompare(b.time));
+                            return (
+                                <div
+                                    key={emp.id}
+                                    className={`employee-column ${draggedAppt ? "drop-ready" : ""}`}
+                                    onDragOver={(e) => e.preventDefault()}
+                                    onDrop={(e) => handleDrop(e, emp.id)}
+                                >
+                                    <h4>{emp.label} <small>({list.length})</small></h4>
+                                    {list.map(appt => (
+                                        <div
+                                            key={appt.id}
+                                            draggable
+                                            onDragStart={() => setDraggedAppt(appt)}
+                                            className="appointment-item compact"
+                                            style={{ background: serviceColor(appt.service) }}
+                                        >
+                                            <strong>{appt.time} – {endTimeOf(appt)}</strong>
+                                            <br />
+                                            {clientLabel(appt)}
+                                            <br />
+                                            <small>{appt.service}</small>
+                                        </div>
+                                    ))}
+                                </div>
+                            );
+                        })}
+                    </div>
+                </section>
+            </div>
+
+            {reasonModal && (
+                <Modal
+                    title={reasonModal.action === "rejected" ? "Одбиј барање" : "Откажи термин"}
+                    onClose={() => setReasonModal(null)}
+                    actions={
+                        <>
+                            <button className="bq-btn bq-btn-ghost" onClick={() => setReasonModal(null)}>Назад</button>
+                            <button className="bq-btn bq-btn-danger" onClick={confirmReason}>
+                                {reasonModal.action === "rejected" ? "Одбиј" : "Откажи термин"}
+                            </button>
+                        </>
+                    }
+                >
+                    <div className="bq-info-row"><span className="bq-info-label">Клиент</span>{clientLabel(reasonModal.appt)}</div>
+                    <div className="bq-info-row"><span className="bq-info-label">Услуга</span>{reasonModal.appt.service}</div>
+                    <div className="bq-info-row"><span className="bq-info-label">Термин</span>{formatFriendlyDate(reasonModal.appt.date)} во {reasonModal.appt.time}</div>
+                    <label style={{ marginTop: 12 }}>Причина (клиентот ќе ја види)</label>
+                    <textarea value={reason} onChange={(e) => setReason(e.target.value)} />
+                </Modal>
+            )}
+
+            {manualOpen && (
+                <Modal title={`Нов термин · ${formatFriendlyDate(selectedDateStr)}`} onClose={() => setManualOpen(false)} wide>
+                    <form onSubmit={submitManual}>
+                        <label>Име на клиент *</label>
+                        <input required value={manual.clientName} onChange={e => setManual({ ...manual, clientName: e.target.value })} />
+                        <label>Телефон</label>
+                        <input type="tel" value={manual.clientPhone} onChange={e => setManual({ ...manual, clientPhone: e.target.value })} />
+                        <label>Е-пошта (ако има профил – ќе добие известувања)</label>
+                        <input type="email" value={manual.clientEmail} onChange={e => setManual({ ...manual, clientEmail: e.target.value })} />
+                        <label>Услуга *</label>
+                        <select required value={manual.service} onChange={e => setManual({ ...manual, service: e.target.value })}>
+                            <option value="" disabled>Изберете услуга…</option>
+                            {getServices().map(s => <option key={s.name} value={s.name}>{s.name} · {s.duration} мин</option>)}
+                        </select>
+                        <label>Време *</label>
+                        <select required value={manual.time} onChange={e => setManual({ ...manual, time: e.target.value })}>
+                            <option value="" disabled>Изберете време…</option>
+                            {allDayTimes().map(t => {
+                                const p = manual.service
+                                    ? slotProblem(appointments, { date: selectedDateStr, time: t, service: manual.service }, { admin: true })
+                                    : null;
+                                return (
+                                    <option key={t} value={t} disabled={p?.code === "past"}>
+                                        {t}{p && p.code !== "past" ? " ⚠" : ""}
+                                    </option>
+                                );
+                            })}
+                        </select>
+                        {manualWarning && manualWarning.code !== "past" && (
+                            <p className="warn">⚠️ {manualWarning.message}. Може да зачувате, но проверете го распоредот.</p>
+                        )}
+                        <label>Вработена</label>
+                        <select value={manual.employee} onChange={e => setManual({ ...manual, employee: e.target.value })}>
+                            {employeeOptions()}
+                        </select>
+                        <label>Забелешка</label>
+                        <textarea value={manual.note} onChange={e => setManual({ ...manual, note: e.target.value })} />
+                        <div className="bq-modal-actions">
+                            <button type="button" className="bq-btn bq-btn-ghost" onClick={() => setManualOpen(false)}>Назад</button>
+                            <button type="submit" className="bq-btn bq-btn-primary">Зачувај</button>
+                        </div>
+                    </form>
+                </Modal>
+            )}
         </div>
     );
 };

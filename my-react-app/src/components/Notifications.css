@@ -1,66 +1,251 @@
 /* ===============================
-   FULLSCREEN MODAL
+   NOTIFICATIONS PAGE
 =============================== */
-.modal-overlay {
-    position: fixed;
-    inset: 0; /* top:0 right:0 bottom:0 left:0 */
-    background: rgba(0, 0, 0, 0.55);
+.notifications-page {
     display: flex;
-    align-items: center;
     justify-content: center;
-    z-index: 9999;
+    padding: 24px 0;
 }
 
-.modal {
-    background: white;
-    padding: 24px;
-    border-radius: 16px;
-    width: 90%;
-    max-width: 420px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-    animation: modalFade 0.25s ease-out;
-}
-
-.modal h3 {
-    margin-top: 0;
-    margin-bottom: 12px;
-}
-
-.modal textarea {
+.notifications-shell {
     width: 100%;
-    min-height: 90px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    padding: 8px;
-    resize: vertical;
-    margin-bottom: 12px;
+    max-width: 760px;
+    padding: 22px;
+    border-radius: 22px;
+    background: linear-gradient(165deg, rgba(255, 248, 252, 0.95), rgba(255, 236, 245, 0.92));
+    border: 1px solid rgba(255, 255, 255, 0.88);
+    box-shadow: 0 16px 36px rgba(120, 37, 83, 0.18);
+    font-family: 'Open Sans', sans-serif;
 }
 
-.modal button {
-    margin-right: 8px;
-    padding: 8px 14px;
-    border-radius: 8px;
+.notifications-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.notifications-title {
+    margin: 0;
+    color: #9a2f66;
+    letter-spacing: 0.2px;
+}
+
+.notifications-tools {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.link-btn {
+    background: none;
     border: none;
+    color: #b73870;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    padding: 4px 0;
+    text-decoration: underline;
+}
+
+.admin-pending-banner {
+    padding: 12px 14px;
+    border-radius: 14px;
+    margin-bottom: 14px;
+    background: linear-gradient(120deg, #fff1c7, #ffe49a);
+    color: #6b4c00;
     cursor: pointer;
 }
 
-.modal button:first-of-type {
-    background: red;
-    color: white;
+.notification-card {
+    position: relative;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    border-radius: 14px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    cursor: pointer;
 }
 
-.modal button:last-of-type {
-    background: #ddd;
+.notification-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(140, 45, 92, 0.18);
 }
 
-/* subtle animation */
-@keyframes modalFade {
-    from {
-        transform: scale(0.95);
-        opacity: 0;
+.notification-card.is-unread {
+    background: linear-gradient(120deg, #ffd6e7, #ffbcd6);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+.notification-card.is-read {
+    background: rgba(255, 245, 250, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+.notification-icon {
+    font-size: 22px;
+    line-height: 1.2;
+}
+
+.notification-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.notification-title {
+    margin: 0 0 2px;
+    font-weight: 700;
+    color: #7c2453;
+}
+
+.notification-message {
+    margin: 0;
+    color: #4e2140;
+    word-wrap: break-word;
+}
+
+.notification-meta {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 6px;
+    font-size: 12px;
+    color: #8a6577;
+}
+
+.mini-status {
+    padding: 1px 8px;
+    border-radius: 10px;
+    font-weight: 700;
+}
+
+.mini-status.status-pending { background: #fff1c7; color: #8a6200; }
+.mini-status.status-accepted { background: #d5f5e6; color: #1d7a4f; }
+.mini-status.status-rejected { background: #ffe0e0; color: #b03636; }
+.mini-status.status-cancelled { background: #eee4ea; color: #7a5a6b; }
+
+.notification-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.unread-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #e0245e;
+    flex-shrink: 0;
+    margin-top: 6px;
+}
+
+.notification-button {
+    margin-top: 10px;
+    padding: 7px 12px;
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(120deg, #d75290, #b73870);
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 8px 14px rgba(156, 37, 95, 0.26);
+}
+
+.section-title {
+    margin: 20px 0 10px;
+    color: #9a2f66;
+}
+
+.accepted-list {
+    max-height: 420px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.accepted-card {
+    padding: 14px;
+    margin-bottom: 12px;
+    border-radius: 14px;
+    background: linear-gradient(130deg, #edfff8, #d9fff2);
+    border: 1px solid rgba(147, 231, 200, 0.68);
+    box-shadow: 0 9px 18px rgba(47, 138, 110, 0.12);
+}
+
+.accepted-card.urgent {
+    border-color: rgba(255, 85, 85, 0.65);
+    background: linear-gradient(130deg, #fff4f4, #ffe8e8);
+    box-shadow: 0 10px 22px rgba(198, 46, 46, 0.2);
+}
+
+.accepted-main {
+    margin: 0 0 4px;
+    color: #27473e;
+    font-weight: 700;
+}
+
+.accepted-sub {
+    margin: 0 0 6px;
+    color: #3f6157;
+    font-size: 14px;
+}
+
+.reminder {
+    margin: 8px 0;
+    padding: 8px 10px;
+    border-radius: 10px;
+}
+
+.reminder-soft {
+    color: #945602;
+    background: rgba(255, 231, 176, 0.5);
+    border: 1px solid rgba(230, 183, 79, 0.45);
+}
+
+.reminder-urgent {
+    color: #7d1111;
+    background: rgba(255, 197, 197, 0.64);
+    border: 1px solid rgba(210, 72, 72, 0.7);
+    font-weight: 700;
+    animation: urgentPulse 1.15s ease-in-out infinite;
+}
+
+.cancel-button {
+    margin-top: 8px;
+    border: none;
+    border-radius: 10px;
+    padding: 8px 12px;
+    background: linear-gradient(120deg, #ef5b5b, #c73737);
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 8px 16px rgba(180, 43, 43, 0.25);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 30px 10px;
+    color: #8a6577;
+}
+
+.empty-icon {
+    font-size: 42px;
+}
+
+@keyframes urgentPulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(221, 70, 70, 0.3); }
+    70% { transform: scale(1.01); box-shadow: 0 0 0 9px rgba(221, 70, 70, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(221, 70, 70, 0); }
+}
+
+@media (max-width: 600px) {
+    .notifications-page {
+        padding: 0;
     }
-    to {
-        transform: scale(1);
-        opacity: 1;
+
+    .notifications-shell {
+        padding: 14px;
+        border-radius: 16px;
     }
 }

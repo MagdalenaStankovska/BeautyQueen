@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import api, { errorMessage } from "../api";
 import "./LoginRegister.css";
 import logo from "./logopic.png";
 
@@ -8,34 +8,41 @@ const LoginRegister = ({ onLogin }) => {
     const [isLogin, setIsLogin] = useState(true);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [name, setName] = useState("");
+    const [phone, setPhone] = useState("");
     const [showPassword, setShowPassword] = useState(false);
-    const [message, setMessage] = useState("");
+    const [message, setMessage] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+    const login = async (loginEmail, loginPassword) => {
+        const { data } = await api.post("/login", { email: loginEmail, password: loginPassword });
+        const { token, ...user } = data;
+        onLogin(token, user);
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const endpoint = isLogin ? "/login" : "/register";
+        setLoading(true);
+        setMessage(null);
 
         try {
-            const response = await axios.post(`http://localhost:4000${endpoint}`, {
-                email,
-                password,
-            });
-
             if (isLogin) {
-                const { token, role, email: userEmail } = response.data;
-                localStorage.setItem("token", token);
-                localStorage.setItem("role", role);
-                onLogin(token, { email: userEmail, role });
-                setMessage("Успешна најава");
+                await login(email, password);
             } else {
-                setMessage("Успешна регистрација");
+                await api.post("/register", { email, password, name, phone });
+                // sign the new client straight in
+                await login(email, password);
             }
-
-            setEmail("");
-            setPassword("");
         } catch (error) {
-            setMessage(error.response?.data?.message || "Настана грешка");
+            setMessage({ type: "error", text: errorMessage(error) });
+        } finally {
+            setLoading(false);
         }
+    };
+
+    const switchMode = () => {
+        setIsLogin(!isLogin);
+        setMessage(null);
     };
 
     return (
@@ -45,26 +52,50 @@ const LoginRegister = ({ onLogin }) => {
                     <img src={logo} alt="BeautyQueen Logo" className="login-logo" />
                 </div>
 
-                <div>
-                    <h2 className="login-title">{isLogin ? "Најава" : "Регистрација"}</h2>
-                </div>
+                <h2 className="login-title">{isLogin ? "Најава" : "Регистрација"}</h2>
 
                 <form onSubmit={handleSubmit}>
+                    {!isLogin && (
+                        <>
+                            <input
+                                type="text"
+                                placeholder="Име и презиме"
+                                value={name}
+                                required
+                                autoComplete="name"
+                                onChange={(e) => setName(e.target.value)}
+                                className="login-input"
+                            />
+                            <input
+                                type="tel"
+                                placeholder="Телефон"
+                                value={phone}
+                                required
+                                autoComplete="tel"
+                                onChange={(e) => setPhone(e.target.value)}
+                                className="login-input"
+                            />
+                        </>
+                    )}
+
                     <input
                         type="email"
                         placeholder="Е-пошта"
                         value={email}
                         required
+                        autoComplete="email"
                         onChange={(e) => setEmail(e.target.value)}
                         className="login-input"
                     />
 
-                    <div className="password-wrapper" style={{ position: "relative" }}>
+                    <div className="password-wrapper">
                         <input
                             type={showPassword ? "text" : "password"}
-                            placeholder="Лозинка"
+                            placeholder={isLogin ? "Лозинка" : "Лозинка (мин. 6 карактери)"}
                             value={password}
                             required
+                            minLength={isLogin ? undefined : 6}
+                            autoComplete={isLogin ? "current-password" : "new-password"}
                             onChange={(e) => setPassword(e.target.value)}
                             className="login-input"
                         />
@@ -73,46 +104,25 @@ const LoginRegister = ({ onLogin }) => {
                             type="button"
                             onClick={() => setShowPassword((prev) => !prev)}
                             className="toggle-password"
-                            style={{
-                                position: "absolute",
-                                right: "12px",
-                                top: "50%",
-                                transform: "translateY(-50%)",
-                                background: "none",
-                                border: "none",
-                                cursor: "pointer",
-                                fontSize: "18px",
-                                padding: "0",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center"
-                            }}
+                            aria-label={showPassword ? "Сокриј лозинка" : "Прикажи лозинка"}
                         >
                             {showPassword ? <FaEyeSlash /> : <FaEye />}
                         </button>
                     </div>
 
-                    <button type="submit" className="login-button">
-                        {isLogin ? "Најави се" : "Регистрирај се"}
+                    <button type="submit" className="login-button" disabled={loading}>
+                        {loading ? "Се обработува…" : isLogin ? "Најави се" : "Регистрирај се"}
                     </button>
                 </form>
 
                 <p className="toggle-text">
                     {isLogin ? "Немате корисничка сметка?" : "Веќе имате сметка?"}{" "}
-                    <span onClick={() => setIsLogin(!isLogin)} className="toggle-link">
+                    <span onClick={switchMode} className="toggle-link" role="button" tabIndex={0}>
                         {isLogin ? "Регистрирај се" : "Најави се"}
                     </span>
                 </p>
 
-                {message && (
-                    <p
-                        className={`message ${
-                            message.toLowerCase().includes("успешна") ? "success" : "error"
-                        }`}
-                    >
-                        {message}
-                    </p>
-                )}
+                {message && <p className={`message ${message.type}`}>{message.text}</p>}
             </div>
         </div>
     );

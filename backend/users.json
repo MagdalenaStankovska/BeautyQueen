@@ -27,7 +27,7 @@
   {},
   {
     "email": "marija.stankovska@yahoo.com",
-    "password": "$2b$08$b6xMoFFNXO5AjmFR/C8TyOt0aLjzKM6dnDd56TaLVk91e3c.cfTDO",
+    "password": "$2b$10$sc1JMiEQK3LAmSQp2z2nf.4idetcwwAGnGEoSgpuA317LzNI38o/C",
     "role": "admin"
   },
   {
@@ -89,5 +89,13 @@
     "email": "magdalenastankovska12@gmail.com",
     "password": "$2b$08$X7qJgIkBuQ6bL.8fFQJ/bumcGaPDThP5ahxMO/ed4iw5kQsc1LO/K",
     "role": "user"
+  },
+  {
+    "email": "magdalenastankovska1321@gmail.com",
+    "password": "$2b$10$elS8ddA6cS0I3FL8XLrbuewuOw1l6aL4cJe9Go.TjNQF4sWLE2162",
+    "role": "user",
+    "name": "Magdalena Stankovska",
+    "phone": "+38970283452",
+    "createdAt": "2026-11-03T13:16:21.872Z"
   }
 ]
