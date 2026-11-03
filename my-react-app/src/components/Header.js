@@ -17,12 +17,9 @@ const Header = ({ activeSection, onNavClick, role, user, unreadCount, onLogout }
         <>
             <header className="bq-header">
                 <div className="bq-header-left">
-                    <img
-                        src={logo}
-                        alt="Beauty Queen Logo"
-                        className="bq-logo"
-                        onClick={() => onNavClick("home")}
-                    />
+                    <button className="bq-logo-btn" onClick={() => onNavClick("home")} aria-label="Beauty Queen – почетна">
+                        <img src={logo} alt="" className="bq-logo" />
+                    </button>
                     <nav className="bq-nav">
                         {navItems.map(({ text, id }) => (
                             <a

@@ -117,9 +117,9 @@ const LoginRegister = ({ onLogin }) => {
 
                 <p className="toggle-text">
                     {isLogin ? "Немате корисничка сметка?" : "Веќе имате сметка?"}{" "}
-                    <span onClick={switchMode} className="toggle-link" role="button" tabIndex={0}>
+                    <button type="button" onClick={switchMode} className="toggle-link">
                         {isLogin ? "Регистрирај се" : "Најави се"}
-                    </span>
+                    </button>
                 </p>
 
                 {message && <p className={`message ${message.type}`}>{message.text}</p>}

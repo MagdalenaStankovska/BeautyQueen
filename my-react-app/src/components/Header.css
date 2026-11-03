@@ -22,6 +22,14 @@
     gap: 40px;
 }
 
+.bq-logo-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    line-height: 0;
+}
+
 .bq-logo {
     height: 160px;
     width: auto;

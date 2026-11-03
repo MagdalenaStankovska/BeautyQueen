@@ -1,588 +1,12 @@
 [
   {
-    "id": 1768994689065,
-    "userEmail": "angel.buckovski@gmail.com",
-    "message": "✅ Appointment confirmed on 2025-12-29 at 12:00",
-    "type": "accepted",
-    "appointmentId": 1767022131036,
-    "isRead": true,
-    "createdAt": "2026-01-21T11:24:48.813Z"
-  },
-  {
-    "id": 1768997805752,
-    "userEmail": "slavica.stojkoska@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-01-22 at 16:30",
-    "type": "accepted",
-    "appointmentId": 1768997519608,
-    "isRead": true,
-    "createdAt": "2026-01-21T12:16:45.322Z"
-  },
-  {
-    "id": 1768997829494,
-    "userEmail": "slavica.stojkoska@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-01-21 at 16:30",
-    "type": "accepted",
-    "appointmentId": 1768996470812,
-    "isRead": true,
-    "createdAt": "2026-01-21T12:17:09.112Z"
-  },
-  {
-    "id": 1768998693382,
-    "userEmail": "angel.buckovski@gmail.com",
-    "message": "✅ Appointment confirmed on 2025-12-29 at 12:00",
-    "type": "accepted",
-    "appointmentId": 1767022143701,
-    "isRead": true,
-    "createdAt": "2026-01-21T12:31:32.665Z"
-  },
-  {
-    "id": 1768998747735,
-    "userEmail": "angel.buckovski@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-01-21 at 12:00",
-    "type": "accepted",
-    "appointmentId": 1768998734320,
-    "isRead": true,
-    "createdAt": "2026-01-21T12:32:26.749Z"
-  },
-  {
-    "id": 1768998992614,
-    "userEmail": "angel.buckovski@gmail.com",
-    "message": "✅ Appointment confirmed on 2025-12-29 at 15:00",
-    "type": "accepted",
-    "appointmentId": 1767022136172,
-    "isRead": false,
-    "createdAt": "2026-01-21T12:36:31.682Z"
-  },
-  {
-    "id": 1769004721076,
-    "userEmail": "ilina.stevanoska@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-01-31 at 16:15",
-    "type": "accepted",
-    "appointmentId": 1769004546578,
-    "isRead": true,
-    "createdAt": "2026-01-21T14:12:00.216Z"
-  },
-  {
-    "id": 1769004721931,
-    "userEmail": "ilina.stevanoska@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-01-30 at 16:00",
-    "type": "accepted",
-    "appointmentId": 1769004541050,
-    "isRead": true,
-    "createdAt": "2026-01-21T14:12:01.199Z"
-  },
-  {
-    "id": 1769005656901,
-    "userEmail": "ilina.stevanoska@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-01-21 at 12:00",
-    "type": "accepted",
-    "appointmentId": 1769005638401,
-    "isRead": true,
-    "createdAt": "2026-01-21T14:27:36.440Z"
-  },
-  {
-    "id": 1769005658326,
-    "userEmail": "ilina.stevanoska@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-01-21 at 12:00",
-    "type": "accepted",
-    "appointmentId": 1769005584275,
-    "isRead": true,
-    "createdAt": "2026-01-21T14:27:37.772Z"
-  },
-  {
-    "id": 1769005659284,
-    "userEmail": "ilina.stevanoska@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-01-21 at 12:00",
-    "type": "accepted",
-    "appointmentId": 1769005411670,
-    "isRead": true,
-    "createdAt": "2026-01-21T14:27:38.375Z"
-  },
-  {
-    "id": 1769101571289,
-    "userEmail": "slavica.stojkoska@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-01-24 at 12:00",
-    "type": "accepted",
-    "appointmentId": 1769101563354,
-    "isRead": true,
-    "createdAt": "2026-01-22T17:06:10.820Z"
-  },
-  {
-    "id": 1769101865166,
-    "userEmail": "marija.stankovska@yahoo.com",
-    "message": "❌ slavica.stojkoska@gmail.com cancelled appointment on 2026-01-22 at 16:30",
-    "type": "cancelled",
-    "appointmentId": 1768997519608,
-    "isRead": true,
-    "createdAt": "2026-01-22T17:11:04.294Z"
-  },
-  {
-    "id": 1769101868836,
-    "userEmail": "marija.stankovska@yahoo.com",
-    "message": "❌ slavica.stojkoska@gmail.com cancelled appointment on 2026-01-24 at 12:00",
-    "type": "cancelled",
-    "appointmentId": 1769101563354,
-    "isRead": true,
-    "createdAt": "2026-01-22T17:11:08.114Z"
-  },
-  {
-    "id": 1769102177191,
-    "userEmail": "marija.stankovska@yahoo.com",
-    "message": "❌ slavica.stojkoska@gmail.com cancelled appointment on 2026-01-22 at 16:00",
-    "type": "cancelled",
-    "appointmentId": 1768941048198,
-    "isRead": true,
-    "createdAt": "2026-01-22T17:16:16.257Z"
-  },
-  {
-    "id": 1769102187365,
-    "userEmail": "marija.stankovska@yahoo.com",
-    "message": "❌ slavica.stojkoska@gmail.com cancelled appointment on 2026-02-01 at 12:30",
-    "type": "cancelled",
-    "appointmentId": 1768941062635,
-    "isRead": true,
-    "createdAt": "2026-01-22T17:16:26.880Z"
-  },
-  {
-    "id": 1769114725950,
-    "userEmail": "marija.stankovska@yahoo.com",
-    "message": "❌ slavica.stojkoska@gmail.com cancelled appointment on 2026-01-30 at 12:00",
-    "type": "cancelled",
-    "appointmentId": 1768941051675,
-    "isRead": true,
-    "createdAt": "2026-01-22T20:45:25.827Z"
-  },
-  {
-    "id": 1769115033820,
-    "userEmail": "slavica.stojkoska@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-01-22 at 16:30",
-    "type": "accepted",
-    "appointmentId": 1769114623190,
-    "isRead": true,
-    "createdAt": "2026-01-22T20:50:33.215Z"
-  },
-  {
-    "id": 1769198528171,
-    "userEmail": "marija.stankovska@yahoo.com",
-    "message": "❌ slavica.stojkoska@gmail.com cancelled appointment on 2026-01-21 at 16:30",
-    "type": "cancelled",
-    "appointmentId": 1768996470812,
-    "isRead": false,
-    "createdAt": "2026-01-23T20:02:07.791Z"
-  },
-  {
-    "id": 1769802361414,
-    "userEmail": "ilina.stevanoska@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-01-21 at 12:00",
-    "type": "accepted",
-    "appointmentId": 1769005409055,
-    "isRead": true,
-    "createdAt": "2026-01-30T19:46:00.788Z"
-  },
-  {
-    "id": 1769802361664,
-    "userEmail": "ilina.stevanoska@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-01-21 at 12:00",
-    "type": "accepted",
-    "appointmentId": 1769005679454,
-    "isRead": true,
-    "createdAt": "2026-01-30T19:46:01.523Z"
-  },
-  {
-    "id": 1769802389471,
-    "userEmail": "marija.stankovska@yahoo.com",
-    "message": "❌ ilina.stevanoska@gmail.com cancelled appointment on 2025-09-18 at 14:15",
-    "type": "cancelled",
-    "appointmentId": 1758052925057,
-    "isRead": false,
-    "createdAt": "2026-01-30T19:46:28.891Z"
-  },
-  {
-    "id": 1770914652485,
-    "userEmail": "ilina.stevanoska@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-01-21 at 12:00",
-    "type": "accepted",
-    "appointmentId": 1769005916693,
-    "isRead": true,
-    "createdAt": "2026-02-12T16:44:12.083Z"
-  },
-  {
-    "id": 1771540351919,
-    "userEmail": "slavica.stojkoska@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-02-27 at 12:00",
-    "type": "accepted",
-    "appointmentId": 1770914673070,
-    "isRead": true,
-    "createdAt": "2026-02-19T22:32:31.798Z"
-  },
-  {
-    "id": 1771540384737,
-    "userEmail": "slavica.stojkoska@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-02-19 at 12:00",
-    "type": "accepted",
-    "appointmentId": 1771540371627,
-    "isRead": true,
-    "createdAt": "2026-02-19T22:33:03.796Z"
-  },
-  {
-    "id": 1771540584142,
-    "userEmail": "slavica.stojkoska@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-02-19 at 20:00",
-    "type": "accepted",
-    "appointmentId": 1771540337701,
-    "isRead": true,
-    "createdAt": "2026-02-19T22:36:23.445Z"
-  },
-  {
-    "id": 1771540660742,
-    "userEmail": "slavica.stojkoska@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-02-20 at 12:00",
-    "type": "accepted",
-    "appointmentId": 1770914682258,
-    "isRead": true,
-    "createdAt": "2026-02-19T22:37:40.042Z"
-  },
-  {
-    "id": 1771543062693,
-    "userEmail": "marija.stankovska@yahoo.com",
-    "message": "❌ slavica.stojkoska@gmail.com cancelled appointment on 2026-02-19 at 20:00",
-    "type": "cancelled",
-    "appointmentId": 1771540337701,
-    "isRead": false,
-    "createdAt": "2026-02-19T23:17:42.247Z"
-  },
-  {
-    "id": 1771543237203,
-    "userEmail": "marija.stankovska@yahoo.com",
-    "message": "❌ ilina.stevanoska@gmail.com cancelled appointment on 2026-01-21 at 12:00",
-    "type": "cancelled",
-    "appointmentId": 1769005409055,
-    "isRead": false,
-    "createdAt": "2026-02-19T23:20:37.079Z"
-  },
-  {
-    "id": 1771543297012,
-    "userEmail": "ilina.stevanoska@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-02-20 at 15:00",
-    "type": "accepted",
-    "appointmentId": 1771543197997,
-    "isRead": true,
-    "createdAt": "2026-02-19T23:21:36.746Z"
-  },
-  {
-    "id": 1771543300282,
-    "userEmail": "ilina.stevanoska@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-02-21 at 16:00",
-    "type": "accepted",
-    "appointmentId": 1771543187733,
-    "isRead": true,
-    "createdAt": "2026-02-19T23:21:39.561Z"
-  },
-  {
-    "id": 1771544439934,
-    "userEmail": "ilina.stevanoska@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-02-21 at 12:00",
-    "type": "accepted",
-    "appointmentId": 1771544430236,
-    "isRead": true,
-    "createdAt": "2026-02-19T23:40:39.575Z"
-  },
-  {
-    "id": 1771588191372,
-    "userEmail": "magdalenastankovska12@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-02-21 at 16:00",
-    "type": "accepted",
-    "appointmentId": 1771588142339,
-    "isRead": false,
-    "createdAt": "2026-02-20T11:49:50.542Z"
-  },
-  {
-    "id": 1771588252235,
-    "userEmail": "marija.stankovska@yahoo.com",
-    "message": "❌ ilina.stevanoska@gmail.com cancelled appointment on 2026-01-31 at 16:15",
-    "type": "cancelled",
-    "appointmentId": 1769004546578,
-    "isRead": true,
-    "createdAt": "2026-02-20T11:50:52.226Z"
-  },
-  {
-    "id": 1773765700691,
-    "userEmail": "marija.stankovska@yahoo.com",
-    "message": "❌ ilina.stevanoska@gmail.com cancelled appointment on 2026-01-21 at 12:00",
-    "type": "cancelled",
-    "appointmentId": 1769005411670,
-    "isRead": true,
-    "createdAt": "2026-03-17T16:41:40.231Z"
-  },
-  {
-    "id": 1774365728987,
-    "userEmail": "ilina.stevanoska@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-03-24 at 12:00",
-    "type": "accepted",
-    "appointmentId": 1774365719100,
-    "isRead": true,
-    "createdAt": "2026-03-24T15:22:08.748Z"
-  },
-  {
-    "id": 1774365729759,
-    "userEmail": "ilina.stevanoska@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-03-25 at 16:00",
-    "type": "accepted",
-    "appointmentId": 1774365709049,
-    "isRead": true,
-    "createdAt": "2026-03-24T15:22:08.982Z"
-  },
-  {
-    "id": 1774365729480,
-    "userEmail": "ilina.stevanoska@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-03-20 at 16:30",
-    "type": "accepted",
-    "appointmentId": 1773765671282,
-    "isRead": true,
-    "createdAt": "2026-03-24T15:22:09.156Z"
-  },
-  {
-    "id": 1774365729397,
-    "userEmail": "slavica.stojkoska@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-02-28 at 12:00",
-    "type": "accepted",
-    "appointmentId": 1770914677226,
-    "isRead": false,
-    "createdAt": "2026-03-24T15:22:09.305Z"
-  },
-  {
-    "id": 1774365773205,
-    "userEmail": "ilina.stevanoska@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-03-24 at 13:30",
-    "type": "accepted",
-    "appointmentId": 1774365760830,
-    "isRead": true,
-    "createdAt": "2026-03-24T15:22:52.301Z"
-  },
-  {
-    "id": 1774365773560,
-    "userEmail": "ilina.stevanoska@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-03-24 at 12:00",
-    "type": "accepted",
-    "appointmentId": 1774365752165,
-    "isRead": true,
-    "createdAt": "2026-03-24T15:22:52.807Z"
-  },
-  {
-    "id": 1774365773265,
-    "userEmail": "ilina.stevanoska@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-03-24 at 12:00",
-    "type": "accepted",
-    "appointmentId": 1774365749684,
-    "isRead": true,
-    "createdAt": "2026-03-24T15:22:53.167Z"
-  },
-  {
-    "id": 1774367597232,
-    "userEmail": "ilina.stevanoska@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-03-24 at 12:45",
-    "type": "accepted",
-    "appointmentId": 1774367583555,
-    "isRead": true,
-    "createdAt": "2026-03-24T15:53:16.339Z"
-  },
-  {
-    "id": 1774367596790,
-    "userEmail": "ilina.stevanoska@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-03-24 at 12:45",
-    "type": "accepted",
-    "appointmentId": 1774367569824,
-    "isRead": true,
-    "createdAt": "2026-03-24T15:53:16.504Z"
-  },
-  {
-    "id": 1774367597337,
-    "userEmail": "ilina.stevanoska@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-03-24 at 12:45",
-    "type": "accepted",
-    "appointmentId": 1774367561946,
-    "isRead": true,
-    "createdAt": "2026-03-24T15:53:16.677Z"
-  },
-  {
-    "id": 1774368478062,
-    "userEmail": "marija.stankovska@yahoo.com",
-    "message": "❌ ilina.stevanoska@gmail.com cancelled appointment on 2026-01-21 at 12:00",
-    "type": "cancelled",
-    "appointmentId": 1769005584275,
-    "isRead": false,
-    "createdAt": "2026-03-24T16:07:57.683Z"
-  },
-  {
-    "id": 1774368479699,
-    "userEmail": "marija.stankovska@yahoo.com",
-    "message": "❌ ilina.stevanoska@gmail.com cancelled appointment on 2026-01-21 at 12:00",
-    "type": "cancelled",
-    "appointmentId": 1769005638401,
-    "isRead": false,
-    "createdAt": "2026-03-24T16:07:59.260Z"
-  },
-  {
-    "id": 1774368484060,
-    "userEmail": "marija.stankovska@yahoo.com",
-    "message": "❌ ilina.stevanoska@gmail.com cancelled appointment on 2026-03-24 at 12:45",
-    "type": "cancelled",
-    "appointmentId": 1774367569824,
-    "isRead": false,
-    "createdAt": "2026-03-24T16:08:03.704Z"
-  },
-  {
-    "id": 1774368485463,
-    "userEmail": "marija.stankovska@yahoo.com",
-    "message": "❌ ilina.stevanoska@gmail.com cancelled appointment on 2026-03-24 at 12:45",
-    "type": "cancelled",
-    "appointmentId": 1774367583555,
-    "isRead": true,
-    "createdAt": "2026-03-24T16:08:05.278Z"
-  },
-  {
-    "id": 1774524170666,
-    "userEmail": "ilina.stevanoska@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-03-26 at 12:00",
-    "type": "accepted",
-    "appointmentId": 1774524160964,
-    "isRead": false,
-    "createdAt": "2026-03-26T11:22:50.037Z"
-  },
-  {
-    "id": 1774524170548,
-    "userEmail": "ilina.stevanoska@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-03-26 at 12:30",
-    "type": "accepted",
-    "appointmentId": 1774523834758,
-    "isRead": false,
-    "createdAt": "2026-03-26T11:22:50.290Z"
-  },
-  {
-    "id": 1774524170780,
-    "userEmail": "ilina.stevanoska@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-03-26 at 12:30",
-    "type": "accepted",
-    "appointmentId": 1774523821251,
-    "isRead": false,
-    "createdAt": "2026-03-26T11:22:50.574Z"
-  },
-  {
-    "id": 1774524171513,
-    "userEmail": "ilina.stevanoska@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-03-26 at 12:30",
-    "type": "accepted",
-    "appointmentId": 1774523813942,
-    "isRead": false,
-    "createdAt": "2026-03-26T11:22:50.916Z"
-  },
-  {
-    "id": 1774524330257,
-    "userEmail": "ilina.stevanoska@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-03-27 at 12:00",
-    "type": "accepted",
-    "appointmentId": 1774524316457,
-    "isRead": false,
-    "createdAt": "2026-03-26T11:25:30.096Z"
-  },
-  {
-    "id": 1774526352927,
-    "userEmail": "marija.stankovska@yahoo.com",
-    "message": "❌ ilina.stevanoska@gmail.com cancelled appointment on 2026-03-27 at 12:00",
-    "type": "cancelled",
-    "appointmentId": 1774524316457,
-    "isRead": true,
-    "createdAt": "2026-03-26T11:59:11.972Z"
-  },
-  {
-    "id": 1774821254203,
-    "userEmail": "magdalenastankovska12@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-03-29 at 12:00",
-    "type": "accepted",
-    "appointmentId": 1774821236642,
-    "isRead": false,
-    "createdAt": "2026-03-29T21:54:13.876Z"
-  },
-  {
-    "id": 1777754946931,
-    "userEmail": "marija.stankovska@yahoo.com",
-    "message": "❌ petar.canoski@gmail.com cancelled appointment on 2025-09-29 at 17:30",
-    "type": "cancelled",
-    "appointmentId": 1759152506622,
-    "isRead": false,
-    "createdAt": "2026-05-02T20:49:06.558Z"
-  },
-  {
-    "id": 1777754951352,
-    "userEmail": "marija.stankovska@yahoo.com",
-    "message": "❌ petar.canoski@gmail.com cancelled appointment on 2025-09-29 at 12:00",
-    "type": "cancelled",
-    "appointmentId": 1759150656217,
-    "isRead": false,
-    "createdAt": "2026-05-02T20:49:10.764Z"
-  },
-  {
-    "id": 1777755042780,
-    "userEmail": "marija.stankovska@yahoo.com",
-    "message": "❌ petar.canoski@gmail.com cancelled appointment on 2025-09-29 at 12:00",
-    "type": "cancelled",
-    "appointmentId": 1759150428492,
-    "isRead": false,
-    "createdAt": "2026-05-02T20:50:41.811Z"
-  },
-  {
-    "id": 1777755188670,
-    "userEmail": "petar.canoski@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-05-22 at 16:00",
-    "type": "accepted",
-    "appointmentId": 1777754996555,
-    "isRead": true,
-    "createdAt": "2026-05-02T20:53:08.083Z"
-  },
-  {
-    "id": 1777755194255,
-    "userEmail": "petar.canoski@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-05-22 at 16:00",
-    "type": "accepted",
-    "appointmentId": 1777755007427,
-    "isRead": true,
-    "createdAt": "2026-05-02T20:53:13.823Z"
-  },
-  {
-    "id": 1777758801974,
-    "userEmail": "petar.canoski@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-05-14 at 16:00",
-    "type": "accepted",
-    "appointmentId": 1777758728643,
-    "isRead": false,
-    "createdAt": "2026-05-02T21:53:21.052Z"
-  },
-  {
-    "id": 1777758801826,
-    "userEmail": "petar.canoski@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-05-02 at 12:00",
-    "type": "accepted",
-    "appointmentId": 1777758753019,
-    "isRead": false,
-    "createdAt": "2026-05-02T21:53:21.707Z"
-  },
-  {
-    "id": 1777758802246,
-    "userEmail": "petar.canoski@gmail.com",
-    "message": "✅ Appointment confirmed on 2026-05-15 at 16:00",
-    "type": "accepted",
-    "appointmentId": 1777754987784,
-    "isRead": false,
-    "createdAt": "2026-05-02T21:53:22.198Z"
-  },
-  {
     "id": 1793711847795,
     "userEmail": "marija.stankovska@yahoo.com",
     "title": "Ново барање за термин",
     "message": "📅 Magdalena Stankovska бара термин: Депилација (целосна), 11.11.2026 во 17:45",
     "type": "request",
     "appointmentId": 1793711847793,
-    "isRead": false,
+    "isRead": true,
     "createdAt": "2026-11-03T13:17:27.795Z"
   },
   {
@@ -592,7 +16,7 @@
     "message": "📅 Magdalena Stankovska бара термин: Педикир (целосен+gel лак), 11.11.2026 во 14:45",
     "type": "request",
     "appointmentId": 1793711874382,
-    "isRead": false,
+    "isRead": true,
     "createdAt": "2026-11-03T13:17:54.383Z"
   },
   {
@@ -622,7 +46,7 @@
     "message": "📅 Magdalena Stankovska бара термин: Чупање веѓи, 03.11.2026 во 15:30",
     "type": "request",
     "appointmentId": 1793713346379,
-    "isRead": false,
+    "isRead": true,
     "createdAt": "2026-11-03T13:42:26.380Z"
   },
   {
@@ -632,7 +56,7 @@
     "message": "📅 Magdalena Stankovska бара термин: Педикир (целосен+gel лак), 03.11.2026 во 16:00",
     "type": "request",
     "appointmentId": 1793713358829,
-    "isRead": false,
+    "isRead": true,
     "createdAt": "2026-11-03T13:42:38.830Z"
   },
   {
@@ -642,7 +66,7 @@
     "message": "✅ Вашиот термин е потврден: Чупање веѓи, 03.11.2026 во 15:30",
     "type": "accepted",
     "appointmentId": 1793713346379,
-    "isRead": false,
+    "isRead": true,
     "createdAt": "2026-11-03T13:43:50.134Z"
   },
   {
@@ -652,7 +76,7 @@
     "message": "✅ Вашиот термин е потврден: Педикир (целосен+gel лак), 03.11.2026 во 16:00",
     "type": "accepted",
     "appointmentId": 1793713358829,
-    "isRead": false,
+    "isRead": true,
     "createdAt": "2026-11-03T13:43:57.938Z"
   },
   {
@@ -662,7 +86,7 @@
     "message": "⏰ Потсетник: терминот за Чупање веѓи е денес во 15:30. Ве очекуваме!",
     "type": "reminder",
     "appointmentId": 1793713346379,
-    "isRead": false,
+    "isRead": true,
     "createdAt": "2026-11-03T13:44:00.031Z"
   },
   {
@@ -672,7 +96,7 @@
     "message": "⏰ Magdalena Stankovska – Чупање веѓи во 15:30 (Sara)",
     "type": "reminder",
     "appointmentId": 1793713346379,
-    "isRead": false,
+    "isRead": true,
     "createdAt": "2026-11-03T13:44:00.032Z"
   },
   {
@@ -682,7 +106,127 @@
     "message": "⏰ Потсетник: имате термин денес во 16:00 – Педикир (целосен+gel лак).",
     "type": "reminder",
     "appointmentId": 1793713358829,
-    "isRead": false,
+    "isRead": true,
     "createdAt": "2026-11-03T13:44:00.040Z"
+  },
+  {
+    "id": 1793714400027,
+    "userEmail": "magdalenastankovska1321@gmail.com",
+    "title": "Терминот е за 1 час",
+    "message": "⏰ Потсетник: терминот за Педикир (целосен+gel лак) е денес во 16:00. Ве очекуваме!",
+    "type": "reminder",
+    "appointmentId": 1793713358829,
+    "isRead": true,
+    "createdAt": "2026-11-03T14:00:00.027Z"
+  },
+  {
+    "id": 1793714400028,
+    "userEmail": "marija.stankovska@yahoo.com",
+    "title": "Следен термин за 1 час",
+    "message": "⏰ Magdalena Stankovska – Педикир (целосен+gel лак) во 16:00 (Sara)",
+    "type": "reminder",
+    "appointmentId": 1793713358829,
+    "isRead": true,
+    "createdAt": "2026-11-03T14:00:00.028Z"
+  },
+  {
+    "id": 1793746667488,
+    "userEmail": "magdalenastankovska1321@gmail.com",
+    "title": "Термин закажан",
+    "message": "✅ Закажан ви е термин: Маникир (само гел лак), 06.11.2026 во 18:45",
+    "type": "accepted",
+    "appointmentId": 1793746667485,
+    "isRead": true,
+    "createdAt": "2026-11-03T22:57:47.488Z"
+  },
+  {
+    "id": 1793746729199,
+    "userEmail": "marija.stankovska@yahoo.com",
+    "title": "Откажан термин",
+    "message": "❌ Magdalena Stankovska го откажа терминот: Маникир (само гел лак), 06.11.2026 во 18:45",
+    "type": "cancelled",
+    "appointmentId": 1793746667485,
+    "isRead": true,
+    "createdAt": "2026-11-03T22:58:49.199Z"
+  },
+  {
+    "id": 1793746784135,
+    "userEmail": "marija.stankovska@yahoo.com",
+    "title": "Ново барање за термин",
+    "message": "📅 Magdalena Stankovska бара термин: Педикир (гел лак на нозе), 04.11.2026 во 11:00",
+    "type": "request",
+    "appointmentId": 1793746784130,
+    "isRead": true,
+    "createdAt": "2026-11-03T22:59:44.135Z"
+  },
+  {
+    "id": 1793746810453,
+    "userEmail": "marija.stankovska@yahoo.com",
+    "title": "Ново барање за термин",
+    "message": "📅 Magdalena Stankovska бара термин: Депилација (целосна), 04.11.2026 во 11:00",
+    "type": "request",
+    "appointmentId": 1793746810449,
+    "isRead": true,
+    "createdAt": "2026-11-03T23:00:10.453Z"
+  },
+  {
+    "id": 1793746837090,
+    "userEmail": "magdalenastankovska1321@gmail.com",
+    "title": "Терминот е потврден",
+    "message": "✅ Вашиот термин е потврден: Депилација (целосна), 04.11.2026 во 11:00",
+    "type": "accepted",
+    "appointmentId": 1793746810449,
+    "isRead": false,
+    "createdAt": "2026-11-03T23:00:37.090Z"
+  },
+  {
+    "id": 1793746843212,
+    "userEmail": "magdalenastankovska1321@gmail.com",
+    "title": "Терминот е потврден",
+    "message": "✅ Вашиот термин е потврден: Педикир (гел лак на нозе), 04.11.2026 во 11:00",
+    "type": "accepted",
+    "appointmentId": 1793746784130,
+    "isRead": false,
+    "createdAt": "2026-11-03T23:00:43.212Z"
+  },
+  {
+    "id": 1793746860025,
+    "userEmail": "magdalenastankovska1321@gmail.com",
+    "title": "Потсетник за термин",
+    "message": "⏰ Потсетник: имате термин денес во 11:00 – Педикир (гел лак на нозе).",
+    "type": "reminder",
+    "appointmentId": 1793746784130,
+    "isRead": false,
+    "createdAt": "2026-11-03T23:01:00.026Z"
+  },
+  {
+    "id": 1793746860027,
+    "userEmail": "magdalenastankovska1321@gmail.com",
+    "title": "Потсетник за термин",
+    "message": "⏰ Потсетник: имате термин денес во 11:00 – Депилација (целосна).",
+    "type": "reminder",
+    "appointmentId": 1793746810449,
+    "isRead": false,
+    "createdAt": "2026-11-03T23:01:00.027Z"
+  },
+  {
+    "id": 1793748432262,
+    "userEmail": "marija.stankovska@yahoo.com",
+    "title": "Ново барање за термин",
+    "message": "📅 Magdalena Stankovska бара термин: Маникир (само гел лак), 03.12.2026 во 17:00",
+    "type": "request",
+    "appointmentId": 1793748432258,
+    "isRead": false,
+    "createdAt": "2026-11-03T23:27:12.262Z"
+  },
+  {
+    "id": 1793748441082,
+    "userEmail": "marija.stankovska@yahoo.com",
+    "title": "Ново барање за термин",
+    "message": "📅 Magdalena Stankovska бара термин: Маникир (само гел лак), 03.12.2026 во 17:00",
+    "type": "request",
+    "appointmentId": 1793748441081,
+    "isRead": false,
+    "createdAt": "2026-11-03T23:27:21.082Z"
   }
 ]

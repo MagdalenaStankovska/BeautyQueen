@@ -1307,6 +1307,103 @@
     "createdAt": "2026-11-03T13:42:38.829Z",
     "reminders": {
       "day": true,
+      "hour": true
+    }
+  },
+  {
+    "id": 1793746667485,
+    "userEmail": "magdalenastankovska1321@gmail.com",
+    "clientName": "Magdalena Stankovska",
+    "clientPhone": "",
+    "date": "2026-11-06",
+    "time": "18:45",
+    "service": "Маникир (само гел лак)",
+    "note": "",
+    "status": "cancelled",
+    "employee": "Sara",
+    "cancelReason": "nem ozham",
+    "rejectReason": null,
+    "createdAt": "2026-11-03T22:57:47.485Z",
+    "createdByAdmin": true,
+    "reminders": {
+      "day": false,
+      "hour": false
+    },
+    "cancelledBy": "client"
+  },
+  {
+    "id": 1793746784130,
+    "userEmail": "magdalenastankovska1321@gmail.com",
+    "clientName": "Magdalena Stankovska",
+    "clientPhone": "+38970283452",
+    "date": "2026-11-04",
+    "time": "11:00",
+    "service": "Педикир (гел лак на нозе)",
+    "note": "",
+    "status": "accepted",
+    "employee": "Sara",
+    "cancelReason": null,
+    "rejectReason": null,
+    "createdAt": "2026-11-03T22:59:44.130Z",
+    "reminders": {
+      "day": true,
+      "hour": false
+    }
+  },
+  {
+    "id": 1793746810449,
+    "userEmail": "magdalenastankovska1321@gmail.com",
+    "clientName": "Magdalena Stankovska",
+    "clientPhone": "+38970283452",
+    "date": "2026-11-04",
+    "time": "11:00",
+    "service": "Депилација (целосна)",
+    "note": "",
+    "status": "accepted",
+    "employee": "Izabela",
+    "cancelReason": null,
+    "rejectReason": null,
+    "createdAt": "2026-11-03T23:00:10.449Z",
+    "reminders": {
+      "day": true,
+      "hour": false
+    }
+  },
+  {
+    "id": 1793748432258,
+    "userEmail": "magdalenastankovska1321@gmail.com",
+    "clientName": "Magdalena Stankovska",
+    "clientPhone": "+38970283452",
+    "date": "2026-12-03",
+    "time": "17:00",
+    "service": "Маникир (само гел лак)",
+    "note": "",
+    "status": "pending",
+    "employee": null,
+    "cancelReason": null,
+    "rejectReason": null,
+    "createdAt": "2026-11-03T23:27:12.258Z",
+    "reminders": {
+      "day": false,
+      "hour": false
+    }
+  },
+  {
+    "id": 1793748441081,
+    "userEmail": "magdalenastankovska1321@gmail.com",
+    "clientName": "Magdalena Stankovska",
+    "clientPhone": "+38970283452",
+    "date": "2026-12-03",
+    "time": "17:00",
+    "service": "Маникир (само гел лак)",
+    "note": "",
+    "status": "pending",
+    "employee": null,
+    "cancelReason": null,
+    "rejectReason": null,
+    "createdAt": "2026-11-03T23:27:21.081Z",
+    "reminders": {
+      "day": false,
       "hour": false
     }
   }

@@ -150,6 +150,15 @@ export const candidateTimes = (dateStr, service) => {
     return times;
 };
 
+// Every start time inside opening hours, regardless of service length (for showing the full day grid).
+export const dayTimes = (dateStr) => {
+    const hours = dayHours(dateStr);
+    if (!hours) return [];
+    const times = [];
+    for (let m = toMinutes(hours.open); m < toMinutes(hours.close); m += config.slotStep) times.push(minutesToTime(m));
+    return times;
+};
+
 // Every start time across the whole day (admin manual booking may go outside hours).
 export const allDayTimes = () => {
     const times = [];

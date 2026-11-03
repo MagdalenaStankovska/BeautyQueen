@@ -211,8 +211,11 @@ function App() {
                 navigator.vibrate?.([220, 120, 220]);
             }
             // If push isn't set up, still surface a system notification when the tab is in the background.
+            // (`new Notification()` throws on Android Chrome, so go through the service worker.)
             if (document.hidden && !pushEnabledRef.current && "Notification" in window && Notification.permission === "granted") {
-                new Notification(n.title || "Beauty Queen", { body: n.message, icon: "/logo192.png" });
+                navigator.serviceWorker?.getRegistration()
+                    .then(reg => reg?.showNotification(n.title || "Beauty Queen", { body: n.message, icon: "/logo192.png", tag: `bq-${n.id}` }))
+                    .catch(() => {});
             }
         });
 

@@ -8,6 +8,7 @@ import {
     allDayTimes,
     appointmentDate,
     dayHours,
+    dayTimes,
     durationOf,
     employeeLabel,
     endTimeOf,
@@ -121,10 +122,17 @@ const ClientView = ({ appointments, myAppointments, refresh, showToast }) => {
     const duration = durationOf(service);
     const maxDate = addDays(new Date(), cfg.maxDaysAhead);
 
-    const times = useMemo(
-        () => (service ? freeTimes(appointments, dateStr, service) : []),
+    // Full day grid: every start time in opening hours, each with the reason it can't be booked (or null).
+    const slots = useMemo(
+        () => (service
+            ? dayTimes(dateStr).map(t => ({ time: t, problem: slotProblem(appointments, { date: dateStr, time: t, service }) }))
+            : []),
         [appointments, dateStr, service]
     );
+    const times = useMemo(() => slots.filter(s => !s.problem).map(s => s.time), [slots]);
+    const [blockedInfo, setBlockedInfo] = useState(null); // { time, message } for a tapped unavailable slot
+
+    useEffect(() => setBlockedInfo(null), [dateStr, service]);
 
     // per-day "has any free time" cache for the calendar tiles
     const dayHasFree = useMemo(() => {
@@ -267,34 +275,46 @@ const ClientView = ({ appointments, myAppointments, refresh, showToast }) => {
 
                             {!service ? (
                                 <p className="calendar-hint">Прво изберете услуга за да ги видите слободните термини.</p>
-                            ) : times.length === 0 ? (
-                                <div className="no-slots">
-                                    <p>Нема слободни термини за <strong>{service}</strong> на овој ден.</p>
-                                    {nextFreeDay && (
-                                        <button type="button" className="bq-btn bq-btn-primary" onClick={() => setDate(nextFreeDay)}>
-                                            Прв слободен ден: {formatFriendlyDate(formatLocalDate(nextFreeDay))}
-                                        </button>
-                                    )}
-                                </div>
                             ) : (
                                 <>
                                     <p className="calendar-hint">
-                                        Услугата трае <strong>{duration} мин</strong>. Прикажани се само почетните времиња во кои
-                                        целата услуга може да заврши пред следниот зафатен термин и пред затворање.
+                                        Услугата трае <strong>{duration} мин</strong>. Сивите термини не се достапни –
+                                        допрете на нив за да видите зошто.
                                     </p>
+                                    {times.length === 0 && (
+                                        <div className="no-slots">
+                                            <p>Нема слободни термини за <strong>{service}</strong> на овој ден.</p>
+                                            {nextFreeDay && (
+                                                <button type="button" className="bq-btn bq-btn-primary" onClick={() => setDate(nextFreeDay)}>
+                                                    Прв слободен ден: {formatFriendlyDate(formatLocalDate(nextFreeDay))}
+                                                </button>
+                                            )}
+                                        </div>
+                                    )}
                                     {dayParts.map(part => {
-                                        const partTimes = times.filter(t => part.test(toMinutes(t)));
-                                        if (!partTimes.length) return null;
+                                        const partSlots = slots.filter(s => part.test(toMinutes(s.time)));
+                                        if (!partSlots.length) return null;
                                         return (
                                             <div key={part.label} className="slot-section">
                                                 <div className="slot-section-title">{part.label}</div>
                                                 <div className="slot-grid">
-                                                    {partTimes.map(t => (
+                                                    {partSlots.map(({ time: t, problem }) => (
+                                                        // aria-disabled (not `disabled`) so a tap can still explain why it's unavailable
                                                         <button
                                                             type="button"
                                                             key={t}
-                                                            className={`slot ${time === t ? "slot-selected" : ""}`}
-                                                            onClick={() => setTime(t)}
+                                                            aria-disabled={Boolean(problem)}
+                                                            aria-label={problem ? `${t} – недостапно: ${problem.message}` : `${t} – слободно`}
+                                                            aria-pressed={time === t}
+                                                            className={`slot ${problem ? `slot-unavailable slot-${problem.code}` : ""} ${time === t ? "slot-selected" : ""} ${blockedInfo?.time === t ? "slot-explained" : ""}`}
+                                                            onClick={() => {
+                                                                if (problem) {
+                                                                    setBlockedInfo({ time: t, message: problem.message });
+                                                                } else {
+                                                                    setBlockedInfo(null);
+                                                                    setTime(t);
+                                                                }
+                                                            }}
                                                         >
                                                             {t}
                                                         </button>
@@ -303,6 +323,16 @@ const ClientView = ({ appointments, myAppointments, refresh, showToast }) => {
                                             </div>
                                         );
                                     })}
+                                    {blockedInfo && (
+                                        <p className="slot-reason" role="status">
+                                            <strong>{blockedInfo.time} не е достапно:</strong> {blockedInfo.message}.
+                                        </p>
+                                    )}
+                                    <div className="slot-legend">
+                                        <span><i className="legend-swatch swatch-free" /> Слободно</span>
+                                        <span><i className="legend-swatch swatch-busy" /> Зафатено</span>
+                                        <span><i className="legend-swatch swatch-out" /> Поминато / надвор од работно време</span>
+                                    </div>
                                 </>
                             )}
                         </div>

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import "./Modal.css";
 
@@ -19,6 +19,15 @@ export const useScrollLock = () => {
 // become the containing block for position:fixed and the dialog would be placed inside the card.
 const Modal = ({ title, children, onClose, actions, wide = false }) => {
     useScrollLock();
+    const dialogRef = useRef(null);
+
+    // move keyboard focus into the dialog and give it back to the opener when closed
+    useEffect(() => {
+        const opener = document.activeElement;
+        const first = dialogRef.current?.querySelector("textarea, input, select, button:not(.bq-modal-close)");
+        (first || dialogRef.current)?.focus();
+        return () => opener?.focus?.();
+    }, []);
 
     useEffect(() => {
         const onKey = (e) => e.key === "Escape" && onClose();
@@ -29,9 +38,12 @@ const Modal = ({ title, children, onClose, actions, wide = false }) => {
     return createPortal(
         <div className="bq-modal-overlay" onClick={onClose}>
             <div
+                ref={dialogRef}
+                tabIndex={-1}
                 className={`bq-modal ${wide ? "bq-modal-wide" : ""}`}
                 role="dialog"
                 aria-modal="true"
+                aria-label={title}
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="bq-modal-head">

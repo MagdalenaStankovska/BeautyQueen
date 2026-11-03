@@ -254,6 +254,67 @@
     margin-top: 12px;
 }
 
+/* unavailable slots stay visible but greyed out; tapping explains why */
+.slot.slot-unavailable {
+    cursor: not-allowed;
+    text-decoration: line-through;
+    box-shadow: none;
+}
+
+.slot.slot-unavailable:hover {
+    transform: none;
+}
+
+.slot-resource,
+.slot-staff {
+    background: #f6e9ef;
+    border-color: #e9d2de;
+    color: #b596a6;
+}
+
+.slot-past,
+.slot-lead,
+.slot-hours,
+.slot-closed {
+    background: #f4f1f3;
+    border-color: #e7e1e4;
+    color: #bfb3b9;
+}
+
+.slot-explained {
+    outline: 2px solid #d9a3bf;
+    outline-offset: 1px;
+}
+
+.slot-reason {
+    margin: 12px 0 0;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: #fff4e5;
+    border: 1px solid #f3d29b;
+    color: #7a4d00;
+    font-size: 14px;
+}
+
+.slot-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    font-size: 12px;
+    color: #8a6577;
+    margin-top: 12px;
+}
+
+.slot-legend span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.swatch-free { background: #fff0f6; border: 1px solid #f0bcd5; }
+.swatch-busy { background: #f6e9ef; border: 1px solid #e9d2de; }
+.swatch-out { background: #f4f1f3; border: 1px solid #e7e1e4; }
+
 .slot-section-title {
     font-size: 12px;
     font-weight: 700;

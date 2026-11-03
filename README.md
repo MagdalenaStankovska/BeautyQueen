@@ -8,7 +8,7 @@ Appointment booking app for the Beauty Queen Studio salon: clients request appoi
 ## Features
 
 ### Clients
-- Book in three steps: **service → date → free time slot**. Busy, full or past slots are disabled and update live when someone else books.
+- Book in three steps: **service → date → time**. The whole day is shown; times that can't be booked stay visible but greyed out, and tapping one explains why (e.g. "the pedicure chair is busy 14:45–16:00"). Availability updates live when someone else books.
 - Optional note with the request (colour, design, special requests).
 - "My appointments" with status, assigned staff member, history, and cancel-with-reason.
 - Real-time notifications when an appointment is **accepted / rejected / cancelled by the salon**.
@@ -49,8 +49,40 @@ npm start
 Admin accounts are the emails listed in `ADMIN_EMAILS` (default `marija.stankovska@yahoo.com`).
 
 ### Configuration
-- `backend/.env`: see `backend/.env.example` (JWT secret, admin emails, CORS origin, time zone). VAPID keys for push are generated into `backend/vapid.json` on first start. Keep that file, because regenerating it invalidates existing push subscriptions.
-- `my-react-app/.env`: `REACT_APP_API_URL` if the backend is not on `<same host>:4000`.
+- `backend/.env`: see `backend/.env.example` (NODE_ENV, JWT secret, admin emails, CORS origin, data directory, proxy, time zone). VAPID keys for push are generated into `$DATA_DIR/vapid.json` on first start. Keep that file, because regenerating it invalidates existing push subscriptions.
+- `my-react-app/.env`: see `my-react-app/.env.example` (`REACT_APP_API_URL`).
+
+### Project layout
+| Path | What |
+|---|---|
+| `backend/app.js` | API, sockets, reminders, built by `createApp()` (used by both the server and the tests) |
+| `backend/server.js` | Entry point: env, start, graceful shutdown |
+| `backend/salon-config.js` | Business rules (hours, services, staff, stations) |
+| `backend/tests/` | Jest unit + integration + socket tests |
+| `my-react-app/src/salon.js` | Same scheduling rules for the UI (loaded live from `/config`) |
+| `e2e/` | Playwright end-to-end tests |
+
+## Testing
+
+```bash
+cd backend && npm test             # 95 unit/integration/socket tests
+cd backend && npm run test:coverage
+cd backend && npm run lint
+
+cd my-react-app && npx react-scripts test --watchAll=false   # unit + component tests
+
+cd e2e && npm install && npm run test:all   # builds the UI, starts a throw-away API, runs Playwright in local Chrome
+```
+
+All tests run against temporary data folders and never touch the real JSON files.
+
+## Production
+
+- `GET /health` returns status, uptime and counts, for uptime monitors and load balancers.
+- SIGTERM/SIGINT trigger a graceful shutdown (timers stop, sockets close).
+- The server refuses to start in production without `JWT_SECRET` (32+ characters) and `CLIENT_ORIGIN`. It also refuses to start if a data file is corrupt, so data can never be silently overwritten with empty data.
+- Security: helmet headers, CORS limited to `CLIENT_ORIGIN`, rate limiting on login, register and password change, bcrypt password hashing, input length limits, image-only uploads (no SVG), path-traversal-safe deletes.
+- Build the frontend with `REACT_APP_API_URL=https://your-api npm run build` and serve `my-react-app/build` over HTTPS.
 
 ### Testing from a phone
 Push notifications and installing the app need **HTTPS** (or `localhost`). For a real device, deploy behind HTTPS or use a tunnel (e.g. `ngrok http 3000` plus one for port 4000, then set `REACT_APP_API_URL`). On iPhone, push works only after **Share → Add to Home Screen** (iOS 16.4+).
