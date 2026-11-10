@@ -43,9 +43,10 @@ function nextDate(weekdays = [1, 2, 3, 4, 5], minDays = 2) {
     return d.toLocaleDateString("sv-SE");
 }
 
+// Without a mail provider (development/test) the API returns the code as `devCode`.
 async function registerAndLogin(api, { email, password = "secret1", name = "", phone = "" }) {
-    await api.post("/register").send({ email, password, name, phone });
-    const res = await api.post("/login").send({ email, password });
+    const reg = await api.post("/register").send({ email, password, name, phone });
+    const res = await api.post("/register/verify").send({ email, code: reg.body.devCode });
     return res.body.token;
 }
 

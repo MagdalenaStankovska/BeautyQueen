@@ -8,8 +8,13 @@ function bookingDate(minDays = 3) {
     return d;
 }
 
+// Registers (the e2e API has no mail provider, so it returns the code as devCode) or, if the account exists, logs in.
 async function apiRegister(request, { email, password = "secret1", name = "", phone = "" }) {
-    await request.post(`${API}/register`, { data: { email, password, name, phone } });
+    const reg = await request.post(`${API}/register`, { data: { email, password, name, phone } });
+    if (reg.ok()) {
+        const { devCode } = await reg.json();
+        await request.post(`${API}/register/verify`, { data: { email, code: devCode } });
+    }
     const res = await request.post(`${API}/login`, { data: { email, password } });
     return res.json(); // { token, email, role, name, phone }
 }

@@ -40,9 +40,15 @@ test("unavailable slots stay visible, are disabled, and explain why when tapped"
     mockData([{ id: 1, date: formatLocalDate(day), time: "14:45", service: "Педикир (целосен+gel лак)", status: "accepted" }]);
     await openDay(day);
 
-    const blocked = await screen.findByRole("button", { name: /^14:15 – недостапно/ });
+    // 14:45 is the real booking and stays visible; 14:15/14:30 (45 min wouldn't fit before it) aren't offered at all
+    const blocked = await screen.findByRole("button", { name: /^14:45 – недостапно/ });
     expect(blocked).toHaveAttribute("aria-disabled", "true");
-    expect(blocked).toHaveClass("slot-unavailable");
+    expect(blocked).toHaveClass("slot-unavailable", "slot-resource");
+    expect(screen.queryByRole("button", { name: /^14:15/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /^14:30/ })).not.toBeInTheDocument();
+    // nor are times that would end after closing (20:00)
+    expect(screen.getByRole("button", { name: "19:15 – слободно" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /^19:30/ })).not.toBeInTheDocument();
 
     const free = screen.getByRole("button", { name: "14:00 – слободно" });
     expect(free).toHaveAttribute("aria-disabled", "false");
@@ -50,7 +56,7 @@ test("unavailable slots stay visible, are disabled, and explain why when tapped"
     // tapping the blocked slot explains, and does not select it
     fireEvent.click(blocked);
     const reason = screen.getByRole("status");
-    expect(within(reason).getByText(/14:15 не е достапно/)).toBeInTheDocument();
+    expect(within(reason).getByText(/14:45 не е достапно/)).toBeInTheDocument();
     expect(reason).toHaveTextContent("столот за педикир");
     expect(screen.queryByText("Вашиот термин")).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Испрати барање" })).toBeDisabled();
@@ -66,7 +72,7 @@ test("unavailable slots stay visible, are disabled, and explain why when tapped"
     expect(await screen.findByText(/Барањето е испратено/)).toBeInTheDocument();
 });
 
-test("every opening-hours time is shown even when the whole day is full", async () => {
+test("booked times stay visible even when the whole day is full", async () => {
     const day = bookingDay();
     const dateStr = formatLocalDate(day);
     // pedicure chair booked back-to-back 11:00–20:00
@@ -79,8 +85,19 @@ test("every opening-hours time is shown even when the whole day is full", async 
 
     await screen.findByText(/Нема слободни термини/);
     const slots = document.querySelectorAll(".slot");
-    expect(slots.length).toBe(36); // 11:00–19:45 every 15 min
+    expect(slots.length).toBe(34); // 11:00–19:15 (a 45 min service started later would end after 20:00)
     expect([...slots].every(s => s.getAttribute("aria-disabled") === "true")).toBe(true);
+});
+
+test("times overlapping the client's own appointment are blocked", async () => {
+    const day = bookingDay();
+    const dateStr = formatLocalDate(day);
+    const own = { id: 7, userEmail: "me@x.mk", date: dateStr, time: "12:00", service: "Lash Lift", status: "pending" };
+    mockData([own], [own]);
+    await openDay(day);
+    const slot = await screen.findByRole("button", { name: /^12:30 – недостапно: Веќе имате термин/ });
+    expect(slot).toHaveClass("slot-mine");
+    expect(screen.getByRole("button", { name: "13:00 – слободно" })).toBeInTheDocument();
 });
 
 test("server error on submit is shown to the user", async () => {

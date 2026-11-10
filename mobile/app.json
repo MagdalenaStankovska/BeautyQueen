@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "Beauty Queen",
+    "slug": "beauty-queen",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "backgroundColor": "#fff6fa",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "mk.beautyqueen.app"
+    },
+    "android": {
+      "package": "mk.beautyqueen.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#fff0f6",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-secure-store"
+    ]
+  }
+}

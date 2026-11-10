@@ -19,6 +19,7 @@ import {
     getEmployees,
     getServices,
     isActive,
+    isHiddenSlot,
     minutesToTime,
     salon,
     serviceColor,
@@ -123,11 +124,15 @@ const ClientView = ({ appointments, myAppointments, refresh, showToast }) => {
     const maxDate = addDays(new Date(), cfg.maxDaysAhead);
 
     // Full day grid: every start time in opening hours, each with the reason it can't be booked (or null).
+    // Start times where the service can't finish (before closing or before the next booking) aren't offered at all;
+    // free times and really booked times are shown.
     const slots = useMemo(
         () => (service
-            ? dayTimes(dateStr).map(t => ({ time: t, problem: slotProblem(appointments, { date: dateStr, time: t, service }) }))
+            ? dayTimes(dateStr)
+                .map(t => ({ time: t, problem: slotProblem(appointments, { date: dateStr, time: t, service }, { mine: myAppointments }) }))
+                .filter(s => !isHiddenSlot(s.problem))
             : []),
-        [appointments, dateStr, service]
+        [appointments, myAppointments, dateStr, service]
     );
     const times = useMemo(() => slots.filter(s => !s.problem).map(s => s.time), [slots]);
     const [blockedInfo, setBlockedInfo] = useState(null); // { time, message } for a tapped unavailable slot
@@ -139,10 +144,10 @@ const ClientView = ({ appointments, myAppointments, refresh, showToast }) => {
         const cache = {};
         return (dStr) => {
             if (!service) return true;
-            if (!(dStr in cache)) cache[dStr] = freeTimes(appointments, dStr, service).length > 0;
+            if (!(dStr in cache)) cache[dStr] = freeTimes(appointments, dStr, service, myAppointments).length > 0;
             return cache[dStr];
         };
-    }, [appointments, service]);
+    }, [appointments, myAppointments, service]);
 
     const nextFreeDay = useMemo(() => {
         if (!service || times.length) return null;
@@ -278,8 +283,8 @@ const ClientView = ({ appointments, myAppointments, refresh, showToast }) => {
                             ) : (
                                 <>
                                     <p className="calendar-hint">
-                                        Услугата трае <strong>{duration} мин</strong>. Сивите термини не се достапни –
-                                        допрете на нив за да видите зошто.
+                                        Услугата трае <strong>{duration} мин</strong>. Прикажани се само почетоци каде услугата
+                                        стигнува да заврши пред следниот термин и до крајот на работното време.
                                     </p>
                                     {times.length === 0 && (
                                         <div className="no-slots">
@@ -304,7 +309,7 @@ const ClientView = ({ appointments, myAppointments, refresh, showToast }) => {
                                                             type="button"
                                                             key={t}
                                                             aria-disabled={Boolean(problem)}
-                                                            aria-label={problem ? `${t} – недостапно: ${problem.message}` : `${t} – слободно`}
+                                                            aria-label={problem ? `${t} – ${problem.code === "fit" ? "не стигнува" : "недостапно"}: ${problem.message}` : `${t} – слободно`}
                                                             aria-pressed={time === t}
                                                             className={`slot ${problem ? `slot-unavailable slot-${problem.code}` : ""} ${time === t ? "slot-selected" : ""} ${blockedInfo?.time === t ? "slot-explained" : ""}`}
                                                             onClick={() => {
@@ -330,8 +335,7 @@ const ClientView = ({ appointments, myAppointments, refresh, showToast }) => {
                                     )}
                                     <div className="slot-legend">
                                         <span><i className="legend-swatch swatch-free" /> Слободно</span>
-                                        <span><i className="legend-swatch swatch-busy" /> Зафатено</span>
-                                        <span><i className="legend-swatch swatch-out" /> Поминато / надвор од работно време</span>
+                                        <span><i className="legend-swatch swatch-busy" /> Зафатено</span>                                        <span><i className="legend-swatch swatch-out" /> Поминато</span>
                                     </div>
                                 </>
                             )}

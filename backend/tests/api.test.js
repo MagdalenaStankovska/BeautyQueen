@@ -85,7 +85,8 @@ describe("auth", () => {
     });
 
     test("register trims and limits profile fields", async () => {
-        await ctx.api.post("/register").send({ email: "long@test.mk", password: "secret1", name: "N".repeat(500), phone: { x: 1 } });
+        const reg = await ctx.api.post("/register").send({ email: "long@test.mk", password: "secret1", name: "N".repeat(500), phone: { x: 1 } });
+        await ctx.api.post("/register/verify").send({ email: "long@test.mk", code: reg.body.devCode });
         const login = await ctx.api.post("/login").send({ email: "long@test.mk", password: "secret1" });
         expect(login.body.name).toHaveLength(80);
         expect(login.body.phone).toBe("");
@@ -94,7 +95,7 @@ describe("auth", () => {
     test("login is case-insensitive and returns profile; wrong password 401", async () => {
         const ok = await ctx.api.post("/login").send({ email: " Ana@Test.mk ", password: "secret1" });
         expect(ok.status).toBe(200);
-        expect(ok.body).toMatchObject({ email: "ana@test.mk", role: "user", name: "Ана", phone: "070111222" });
+        expect(ok.body).toMatchObject({ email: "ana@test.mk", role: "user", name: "Ана", phone: "+38970111222", emailVerified: true });
         expect(ok.body.password).toBeUndefined();
         expect((await ctx.api.post("/login").send({ email: "ana@test.mk", password: "wrong1" })).status).toBe(401);
         expect((await ctx.api.post("/login").send({ email: "ghost@test.mk", password: "secret1" })).status).toBe(401);
@@ -119,8 +120,9 @@ describe("auth", () => {
     });
 
     test("profile update and password change", async () => {
-        const upd = await ctx.api.patch("/me").set(ctx.auth(ctx.otherToken)).send({ name: "  Ева Е  ", phone: "071" });
-        expect(upd.body).toMatchObject({ name: "Ева Е", phone: "071" });
+        const upd = await ctx.api.patch("/me").set(ctx.auth(ctx.otherToken)).send({ name: "  Ева Е  ", phone: "071 222-333" });
+        expect(upd.body).toMatchObject({ name: "Ева Е", phone: "+38971222333", phoneVerified: false });
+        expect((await ctx.api.patch("/me").set(ctx.auth(ctx.otherToken)).send({ phone: "071" })).status).toBe(400);
         expect((await ctx.api.patch("/me/password").set(ctx.auth(ctx.otherToken)).send({ currentPassword: "nope", newPassword: "newpass1" })).status).toBe(400);
         expect((await ctx.api.patch("/me/password").set(ctx.auth(ctx.otherToken)).send({ currentPassword: "secret1", newPassword: "12" })).status).toBe(400);
         expect((await ctx.api.patch("/me/password").set(ctx.auth(ctx.otherToken)).send({ currentPassword: "secret1", newPassword: "newpass1" })).status).toBe(200);
@@ -149,7 +151,7 @@ describe("booking flow", () => {
         const res = await ctx.api.post("/appointments").set(ctx.auth(ctx.clientToken))
             .send({ date, time: "14:45", service: "Педикир (целосен+gel лак)", note: "  црвена  " });
         expect(res.status).toBe(201);
-        expect(res.body).toMatchObject({ status: "pending", clientName: "Ана", clientPhone: "070111222", note: "црвена" });
+        expect(res.body).toMatchObject({ status: "pending", clientName: "Ана", clientPhone: "+38970111222", note: "црвена" });
         ctx.pedicureId = res.body.id;
 
         const notes = await ctx.api.get("/notifications").set(ctx.auth(ctx.adminToken));
@@ -294,11 +296,12 @@ describe("concurrency", () => {
         await ctx.close();
     });
 
-    test("simultaneous duplicate registrations create one account", async () => {
+    test("simultaneous verifications of one code create one account", async () => {
         const ctx = buildApp();
         const api = await live(ctx);
+        const reg = await api.post("/register").send({ email: "dup@test.mk", password: "secret1" });
         const results = await Promise.all(
-            Array.from({ length: 5 }, () => api.post("/register").send({ email: "dup@test.mk", password: "secret1" }))
+            Array.from({ length: 5 }, () => api.post("/register/verify").send({ email: "dup@test.mk", code: reg.body.devCode }))
         );
         expect(results.filter(r => r.status === 201)).toHaveLength(1);
         expect(readJson(ctx.dataDir, "users.json").filter(u => u.email === "dup@test.mk")).toHaveLength(1);

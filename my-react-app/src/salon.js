@@ -166,8 +166,34 @@ export const allDayTimes = () => {
     return times;
 };
 
-// Reason a slot can't be booked, or null. { code: past|lead|closed|hours|resource|staff, message }
-export const slotProblem = (appointments, { date, time, service }, { ignoreId = null, admin = false } = {}) => {
+const overlaps = (a, date, start, end, ignoreId) => {
+    if (a.date !== date || !isActive(a) || a.id === ignoreId) return false;
+    const other = getService(a.service);
+    if (!other) return false;
+    const s = toMinutes(a.time);
+    return Math.max(start, s) < Math.min(end, s + other.duration);
+};
+
+// Station / staff capacity for the interval [start, end) on `date` (minutes since midnight).
+const capacityProblem = (appointments, date, start, end, svc, ignoreId) => {
+    const overlapping = appointments.filter(a => overlaps(a, date, start, end, ignoreId));
+    const resource = config.resources[svc.resource] || { label: "местото", count: 1 };
+    const sameStation = overlapping.filter(a => getService(a.service).resource === svc.resource);
+    if (sameStation.length >= resource.count) {
+        const busy = sameStation.map(a => `${a.time}–${endTimeOf(a)}`).join(", ");
+        return { code: "resource", message: `Зафатен е ${resource.label} (${busy})` };
+    }
+    if (overlapping.length >= config.employees.length)
+        return { code: "staff", message: "Сите вработени се зафатени" };
+    return null;
+};
+
+// Reason a slot can't be booked, or null.
+// { code: past|lead|closed|hours|mine|resource|staff|fit, message }
+//   resource/staff = this exact time is occupied
+//   fit            = this time itself is free, but the service is too long to finish before the next booking
+// `mine` = the client's own appointments (a person can't be booked twice at the same time).
+export const slotProblem = (appointments, { date, time, service }, { ignoreId = null, admin = false, mine = [] } = {}) => {
     const svc = getService(service);
     if (!svc) return { code: "service", message: "Изберете услуга" };
 
@@ -182,31 +208,31 @@ export const slotProblem = (appointments, { date, time, service }, { ignoreId = 
     const hours = dayHours(date);
     if (!hours) return { code: "closed", message: "Салонот не работи овој ден" };
     if (start < toMinutes(hours.open) || end > toMinutes(hours.close))
-        return { code: "hours", message: `Надвор од работното време (${hours.open}–${hours.close})` };
+        return { code: "hours", message: `Услугата трае ${svc.duration} мин и мора да заврши до ${hours.close}` };
 
-    const overlapping = appointments.filter(a => {
-        if (a.date !== date || !isActive(a) || a.id === ignoreId) return false;
-        const other = getService(a.service);
-        if (!other) return false;
-        const s = toMinutes(a.time);
-        return Math.max(start, s) < Math.min(end, s + other.duration);
-    });
+    const own = mine.find(a => overlaps(a, date, start, end, ignoreId));
+    if (own) return { code: "mine", message: `Веќе имате термин во ова време (${own.service}, ${own.time}–${endTimeOf(own)})` };
 
-    const resource = config.resources[svc.resource] || { label: "местото", count: 1 };
-    const sameStation = overlapping.filter(a => getService(a.service).resource === svc.resource);
-    if (sameStation.length >= resource.count) {
-        const busy = sameStation.map(a => `${a.time}–${endTimeOf(a)}`).join(", ");
-        return { code: "resource", message: `Зафатен е ${resource.label} (${busy})` };
-    }
+    const full = capacityProblem(appointments, date, start, end, svc, ignoreId);
+    if (!full) return null;
 
-    if (overlapping.length >= config.employees.length)
-        return { code: "staff", message: "Сите вработени се зафатени" };
-
-    return null;
+    // Is the start time itself taken, or does the service only run into a later booking?
+    const step = config.slotStep;
+    if (capacityProblem(appointments, date, start, start + step, svc, ignoreId)) return full;
+    let busyFrom = start + step;
+    while (busyFrom < end && !capacityProblem(appointments, date, busyFrom, busyFrom + step, svc, ignoreId)) busyFrom += step;
+    return {
+        code: "fit",
+        message: `Нема доволно време – услугата трае ${svc.duration} мин, а од ${minutesToTime(busyFrom)} е зафатено`
+    };
 };
 
-export const freeTimes = (appointments, dateStr, service) =>
-    candidateTimes(dateStr, service).filter(t => !slotProblem(appointments, { date: dateStr, time: t, service }));
+// "fit"/"hours" start times are never bookable for the chosen service, so the booking grid leaves them out
+// instead of showing them as disabled (it looked like the booking had spread to earlier times).
+export const isHiddenSlot = (problem) => Boolean(problem) && (problem.code === "fit" || problem.code === "hours");
+
+export const freeTimes = (appointments, dateStr, service, mine = []) =>
+    candidateTimes(dateStr, service).filter(t => !slotProblem(appointments, { date: dateStr, time: t, service }, { mine }));
 
 /* ---------- misc ---------- */
 

@@ -8,7 +8,8 @@ Appointment booking app for the Beauty Queen Studio salon: clients request appoi
 ## Features
 
 ### Clients
-- Book in three steps: **service → date → time**. The whole day is shown; times that can't be booked stay visible but greyed out, and tapping one explains why (e.g. "the pedicure chair is busy 14:45–16:00"). Availability updates live when someone else books.
+- **Verified sign-up:** registering sends a 6-digit code by **e-mail** (or **SMS**, if Twilio is configured). The account is only created after the code is confirmed, so nobody can register an address or number that isn't theirs. Codes expire after 15 min, allow 5 attempts, and can be re-sent once a minute (max 5 per hour per address/number). **Forgotten password** works the same way and logs out every old session.
+- Book in three steps: **service → date → time**. The whole day is shown; times that can't be booked stay visible but greyed out, and tapping one explains why. Times that are actually booked look different (struck through) from free times where the chosen service is just too long to finish before the next booking (dashed), so a booking never seems to "move backwards". Clients also can't book two overlapping appointments for themselves. Availability updates live when someone else books.
 - Optional note with the request (colour, design, special requests).
 - "My appointments" with status, assigned staff member, history, and cancel-with-reason.
 - Real-time notifications when an appointment is **accepted / rejected / cancelled by the salon**.
@@ -60,12 +61,14 @@ Admin accounts are the emails listed in `ADMIN_EMAILS` (default `marija.stankovs
 | `backend/salon-config.js` | Business rules (hours, services, staff, stations) |
 | `backend/tests/` | Jest unit + integration + socket tests |
 | `my-react-app/src/salon.js` | Same scheduling rules for the UI (loaded live from `/config`) |
+| `backend/verification.js` | One-time codes, e-mail (SMTP) and SMS (Twilio) delivery |
+| `mobile/` | Expo (React Native) app for Expo Go, shares `salon.js` with the web app |
 | `e2e/` | Playwright end-to-end tests |
 
 ## Testing
 
 ```bash
-cd backend && npm test             # 95 unit/integration/socket tests
+cd backend && npm test             # 109 unit/integration/socket tests
 cd backend && npm run test:coverage
 cd backend && npm run lint
 
@@ -80,9 +83,19 @@ All tests run against temporary data folders and never touch the real JSON files
 
 - `GET /health` returns status, uptime and counts, for uptime monitors and load balancers.
 - SIGTERM/SIGINT trigger a graceful shutdown (timers stop, sockets close).
-- The server refuses to start in production without `JWT_SECRET` (32+ characters) and `CLIENT_ORIGIN`. It also refuses to start if a data file is corrupt, so data can never be silently overwritten with empty data.
+- The server refuses to start in production without `JWT_SECRET` (32+ characters), `CLIENT_ORIGIN`, and an e-mail (`SMTP_*` + `MAIL_FROM`) or SMS (`TWILIO_*`) provider for verification codes. It also refuses to start if a data file is corrupt, so data can never be silently overwritten with empty data.
 - Security: helmet headers, CORS limited to `CLIENT_ORIGIN`, rate limiting on login, register and password change, bcrypt password hashing, input length limits, image-only uploads (no SVG), path-traversal-safe deletes.
 - Build the frontend with `REACT_APP_API_URL=https://your-api npm run build` and serve `my-react-app/build` over HTTPS.
 
 ### Testing from a phone
 Push notifications and installing the app need **HTTPS** (or `localhost`). For a real device, deploy behind HTTPS or use a tunnel (e.g. `ngrok http 3000` plus one for port 4000, then set `REACT_APP_API_URL`). On iPhone, push works only after **Share → Add to Home Screen** (iOS 16.4+).
+
+## Mobile app (Expo Go)
+
+`mobile/` is a native app for clients (book, my appointments, notifications) and the admin (accept/reject requests, today's schedule). It uses the same API and the same booking rules as the web app.
+
+1. Install **Expo Go** on the phone (App Store / Google Play).
+2. Start the backend on the computer: `cd backend && npm start`.
+3. Start the app: `cd mobile && npm install && npx expo start`, then scan the QR code (Android: in Expo Go; iPhone: with the Camera app).
+
+Phone and computer must be on the **same Wi-Fi**. The app finds the API automatically at `http://<computer's IP>:4000`. If Windows asks, allow Node.js through the firewall (private networks). If you use `npx expo start --tunnel`, or a deployed API, set `EXPO_PUBLIC_API_URL=https://your-api` before starting. Without SMTP configured, the verification code is shown on screen (development only).

@@ -57,14 +57,20 @@ const Profile = ({ user, onUserUpdate, pushEnabled, onTogglePush, onLogout, show
         <div className="profile-page">
             <div className="profile-card">
                 <h2>Мој профил</h2>
-                <p className="profile-email">{user?.email} {user?.role === "admin" && <span className="profile-role">Администратор</span>}</p>
+                <p className="profile-email">
+                    {user?.email} {user?.emailVerified && <span title="Потврдена е-пошта">✅</span>}{" "}
+                    {user?.role === "admin" && <span className="profile-role">Администратор</span>}
+                </p>
 
                 <form onSubmit={saveProfile}>
                     <label>Име и презиме</label>
                     <input value={name} onChange={e => setName(e.target.value)} placeholder="Вашето име" />
                     <label>Телефон</label>
                     <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+389 7x xxx xxx" />
-                    <p className="profile-hint">Салонот ќе ве контактира на овој број доколку има промена во терминот.</p>
+                    <p className="profile-hint">
+                        {user?.phoneVerified && phone === user.phone ? "✅ Потврден број. " : ""}
+                        Салонот ќе ве контактира на овој број доколку има промена во терминот.
+                    </p>
                     <button className="bq-btn bq-btn-primary" disabled={saving}>{saving ? "Зачувување…" : "Зачувај"}</button>
                 </form>
             </div>

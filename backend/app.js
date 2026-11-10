@@ -14,7 +14,8 @@ const cron = require("node-cron");
 const multer = require("multer");
 const webpush = require("web-push");
 const { Server } = require("socket.io");
-const { SALON, toMinutes, getService, isActive, slotProblem } = require("./salon-config");
+const { SALON, toMinutes, minutesToTime, getService, isActive, slotProblem } = require("./salon-config");
+const { createVerifier, normalizePhone } = require("./verification");
 
 const EMPLOYEES = SALON.employees.map(e => e.id);
 const GALLERY_CATEGORIES = ["Маникир", "Педикир", "Lash Lift", "Депилација"];
@@ -71,7 +72,10 @@ function createApp(options = {}) {
     const jwtSecret = options.jwtSecret || env.JWT_SECRET;
     const adminEmails = (options.adminEmails || env.ADMIN_EMAILS || "marija.stankovska@yahoo.com")
         .split(",").map(e => e.trim().toLowerCase()).filter(Boolean);
-    const clientOrigin = options.clientOrigin || env.CLIENT_ORIGIN || "*";
+    const originSetting = options.clientOrigin || env.CLIENT_ORIGIN || "*";
+    // comma separated list, e.g. "https://beautyqueen.mk,https://www.beautyqueen.mk"
+    const origins = originSetting.split(",").map(o => o.trim().replace(/\/$/, "")).filter(Boolean);
+    const clientOrigin = origins.includes("*") ? "*" : origins;
     const log = options.logger || console;
     const rateLimitMax = options.rateLimitMax ?? 20;
 
@@ -80,6 +84,18 @@ function createApp(options = {}) {
     if (isProduction && clientOrigin === "*")
         throw new Error("CLIENT_ORIGIN must be set to the frontend URL in production");
     const secret = jwtSecret || "beautyqueen_dev_secret_change_me";
+
+    const verifier = createVerifier({
+        secret,
+        salonName: SALON.name,
+        env: options.env || env,
+        isProduction,
+        codeSender: options.codeSender,
+        log
+    });
+    if (isProduction && !verifier.channels.email && !verifier.channels.sms)
+        throw new Error("Account verification needs SMTP_HOST + MAIL_FROM (e-mail) and/or TWILIO_* (SMS) in production");
+    if (verifier.devMode) log.log("⚠️  No SMTP configured: verification codes are printed here and shown in the app (development only).");
 
     /* ---------- storage ---------- */
 
@@ -219,8 +235,23 @@ function createApp(options = {}) {
 
     /* ---------- auth ---------- */
 
-    const publicUser = (u) => ({ email: u.email, role: u.role, name: u.name || "", phone: u.phone || "" });
+    const publicUser = (u) => ({
+        email: u.email,
+        role: u.role,
+        name: u.name || "",
+        phone: u.phone || "",
+        emailVerified: Boolean(u.emailVerified),
+        phoneVerified: Boolean(u.phoneVerified)
+    });
     const signToken = (user) => jwt.sign({ email: user.email, role: user.role }, secret, { expiresIn: "30d" });
+    const nowSeconds = () => Math.floor(Date.now() / 1000);
+
+    // A password reset ends every session that was opened before it.
+    const userFromToken = (payload) => {
+        const user = payload && findUser(payload.email);
+        if (!user || (user.sessionsValidAfter && payload.iat < user.sessionsValidAfter)) return null;
+        return user;
+    };
 
     function authenticateToken(req, res, next) {
         const [scheme, token] = String(req.headers.authorization || "").split(" ");
@@ -228,8 +259,8 @@ function createApp(options = {}) {
 
         jwt.verify(token, secret, (err, payload) => {
             if (err) return res.status(401).json({ message: "Сесијата истече, најавете се повторно" });
-            const user = findUser(payload.email);
-            if (!user) return res.status(401).json({ message: "Корисникот не постои" });
+            const user = userFromToken(payload);
+            if (!user) return res.status(401).json({ message: "Сесијата истече, најавете се повторно" });
             req.user = { email: user.email, role: user.role };
             next();
         });
@@ -253,34 +284,119 @@ function createApp(options = {}) {
         });
     });
 
-    app.get("/config", (_, res) => res.json(SALON));
+    app.get("/config", (_, res) => res.json({ ...SALON, verification: verifier.channels }));
 
     /* ---------- auth ---------- */
 
+    const emailTaken = (email) => users.some(u => normalizeEmail(u.email) === email);
+    const phoneTaken = (phone) => users.some(u => u.phoneVerified && normalizePhone(u.phone) === phone);
+    const validPassword = (p) => typeof p === "string" && p.length >= 6 && p.length <= LIMITS.password;
+    const passwordRule = `Лозинката мора да има од 6 до ${LIMITS.password} карактери`;
+    const sendResult = (res, result, okStatus = 200) => {
+        if (!result.ok) return res.status(result.status).json({ message: result.message, retryAfter: result.retryAfter });
+        res.status(okStatus).json({ ...result, ok: undefined });
+    };
+
+    // Step 1: validate and send a code. The account is only created once the code is confirmed,
+    // so nobody can register (or block) an e-mail address or phone number that isn't theirs.
     app.post("/register", authLimiter, async (req, res) => {
         const email = normalizeEmail(req.body.email);
         const password = req.body.password;
         const name = cleanText(req.body.name, LIMITS.name);
-        const phone = cleanText(req.body.phone, LIMITS.phone);
+        const rawPhone = cleanText(req.body.phone, LIMITS.phone);
+        const channel = req.body.channel === "sms" ? "sms" : "email";
 
         if (!email || typeof password !== "string" || !password)
             return res.status(400).json({ message: "Внесете е-пошта и лозинка" });
-        if (email.length > LIMITS.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+        if (email.length > LIMITS.email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email))
             return res.status(400).json({ message: "Невалидна е-пошта" });
-        if (password.length < 6 || password.length > LIMITS.password)
-            return res.status(400).json({ message: `Лозинката мора да има од 6 до ${LIMITS.password} карактери` });
-        if (users.some(u => normalizeEmail(u.email) === email))
-            return res.status(400).json({ message: "Корисник со оваа е-пошта веќе постои" });
+        if (!validPassword(password)) return res.status(400).json({ message: passwordRule });
 
-        const hashedPassword = await bcrypt.hash(password, 10);
-        // re-check after the async hash: two identical requests may have raced
-        if (users.some(u => normalizeEmail(u.email) === email))
-            return res.status(400).json({ message: "Корисник со оваа е-пошта веќе постои" });
+        const phone = rawPhone ? normalizePhone(rawPhone) : "";
+        if (rawPhone && !phone) return res.status(400).json({ message: "Невалиден телефонски број (пр. 070 123 456)" });
+        if (channel === "sms" && !phone) return res.status(400).json({ message: "Внесете телефонски број за потврда преку SMS" });
+        if (emailTaken(email)) return res.status(400).json({ message: "Корисник со оваа е-пошта веќе постои" });
+        if (channel === "sms" && phoneTaken(phone))
+            return res.status(400).json({ message: "Овој телефонски број веќе е потврден на друга сметка" });
 
-        const role = adminEmails.includes(email) ? "admin" : "user";
-        users.push({ email, password: hashedPassword, role, name, phone, createdAt: new Date().toISOString() });
+        const passwordHash = await bcrypt.hash(password, 10);
+        const result = await verifier.send({
+            purpose: "register",
+            id: email,
+            channel,
+            to: channel === "sms" ? phone : email,
+            data: { email, passwordHash, name, phone }
+        });
+        sendResult(res, result, 202);
+    });
+
+    app.post("/register/resend", authLimiter, async (req, res) => {
+        const email = normalizeEmail(req.body.email);
+        const pending = verifier.peek("register", email);
+        if (!pending) return res.status(400).json({ message: "Регистрацијата истече. Пополнете ја формата повторно." });
+        sendResult(res, await verifier.send({ purpose: "register", id: email, channel: pending.channel, to: pending.to, data: pending.data }));
+    });
+
+    // Step 2: confirm the code -> the account is created and the user is signed in.
+    app.post("/register/verify", authLimiter, (req, res) => {
+        const email = normalizeEmail(req.body.email);
+        const result = verifier.check({ purpose: "register", id: email, code: req.body.code });
+        if (!result.ok) return res.status(result.status).json({ message: result.message });
+
+        const { passwordHash, name, phone } = result.data;
+        if (emailTaken(email)) return res.status(400).json({ message: "Корисник со оваа е-пошта веќе постои" });
+        if (result.channel === "sms" && phoneTaken(phone))
+            return res.status(400).json({ message: "Овој телефонски број веќе е потврден на друга сметка" });
+
+        const user = {
+            email,
+            password: passwordHash,
+            role: adminEmails.includes(email) ? "admin" : "user",
+            name,
+            phone,
+            emailVerified: result.channel === "email",
+            phoneVerified: result.channel === "sms",
+            createdAt: new Date().toISOString()
+        };
+        users.push(user);
         saveData("users.json", users);
-        res.status(201).json({ message: "Успешна регистрација" });
+        res.status(201).json({ token: signToken(user), ...publicUser(user) });
+    });
+
+    // Forgotten password: a code goes to the account's e-mail (or its verified phone).
+    app.post("/password/forgot", authLimiter, async (req, res) => {
+        const email = normalizeEmail(req.body.email);
+        const user = users.find(u => normalizeEmail(u.email) === email);
+        if (!user) return res.status(404).json({ message: "Нема сметка со оваа е-пошта" });
+        const useSms = req.body.channel === "sms";
+        const phone = normalizePhone(user.phone);
+        if (useSms && (!user.phoneVerified || !phone))
+            return res.status(400).json({ message: "Сметката нема потврден телефонски број. Изберете е-пошта." });
+        sendResult(res, await verifier.send({
+            purpose: "reset",
+            id: user.email,
+            channel: useSms ? "sms" : "email",
+            to: useSms ? phone : user.email
+        }));
+    });
+
+    app.post("/password/reset", authLimiter, async (req, res) => {
+        const email = normalizeEmail(req.body.email);
+        const { newPassword } = req.body;
+        // validate before checking the code so a typo in the password doesn't burn the code
+        if (!validPassword(newPassword)) return res.status(400).json({ message: passwordRule });
+        const result = verifier.check({ purpose: "reset", id: email, code: req.body.code });
+        if (!result.ok) return res.status(result.status).json({ message: result.message });
+
+        const user = findUser(email);
+        if (!user) return res.status(404).json({ message: "Нема сметка со оваа е-пошта" });
+        const hashed = await bcrypt.hash(newPassword, 10);
+        user.password = hashed;
+        // the code proved ownership of the address it was sent to
+        if (result.channel === "email") user.emailVerified = true;
+        user.sessionsValidAfter = nowSeconds();
+        saveData("users.json", users);
+        res.json({ token: signToken(user), ...publicUser(user) });
     });
 
     app.post("/login", authLimiter, async (req, res) => {
@@ -301,7 +417,13 @@ function createApp(options = {}) {
     app.patch("/me", authenticateToken, (req, res) => {
         const user = findUser(req.user.email);
         if (req.body.name !== undefined) user.name = cleanText(req.body.name, LIMITS.name);
-        if (req.body.phone !== undefined) user.phone = cleanText(req.body.phone, LIMITS.phone);
+        if (req.body.phone !== undefined) {
+            const raw = cleanText(req.body.phone, LIMITS.phone);
+            const phone = raw ? normalizePhone(raw) : "";
+            if (raw && !phone) return res.status(400).json({ message: "Невалиден телефонски број (пр. 070 123 456)" });
+            if (phone !== normalizePhone(user.phone)) user.phoneVerified = false;
+            user.phone = phone;
+        }
         saveData("users.json", users);
         res.json(publicUser(user));
     });
@@ -332,6 +454,16 @@ function createApp(options = {}) {
         if (problem) {
             const status = problem.code === "closed" || problem.code === "hours" ? 400 : 409;
             return res.status(status).json({ message: `${problem.message}. Изберете друго време.` });
+        }
+
+        // A client can't be in two chairs at once: block overlaps with their own active bookings.
+        const start = toMinutes(time);
+        const end = start + getService(service).duration;
+        const clash = appointments.find(a => a.userEmail === req.user.email && a.date === date && isActive(a) && getService(a.service) &&
+            Math.max(start, toMinutes(a.time)) < Math.min(end, toMinutes(a.time) + getService(a.service).duration));
+        if (clash) {
+            const range = `${clash.time}–${minutesToTime(toMinutes(clash.time) + getService(clash.service).duration)}`;
+            return res.status(409).json({ message: `Веќе имате термин во ова време (${clash.service}, ${range}). Изберете друго време.` });
         }
 
         const user = findUser(req.user.email);
@@ -686,7 +818,7 @@ function createApp(options = {}) {
         const token = socket.handshake.auth?.token;
         if (typeof token !== "string") return next(new Error("unauthorized"));
         jwt.verify(token, secret, (err, payload) => {
-            const user = !err && findUser(payload.email);
+            const user = !err && userFromToken(payload);
             if (!user) return next(new Error("unauthorized"));
             socket.user = { email: user.email, role: user.role };
             next();

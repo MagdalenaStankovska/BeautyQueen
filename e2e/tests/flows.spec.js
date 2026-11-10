@@ -20,6 +20,15 @@ test.describe.serial("main user flows", () => {
         await page.getByPlaceholder("Е-пошта").fill("ana@e2e.mk");
         await page.getByPlaceholder(/Лозинка/).fill("secret1");
         await page.getByRole("button", { name: "Регистрирај се" }).click();
+
+        // the account only exists after the e-mailed code is confirmed
+        await expect(page.getByRole("heading", { name: "Потврдете ја сметката" })).toBeVisible();
+        await page.getByLabel("Код за потврда").fill("000000");
+        await page.getByRole("button", { name: "Потврди" }).click();
+        await expect(page.getByText(/Погрешен код/)).toBeVisible();
+        const devCode = (await page.locator(".dev-code strong").textContent()).trim();
+        await page.getByLabel("Код за потврда").fill(devCode);
+        await page.getByRole("button", { name: "Потврди" }).click();
         await expect(page.getByRole("heading", { name: "Добредојдовте, Ана!" })).toBeVisible();
     });
 
@@ -66,14 +75,17 @@ test.describe.serial("main user flows", () => {
         await page.getByRole("button", { name: new RegExp(SHORT_PEDICURE.replace(/[()+]/g, "\\$&")) }).click();
         await pickDate(page.locator(".calendar-client-form"), DAY);
 
-        const blocked = page.getByRole("button", { name: /^14:15 – недостапно/ });
+        // the real booking stays visible; 14:15/14:30 (a 45 min pedicure would run into 14:45) aren't offered
+        const blocked = page.getByRole("button", { name: /^14:45 – недостапно/ });
         await expect(blocked).toBeVisible();
         await expect(blocked).toHaveAttribute("aria-disabled", "true");
+        await expect(page.getByRole("button", { name: /^14:15/ })).toHaveCount(0);
+        await expect(page.getByRole("button", { name: /^19:30/ })).toHaveCount(0);
         await expect(page.getByRole("button", { name: "14:00 – слободно" })).toBeEnabled();
 
         // Playwright won't click aria-disabled elements, but a real tap does — that's how users get the explanation
         await blocked.dispatchEvent("click");
-        await expect(page.getByRole("status").filter({ hasText: "14:15 не е достапно" })).toContainText("столот за педикир");
+        await expect(page.getByRole("status").filter({ hasText: "14:45 не е достапно" })).toContainText("столот за педикир");
         await expect(page.getByRole("button", { name: "Испрати барање" })).toBeDisabled();
 
         // server enforces the same rule
@@ -103,7 +115,7 @@ test.describe.serial("main user flows", () => {
         const reason = adminPage.getByRole("dialog");
         await expect(reason).toContainText("Болна сум");
         await reason.evaluate(el => Promise.all(el.getAnimations().map(a => a.finished)));
-        await expect(reason).toContainText("070111222");
+        await expect(reason).toContainText("+38970111222"); // stored in international format
 
         const box = await reason.boundingBox();
         const vp = adminPage.viewportSize();

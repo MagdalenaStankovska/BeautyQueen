@@ -38,13 +38,39 @@ test("the 14:45 case: grid keeps every time, only overlapping ones get a reason"
     const svc = "Педикир (гел лак на нозе)";
     const problem = (t) => slotProblem(appts, { date: MONDAY, time: t, service: svc });
     expect(problem("14:00")).toBeNull();
-    expect(problem("14:15").code).toBe("resource");
-    expect(problem("14:15").message).toContain("14:45–16:00");
+    // 14:15 itself is free – the 45 min service just can't finish before the 14:45 booking
+    expect(problem("14:15").code).toBe("fit");
+    expect(problem("14:15").message).toContain("од 14:45");
+    expect(problem("14:30").code).toBe("fit");
+    expect(problem("14:45").code).toBe("resource");
+    expect(problem("14:45").message).toContain("14:45–16:00");
     expect(problem("15:45").code).toBe("resource");
     expect(problem("16:00")).toBeNull();
     expect(problem("19:30").code).toBe("hours");
     expect(freeTimes(appts, MONDAY, svc)).not.toContain("14:15");
     expect(freeTimes(appts, MONDAY, svc)).toContain("14:00");
+});
+
+test("the 18:45 case: times before a booking are 'too short', not 'booked'", () => {
+    const appts = [booked("18:45", "Депилација (раце+нозе)")];
+    const svc = "Депилација (раце+нозе)";
+    const problem = (t) => slotProblem(appts, { date: MONDAY, time: t, service: svc });
+    expect(problem("18:00")).toBeNull(); // 18:00–18:45, back to back
+    expect(problem("18:15").code).toBe("fit");
+    expect(problem("18:30").code).toBe("fit");
+    expect(problem("18:45").code).toBe("resource");
+    expect(problem("19:00").code).toBe("resource");
+});
+
+test("a client's own appointments block overlapping times on other stations", () => {
+    const mine = [booked("18:00", "Депилација (раце+нозе)", { id: "m1" })];
+    const opts = { mine };
+    expect(slotProblem(mine, { date: MONDAY, time: "18:15", service: "Lash Lift" }, opts).code).toBe("mine");
+    expect(slotProblem(mine, { date: MONDAY, time: "18:15", service: "Lash Lift" }, opts).message).toContain("18:00–18:45");
+    expect(slotProblem(mine, { date: MONDAY, time: "18:45", service: "Lash Lift" }, opts)).toBeNull();
+    expect(slotProblem(mine, { date: MONDAY, time: "17:00", service: "Lash Lift" }, opts)).toBeNull();
+    // cancelled appointments don't count
+    expect(slotProblem([], { date: MONDAY, time: "18:15", service: "Lash Lift" }, { mine: [{ ...mine[0], status: "cancelled" }] })).toBeNull();
 });
 
 test("staff limit and past/lead checks", () => {

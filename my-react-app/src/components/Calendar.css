@@ -266,10 +266,19 @@
 }
 
 .slot-resource,
-.slot-staff {
+.slot-staff,
+.slot-mine {
     background: #f6e9ef;
     border-color: #e9d2de;
     color: #b596a6;
+}
+
+/* free at that minute, but the chosen service would run into the next booking – not a booking itself */
+.slot.slot-fit {
+    text-decoration: none;
+    background: #fffafc;
+    border: 1px dashed #e8c6d7;
+    color: #c9a7b8;
 }
 
 .slot-past,
@@ -314,6 +323,7 @@
 .swatch-free { background: #fff0f6; border: 1px solid #f0bcd5; }
 .swatch-busy { background: #f6e9ef; border: 1px solid #e9d2de; }
 .swatch-out { background: #f4f1f3; border: 1px solid #e7e1e4; }
+.swatch-fit { background: #fffafc; border: 1px dashed #e8c6d7; }
 
 .slot-section-title {
     font-size: 12px;

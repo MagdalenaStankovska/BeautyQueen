@@ -15,7 +15,7 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
     (res) => res,
     (err) => {
-        const isAuthCall = /\/(login|register)$/.test(err.config?.url || "");
+        const isAuthCall = /\/(login|register|password)(\/|$)/.test(err.config?.url || "");
         if (err.response?.status === 401 && !isAuthCall && onUnauthorized) onUnauthorized();
         return Promise.reject(err);
     }
